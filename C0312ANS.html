@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>溝通風格小遊戲</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF8F0;
+    --card-shadow: 0 8px 40px rgba(0,0,0,0.13);
+    --accent1: #FF6B6B;
+    --accent2: #FFD93D;
+    --accent3: #6BCB77;
+    --accent4: #4D96FF;
+    --radius: 24px;
+    --font-display: 'Fredoka One', 'Noto Sans TC', sans-serif;
+    --font-body: 'Noto Sans TC', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: linear-gradient(135deg, #ffe0b2 0%, #ffd6e7 40%, #d4f0ff 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    padding: 16px;
+  }
+  .stage {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+  }
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    padding: 32px 24px 28px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .card.active {
+    display: block;
+    animation: cardIn 0.28s cubic-bezier(.25,.8,.25,1) both;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  /* ── COVER ── */
+  #cover {
+    text-align: center;
+    background: linear-gradient(160deg, #fff7ee 0%, #fff 100%);
+    border-top: 6px solid var(--accent1);
+  }
+  .cover-emoji { font-size: 64px; margin-bottom: 8px; display: block; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .cover-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .cover-subtitle { font-size: 13px; color: #999; margin-bottom: 24px; }
+  .cover-lines { margin-bottom: 28px; }
+  .cover-lines p {
+    font-size: 15px;
+    color: #555;
+    line-height: 2;
+  }
+  .cover-lines p span { font-size: 17px; }
+  .btn-start {
+    background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-family: var(--font-display);
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(255,107,107,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,107,0.4); }
+  .time-hint { font-size: 12px; color: #bbb; margin-top: 10px; }
+  /* ── QUESTION ── */
+  .q-card { border-top: 6px solid var(--accent4); }
+  .progress-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 99px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4D96FF, #6BCB77);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .q-num {
+    background: #4D96FF;
+    color: #fff;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 12px;
+    font-family: var(--font-display);
+  }
+  .q-scene { font-size: 12px; color: #aaa; }
+  .q-text {
+    font-size: 17px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .opt-btn {
+    background: #f7f7fb;
+    border: 2px solid #ebebf5;
+    border-radius: 16px;
+    padding: 12px 10px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.45;
+    transition: all 0.18s;
+    font-family: var(--font-body);
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+  .opt-btn:hover {
+    background: #eef4ff;
+    border-color: #4D96FF;
+    color: #4D96FF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(77,150,255,0.18);
+  }
+  .opt-btn.selected {
+    background: #4D96FF;
+    border-color: #4D96FF;
+    color: #fff;
+    transform: scale(0.97);
+  }
+  /* ── RESULT ── */
+  #result { border-top: 6px solid #FFD93D; text-align: center; transition: background 0.4s; }
+  #result.bg-rational   { background: linear-gradient(160deg, #dbeafe 0%, #eff6ff 100%); border-top-color: #4D96FF; }
+  #result.bg-caring     { background: linear-gradient(160deg, #fce7f3 0%, #fff0f7 100%); border-top-color: #E91E8C; }
+  #result.bg-cautious   { background: linear-gradient(160deg, #ede9fe 0%, #f5f3ff 100%); border-top-color: #7C3AED; }
+  #result.bg-fastpace   { background: linear-gradient(160deg, #fee2e2 0%, #fff5f5 100%); border-top-color: #EF4444; }
+  #result.bg-action     { background: linear-gradient(160deg, #ffedd5 0%, #fffbf0 100%); border-top-color: #F59E0B; }
+  #result.bg-friendly   { background: linear-gradient(160deg, #dcfce7 0%, #f0fdf4 100%); border-top-color: #16A34A; }
+  #result.bg-emotional  { background: linear-gradient(160deg, #fce7f3 0%, #fff0fa 100%); border-top-color: #DB2777; }
+  #result.bg-expressive { background: linear-gradient(160deg, #cffafe 0%, #f0fdff 100%); border-top-color: #0891B2; }
+  #result.bg-rational   .result-section { background: rgba(77,150,255,0.10); }
+  #result.bg-caring     .result-section { background: rgba(233,30,140,0.09); }
+  #result.bg-cautious   .result-section { background: rgba(124,58,237,0.09); }
+  #result.bg-fastpace   .result-section { background: rgba(239,68,68,0.09);  }
+  #result.bg-action     .result-section { background: rgba(245,158,11,0.11); }
+  #result.bg-friendly   .result-section { background: rgba(22,163,74,0.10);  }
+  #result.bg-emotional  .result-section { background: rgba(219,39,119,0.09); }
+  #result.bg-expressive .result-section { background: rgba(8,145,178,0.10);  }
+  #result.bg-rational   .trait-card { background: rgba(77,150,255,0.13);  }
+  #result.bg-caring     .trait-card { background: rgba(233,30,140,0.11);  }
+  #result.bg-cautious   .trait-card { background: rgba(124,58,237,0.11);  }
+  #result.bg-fastpace   .trait-card { background: rgba(239,68,68,0.11);   }
+  #result.bg-action     .trait-card { background: rgba(245,158,11,0.13);  }
+  #result.bg-friendly   .trait-card { background: rgba(22,163,74,0.12);   }
+  #result.bg-emotional  .trait-card { background: rgba(219,39,119,0.11);  }
+  #result.bg-expressive .trait-card { background: rgba(8,145,178,0.12);   }
+  .result-crown { font-size: 52px; margin-bottom: 4px; display: block; animation: spin 1.2s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes spin { from{transform:rotate(-30deg) scale(0.5)} to{transform:rotate(0deg) scale(1)} }
+  .result-label {
+    font-size: 13px;
+    color: #888;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .result-type-name {
+    font-family: var(--font-display);
+    font-size: 30px;
+    border-radius: 12px;
+    display: inline-block;
+    padding: 6px 22px;
+    margin: 6px 0 18px;
+    color: #fff;
+  }
+  .result-section {
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .result-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-section-text {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.7;
+    font-weight: 500;
+  }
+  .traits-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .trait-card {
+    flex: 1;
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  .trait-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+  .trait-text { font-size: 12px; color: #444; line-height: 1.5; font-weight: 500; }
+  .color-rational   { background: linear-gradient(135deg,#4D96FF,#2563EB); }
+  .color-caring     { background: linear-gradient(135deg,#FF8FAB,#E91E8C); }
+  .color-cautious   { background: linear-gradient(135deg,#A78BFA,#7C3AED); }
+  .color-fastpace   { background: linear-gradient(135deg,#FF6B6B,#EF4444); }
+  .color-action     { background: linear-gradient(135deg,#FF9F43,#F59E0B); }
+  .color-friendly   { background: linear-gradient(135deg,#6BCB77,#16A34A); }
+  .color-emotional  { background: linear-gradient(135deg,#FF6B9D,#DB2777); }
+  .color-expressive { background: linear-gradient(135deg,#20D6B5,#0891B2); }
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .deco1 { width:80px;height:80px;background:#FF6B6B;top:-20px;right:-20px; }
+  .deco2 { width:50px;height:50px;background:#FFD93D;bottom:20px;left:-15px; }
+  @media (max-width:360px) {
+    .opt-btn { font-size:12px; padding:10px 7px; min-height:64px; }
+    .q-text { font-size:15px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="card active" id="cover">
+    <div class="deco deco1"></div>
+    <div class="deco deco2"></div>
+    <span class="cover-emoji">☕</span>
+    <div class="cover-title">溝通風格小遊戲</div>
+    <div class="cover-subtitle">Communication Style Quiz</div>
+    <div class="cover-lines">
+      <p>一起動動腦、想一想 🎈</p>
+      <p>快速測出你的溝通模式</p>
+      <p>請直覺作答，不要想太久</p>
+      <p>沒有對錯，選最像自己的 ✨</p>
+      <p>準備好了就放輕鬆，開始開心玩！</p>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">開始測驗 🚀</button>
+    <div class="time-hint">⏱ 大約 1 分鐘</div>
+  </div>
+  <div class="card" id="result"></div>
+</div>
+<script>
+const STYLES = {
+  rational:   { name:'理性派',   colorClass:'color-rational',   emoji:'🧠' },
+  caring:     { name:'關懷型',   colorClass:'color-caring',     emoji:'💛' },
+  cautious:   { name:'顧慮型',   colorClass:'color-cautious',   emoji:'🔍' },
+  fastpace:   { name:'快節奏型', colorClass:'color-fastpace',   emoji:'⚡' },
+  action:     { name:'行動派',   colorClass:'color-action',     emoji:'🎯' },
+  friendly:   { name:'和善型',   colorClass:'color-friendly',   emoji:'🌿' },
+  emotional:  { name:'情緒型',   colorClass:'color-emotional',  emoji:'🌈' },
+  expressive: { name:'爭取表達型',colorClass:'color-expressive',emoji:'📣' },
+};
+const RESULT_DATA = {
+  rational:   {
+    strength:'邏輯清晰、思維縝密，擅長在複雜情境中系統性分析問題，提出有根據、有條理的解決方案，讓人信服。',
+    blind:   '有時過於依賴數據與邏輯，容易忽略他人的情感需求與主觀感受，讓對方覺得冷漠或難以靠近。',
+    traits:[
+      {icon:'📊',text:'數據驅動決策，報告精準有力'},
+      {icon:'🔗',text:'跨部門協調時條理分明'},
+      {icon:'🛡️',text:'危機處理冷靜不失誤'},
+    ]
+  },
+  caring:     {
+    strength:'善於傾聽與同理，能感受到他人情緒的細微變化，讓團隊成員感到被重視、被理解與充分支持。',
+    blind:   '有時過度在意他人感受而難以果斷決策，面對衝突容易退讓，導致自身需求長期被忽略壓抑。',
+    traits:[
+      {icon:'🤝',text:'建立深厚信任的工作關係'},
+      {icon:'💬',text:'化解衝突的最佳調停者'},
+      {icon:'🌸',text:'帶動正向的團隊氛圍'},
+    ]
+  },
+  cautious:   {
+    strength:'細心謹慎、風險意識強，能在行動前預先識別潛在問題，避免錯誤發生，是團隊重要的品質守護者。',
+    blind:   '過度擔憂細節與風險，容易陷入猶豫不決，錯失行動時機，有時讓推進速度明顯慢於預期節奏。',
+    traits:[
+      {icon:'🔍',text:'品質把關，降低執行風險'},
+      {icon:'📋',text:'計劃周全，細節零遺漏'},
+      {icon:'⚠️',text:'預警能力強，防患於未然'},
+    ]
+  },
+  fastpace:   {
+    strength:'效率極高、反應迅速，能在快速變化的環境中迅速判斷並採取行動，保持強大的競爭優勢與節奏感。',
+    blind:   '推進速度太快時容易跳過溝通與確認步驟，導致團隊成員跟不上節奏，產生資訊落差與誤解。',
+    traits:[
+      {icon:'🚀',text:'高壓期依然保持高產能'},
+      {icon:'⏰',text:'時間管理高手，準時交付'},
+      {icon:'💡',text:'快速判斷，抓住機會窗口'},
+    ]
+  },
+  action:     {
+    strength:'執行力強、目標導向清晰，能夠將想法迅速轉化為具體行動，讓計畫落地並產出看得見的實際成果。',
+    blind:   '過於專注在結果與進度，有時忽略了過程中的人際互動與情感連結，讓合作夥伴感到被工具化。',
+    traits:[
+      {icon:'🎯',text:'專案推動力強，成果導向'},
+      {icon:'🏋️',text:'困難時刻仍能驅動前進'},
+      {icon:'📌',text:'OKR 落實到位，說到做到'},
+    ]
+  },
+  friendly:   {
+    strength:'親切隨和、善於包容不同意見，能夠創造輕鬆舒適的溝通氛圍，讓每個人都願意開口表達想法。',
+    blind:   '為了維持和諧而習慣迴避衝突，有時讓真實想法難以表達，長期妥協可能累積內心不滿與委屈。',
+    traits:[
+      {icon:'🌻',text:'讓新人快速融入的引導者'},
+      {icon:'☀️',text:'降低會議張力、潤滑溝通'},
+      {icon:'🎁',text:'跨部門合作的黏著劑'},
+    ]
+  },
+  emotional:  {
+    strength:'熱情充沛、感染力強，能夠用真誠的情感打動他人，激發夥伴的熱忱，帶動整個團隊的士氣與活力。',
+    blind:   '情緒起伏較明顯，高低落差有時影響判斷與溝通品質，讓合作者難以預測當下的狀態與反應。',
+    traits:[
+      {icon:'🔥',text:'點燃團隊熱情的催化劑'},
+      {icon:'🎭',text:'簡報與提案充滿感染力'},
+      {icon:'🌊',text:'危機時能激勵人心前進'},
+    ]
+  },
+  expressive: {
+    strength:'表達清晰有力、勇於發聲，擅長在關鍵時刻為自己的想法爭取到應有的重視、支持與必要資源。',
+    blind:   '堅持己見的強烈姿態有時讓他人感受到壓迫或不被尊重，造成對方關閉溝通、難以繼續深入交流。',
+    traits:[
+      {icon:'📣',text:'捍衛立場，為專案爭取資源'},
+      {icon:'🗣️',text:'發表觀點明確，說服力強'},
+      {icon:'✊',text:'高壓談判中不輕易妥協'},
+    ]
+  },
+};
+const QUESTIONS = [
+  {
+    scene:'📍 開會場景',
+    text:'開會時有個議題大家意見分歧，你通常會？',
+    options:[
+      {key:'rational',   text:'整理數據提合理方案'},
+      {key:'caring',     text:'傾聽感受再找共識'},
+      {key:'cautious',   text:'先觀察風向再說'},
+      {key:'fastpace',   text:'希望快速做出決定'},
+      {key:'action',     text:'想先做再優化'},
+      {key:'friendly',   text:'別人決定都好'},
+      {key:'emotional',  text:'想緩和大家避免衝突'},
+      {key:'expressive', text:'嘗試說服他人'},
+    ]
+  },
+  {
+    scene:'📍 工作壓力',
+    text:'截止日快到了，你發現自己可能無法完成任務，你會？',
+    options:[
+      {key:'rational',   text:'重排優先序再衝刺'},
+      {key:'caring',     text:'請同事幫忙但很不安'},
+      {key:'cautious',   text:'反覆確認細節才交'},
+      {key:'fastpace',   text:'拼命加速完成任務'},
+      {key:'action',     text:'馬上跟主管討論解法'},
+      {key:'friendly',   text:'想著盡力就好了'},
+      {key:'emotional',  text:'內心崩潰拼命趕'},
+      {key:'expressive', text:'爭取重新協商時程'},
+    ]
+  },
+  {
+    scene:'📍 收到批評',
+    text:'在眾人面前被批評報告做得不好，你的反應是？',
+    options:[
+      {key:'rational',   text:'冷靜詢問改進點'},
+      {key:'caring',     text:'默默心裡難過不說話'},
+      {key:'cautious',   text:'心中擔心日後評價'},
+      {key:'fastpace',   text:'想要結束後馬上修改'},
+      {key:'action',     text:'當場提出修改方向'},
+      {key:'friendly',   text:'表達謝謝反饋會調整'},
+      {key:'emotional',  text:'感覺委屈情緒受影響'},
+      {key:'expressive', text:'當場說明解釋原因'},
+    ]
+  },
+  {
+    scene:'📍 新人到來',
+    text:'你們部門來了一位新同事，你通常先怎麼做？',
+    options:[
+      {key:'rational',   text:'整理文件讓他照著學'},
+      {key:'caring',     text:'想要關心對方感受'},
+      {key:'cautious',   text:'先保持觀察狀況'},
+      {key:'fastpace',   text:'快速介紹有問題再說'},
+      {key:'action',     text:'直接帶他做任務'},
+      {key:'friendly',   text:'笑臉迎人暖化氣氛'},
+      {key:'emotional',  text:'找話題聊培養熟悉度'},
+      {key:'expressive', text:'主動介紹自己和團隊'},
+    ]
+  },
+  {
+    scene:'📍 意見不合',
+    text:'你和另外一位同事對專案方向看法完全不同，你會？',
+    options:[
+      {key:'rational',   text:'列優缺點用邏輯說服'},
+      {key:'caring',     text:'理解立場找雙贏'},
+      {key:'cautious',   text:'不想選邊站不想表態'},
+      {key:'fastpace',   text:'趕快選一個推進'},
+      {key:'action',     text:'先試跑一個測看看'},
+      {key:'friendly',   text:'退讓說用你的吧'},
+      {key:'emotional',  text:'說出感受與觀察'},
+      {key:'expressive', text:'想爭取用自己的方案'},
+    ]
+  },
+  {
+    scene:'📍 跨部門合作',
+    text:'需要跟不熟的部門合作，第一次開會通常你會？',
+    options:[
+      {key:'rational',   text:'備好議程直入主題'},
+      {key:'caring',     text:'先閒聊拉進距離'},
+      {key:'cautious',   text:'多聽少說先了解'},
+      {key:'fastpace',   text:'重視結果想有結論'},
+      {key:'action',     text:'積極提合作方案'},
+      {key:'friendly',   text:'想維持氣氛輕鬆'},
+      {key:'emotional',  text:'表達超期待合作'},
+      {key:'expressive', text:'表明部門需求與立場'},
+    ]
+  },
+  {
+    scene:'📍 突發狀況',
+    text:'專案突然出了大問題，你的第一反應是？',
+    options:[
+      {key:'rational',   text:'分析根源提出解法'},
+      {key:'caring',     text:'擔心大家有煩躁壓力'},
+      {key:'cautious',   text:'想先確認嚴重程度'},
+      {key:'fastpace',   text:'看到問題先行動再說'},
+      {key:'action',     text:'想著分工共同解決'},
+      {key:'friendly',   text:'任何問題都願幫忙'},
+      {key:'emotional',  text:'心慌但告訴自己撐住'},
+      {key:'expressive', text:'忍不住說早就說過了'},
+    ]
+  },
+  {
+    scene:'📍 讚美回應',
+    text:'同事稱讚你最近的表現很好，你會？',
+    options:[
+      {key:'rational',   text:'說明成果背後的邏輯'},
+      {key:'caring',     text:'說靠大家合作才有的'},
+      {key:'cautious',   text:'不好意思怕名不副實'},
+      {key:'fastpace',   text:'打算下個目標繼續衝'},
+      {key:'action',     text:'心想我還有更多計畫'},
+      {key:'friendly',   text:'笑說謝謝你人好好'},
+      {key:'emotional',  text:'超開心想到處分享'},
+      {key:'expressive', text:'感到自己被重視'},
+    ]
+  },
+  {
+    scene:'📍 傳遞壞消息',
+    text:'你需要告知客戶專案延期，你的首要溝通重點？',
+    options:[
+      {key:'rational',   text:'用數據說明附新時程'},
+      {key:'caring',     text:'先確認影響有多大'},
+      {key:'cautious',   text:'演練措辭確認好再說'},
+      {key:'fastpace',   text:'直接提出補救方案'},
+      {key:'action',     text:'提新計畫想說服對方'},
+      {key:'friendly',   text:'思考如何維持關係'},
+      {key:'emotional',  text:'真誠面對此事希望能動之以情'},
+      {key:'expressive', text:'坦率說明已全力處理'},
+    ]
+  },
+  {
+    scene:'📍 提案時刻',
+    text:'你要向高層提案，你最在意哪個部分？',
+    options:[
+      {key:'rational',   text:'數據充足邏輯清晰'},
+      {key:'caring',     text:'觀眾有沒有跟上'},
+      {key:'cautious',   text:'先備好被質疑的答案'},
+      {key:'fastpace',   text:'精簡時間內說完重點'},
+      {key:'action',     text:'結尾要有明確下一步'},
+      {key:'friendly',   text:'氣氛是否輕鬆舒服'},
+      {key:'emotional',  text:'傳遞對這件事的熱情'},
+      {key:'expressive', text:'清楚表達立場與目標'},
+    ]
+  },
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let scores = {};
+let currentQ = 0;
+
+function startQuiz() {
+  Object.keys(STYLES).forEach(k => scores[k] = 0);
+  buildQuestions();
+  showCard('q0');
+}
+
+function buildQuestions() {
+  const stage = document.querySelector('.stage');
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'card q-card';
+    card.id = 'q' + i;
+    const pct = Math.round((i / QUESTIONS.length) * 100);
+    const shuffledOpts = shuffle(q.options);
+    const opts = shuffledOpts.map(o =>
+      `<button class="opt-btn" onclick="answer('${o.key}', ${i}, this)">${o.text}</button>`
+    ).join('');
+    card.innerHTML = `
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+      <div class="q-meta">
+        <span class="q-num">${i+1} / ${QUESTIONS.length}</span>
+        <span class="q-scene">${q.scene}</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+      <div class="options-grid">${opts}</div>
+    `;
+    stage.insertBefore(card, document.getElementById('result'));
+  });
+}
+
+function answer(styleKey, qIdx, btn) {
+  if (btn.classList.contains('selected')) return;
+  btn.classList.add('selected');
+  scores[styleKey]++;
+  setTimeout(() => {
+    if (qIdx + 1 < QUESTIONS.length) {
+      showCard('q' + (qIdx + 1));
+    } else {
+      showResult();
+    }
+  }, 180);
+}
+
+function showCard(id) {
+  const current = document.querySelector('.card.active');
+  const target = document.getElementById(id);
+
+  if (current && current !== target) {
+    current.classList.remove('active');
+    current.style.display = 'none';
+  }
+
+  target.style.display = 'block';
+  // Force reflow so animation triggers fresh
+  target.classList.remove('active');
+  void target.offsetWidth;
+  target.classList.add('active');
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showResult() {
+  const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+  const topKey = sorted[0][0];
+  const style = STYLES[topKey];
+  const data  = RESULT_DATA[topKey];
+  const traitsHTML = data.traits.map(t => `
+    <div class="trait-card">
+      <span class="trait-icon">${t.icon}</span>
+      <div class="trait-text">${t.text}</div>
+    </div>
+  `).join('');
+  const resultEl = document.getElementById('result');
+  resultEl.className = resultEl.className.replace(/bg-\w+/g, '').trim();
+  resultEl.classList.add('bg-' + topKey);
+  resultEl.innerHTML = `
+    <span class="result-crown">${style.emoji}</span>
+    <div class="result-label">主溝通風格</div>
+    <div class="result-type-name ${style.colorClass}">${style.name}</div>
+    <div class="result-section">
+      <div class="result-section-title">✨ 優勢</div>
+      <div class="result-section-text">${data.strength}</div>
+    </div>
+    <div class="result-section">
+      <div class="result-section-title">🔦 盲點</div>
+      <div class="result-section-text">${data.blind}</div>
+    </div>
+    <div class="result-section-title" style="margin:16px 0 8px;font-size:14px;font-weight:700;color:#555;">🏢 職場特質</div>
+    <div class="traits-row">${traitsHTML}</div>
+  `;
+  showCard('result');
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const existing = document.getElementById('confetti-canvas');
+  if (existing) existing.remove();
+  const canvas = document.createElement('canvas');
+  canvas.id = 'confetti-canvas';
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const COLORS = [
+    '#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF8FAB',
+    '#A78BFA','#FF9F43','#20D6B5','#FF6B9D','#FFF176','#80DEEA','#CE93D8'
+  ];
+  const SHAPES = ['rect','circle','ribbon'];
+  const pieces = [];
+  for (let i = 0; i < 140; i++) {
+    pieces.push({
+      x:       Math.random() * canvas.width,
+      y:       -20 - Math.random() * canvas.height * 0.65,
+      w:       6 + Math.random() * 9,
+      h:       8 + Math.random() * 11,
+      color:   COLORS[Math.floor(Math.random() * COLORS.length)],
+      shape:   SHAPES[Math.floor(Math.random() * SHAPES.length)],
+      angle:   Math.random() * Math.PI * 2,
+      spin:    (Math.random() - 0.5) * 0.2,
+      vx:      (Math.random() - 0.5) * 2.4,
+      vy:      2.0 + Math.random() * 3.8,
+      alpha:   1,
+      wobble:  Math.random() * Math.PI * 2,
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = 0;
+    for (const p of pieces) {
+      p.wobble += 0.05;
+      p.x += p.vx + Math.sin(p.wobble) * 0.7;
+      p.y += p.vy;
+      p.vy += 0.04;
+      p.angle += p.spin;
+      if (p.y > canvas.height * 0.72) p.alpha -= 0.026;
+      if (p.alpha <= 0) continue;
+      alive++;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.shape === 'ribbon') {
+        ctx.beginPath();
+        ctx.moveTo(-p.w/2, -p.h/2);
+        ctx.quadraticCurveTo(p.w/2, 0, -p.w/2, p.h/2);
+        ctx.quadraticCurveTo(p.w*0.2, 0, -p.w/2, -p.h/2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      }
+      ctx.restore();
+    }
+    frame++;
+    if (alive > 0 && frame < 300) requestAnimationFrame(draw);
+    else canvas.remove();
+  }
+  draw();
+}
+</script>
+</body>
+
+</html>
+
