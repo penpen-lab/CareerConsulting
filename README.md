@@ -425,7 +425,7 @@
 <!-- CTA -->
 <section class="cta-band" id="contact">
   <h2>準備好了嗎？</h2>
-  <p>第一步往往是最難的<br>預約一次讓我們一起開始</p>
+  <p>第一步往往是最難的<br>預約一次，讓我們一起開始</p>
   <button class="btn-gold" onclick="openForm()">預約諮詢</button>
 </section>
 
