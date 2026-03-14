@@ -288,7 +288,7 @@
       <span>探索服務內容</span>
     </button>
     <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
-      認識我
+      認識我們
     </button>
   </div>
 </section>
