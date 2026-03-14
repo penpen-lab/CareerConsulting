@@ -37,10 +37,8 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 999; opacity: .45;
     }
-
     /* ── NAV ── */
     nav { display: none; }
-
     /* ── HERO ── */
     .hero {
       display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
@@ -98,13 +96,11 @@
       letter-spacing: .04em; cursor: pointer; transition: all .3s;
     }
     .btn-outline:hover { background: var(--cream); }
-
     /* ── SECTIONS ── */
     section { padding: 48px clamp(20px, 7vw, 100px); }
     .section-label { font-family: 'DM Mono', monospace; font-size: var(--fs-xs); letter-spacing: .28em; text-transform: uppercase; color: var(--sage); margin-bottom: 14px; }
     .section-heading { font-size: clamp(var(--fs-xl), 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: 18px; }
     .section-desc { font-size: var(--fs-base); line-height: 1.9; color: var(--muted); max-width: 540px; font-weight: 300; }
-
     /* ── ABOUT ── */
     .about-grid {
       display: grid;
@@ -113,7 +109,6 @@
       align-items: start;
     }
     .about-visual { position: relative; }
-
     /* ── NEW VISUAL BLOCK (replaces 諮 placeholder) ── */
     .about-photo-placeholder {
       width: 100%; aspect-ratio: 4/4;
@@ -144,39 +139,61 @@
       width: 100%; height: 100%;
       z-index: 2; pointer-events: none;
     }
-    /* Stat label inside the visual — pinned near bottom border */
+    /* Stat block: 9+ above YEARS EXP. near bottom-right of black geometry */
     .visual-stat {
       position: absolute;
-      bottom: 28px; left: 50%;
-      transform: translateX(-50%);
+      bottom: 3%;
+      right: 40%;
       z-index: 3;
-      text-align: center;
-      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0;
     }
+    /* 9 and + in a row, bottom-aligned, then YEARS EXP below */
+    .vs-num-wrap {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: flex-end;
+      line-height: 1;
+      gap: 0.04em;
+      margin-bottom: 4mm;
+    }
+    /* 9 — big italic */
     .visual-stat .vs-num {
       font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-size: clamp(5rem, 14vw, 8.5rem);
       font-weight: 700;
       color: var(--paper);
       line-height: 1;
       text-shadow: 0 2px 24px rgba(26,18,8,.35);
     }
+    /* + — bigger than YEARS EXP label, bold, sits beside 9 */
+    .visual-stat .vs-suffix {
+      font-family: 'Playfair Display', serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--paper);
+      text-shadow: 0 2px 16px rgba(26,18,8,.35), 0 0 1px var(--paper), 0 0 2px var(--paper);
+      -webkit-text-stroke: 0.06em var(--paper);
+      line-height: 1;
+      margin-bottom: 0;
+    }
+    /* YEARS EXP. — small mono label below 9+ */
     .visual-stat .vs-label {
       font-family: 'DM Mono', monospace;
       font-size: .62rem;
       letter-spacing: .22em;
       color: rgba(245,240,232,.7);
       text-transform: uppercase;
-      margin-top: 4px;
       display: block;
     }
-
     .about-content { padding-left: 0; padding-top: 4px; }
     .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
     .tag { border: 1px solid var(--cream); padding: 6px 14px; font-size: var(--fs-sm); color: var(--muted); background: var(--card-bg); font-family: 'DM Mono', monospace; letter-spacing: .05em; transition: all .25s; }
     .tag:hover { border-color: var(--gold); color: var(--gold); }
-
     /* ── SERVICES ── */
     .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
     .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
@@ -193,7 +210,6 @@
     .card-desc { font-size: var(--fs-sm); line-height: 1.85; color: var(--muted); font-weight: 300; }
     .card-arrow { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-family: 'DM Mono', monospace; font-size: var(--fs-xs); letter-spacing: .1em; color: var(--gold); opacity: 0; transform: translateX(-8px); transition: all .3s; }
     .service-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
-
     /* ── FAQ ── */
     .faq-list { margin-top: 40px; max-width: 760px; }
     .faq-item { border-top: 1px solid var(--cream); }
@@ -208,7 +224,6 @@
     .faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s; }
     .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 22px; }
     .faq-answer p { font-size: var(--fs-base); line-height: 1.9; color: var(--muted); font-weight: 300; }
-
     /* ── CTA BAND ── */
     .cta-band {
       background: linear-gradient(135deg, var(--ink) 0%, #2a1f0a 100%);
@@ -220,7 +235,6 @@
     .cta-band p { color: rgba(245,240,232,.6); font-size: var(--fs-base); font-weight: 300; margin-bottom: 44px; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.9; position: relative; }
     .btn-gold { background: var(--gold); color: var(--ink); border: none; padding: 17px 48px; font-family: 'Noto Serif TC', serif; font-size: var(--fs-base); font-weight: 700; letter-spacing: .05em; cursor: pointer; transition: all .3s; }
     .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(196,146,42,.3); }
-
     /* ── FOOTER ── */
     footer {
       padding: 32px clamp(20px, 7vw, 120px);
@@ -238,7 +252,6 @@
     }
     .footer-links a:hover { color: var(--gold); }
     .footer-copy { font-family: 'DM Mono', monospace; font-size: var(--fs-xs); color: var(--muted); letter-spacing: .06em; }
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
     .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
@@ -246,7 +259,6 @@
     .reveal-delay-1 { transition-delay:.1s; }
     .reveal-delay-2 { transition-delay:.2s; }
     .reveal-delay-3 { transition-delay:.3s; }
-
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .about-grid { grid-template-columns: 1fr; gap: 28px; }
@@ -256,6 +268,17 @@
 </head>
 <body>
 
+<script>
+  /* ═══════════════════════════════════════════════
+     ★  修改這裡就能改圖內的數字文字  ★
+     ═══════════════════════════════════════════════ */
+  const VISUAL_CONFIG = {
+    number: "9+",          // 圖中大數字（如 "9+"、"10+"、"15"）
+    label:  "YEARS EXP.",  // 數字下方小標籤
+  };
+  /* ═══════════════════════════════════════════════ */
+</script>
+
 <!-- NAV -->
 <nav id="nav">
   <ul class="nav-links">
@@ -264,7 +287,6 @@
     <li><a href="#faq">常見問題</a></li>
   </ul>
 </nav>
-
 <!-- HERO -->
 <section class="hero" id="home">
   <p class="hero-eyebrow">Career Consulting · 職涯諮詢</p>
@@ -292,7 +314,6 @@
     </button>
   </div>
 </section>
-
 <!-- ABOUT -->
 <section id="about">
   <div class="about-grid">
@@ -338,10 +359,13 @@
           <!-- Horizontal rule (lower-left) -->
           <line x1="60" y1="295" x2="190" y2="295" stroke="rgba(196,146,42,0.3)" stroke-width="1"/>
         </svg>
-        <!-- Centre stat label -->
+        <!-- Centre stat label — rendered by JS from VISUAL_CONFIG -->
         <div class="visual-stat">
-          <span class="vs-num"8+</span>
-          <span class="vs-label">YEARS EXP.</span>
+          <div class="vs-num-wrap">
+            <span class="vs-num" id="vs-num"></span>
+            <span class="vs-suffix" id="vs-suffix"></span>
+          </div>
+          <span class="vs-label" id="vs-label"></span>
         </div>
       </div>
     </div>
@@ -363,7 +387,6 @@
     </div>
   </div>
 </section>
-
 <!-- SERVICES -->
 <section id="services" style="background:var(--card-bg);">
   <div class="services-header">
@@ -393,7 +416,6 @@
     </div>
   </div>
 </section>
-
 <!-- FAQ -->
 <section id="faq">
   <p class="section-label reveal">FAQ · 常見問題</p>
@@ -405,7 +427,7 @@
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">諮詢的費用是多少？<span class="faq-icon">+</span></button>
-      <div class="faq-answer"><p>讓彼此先確認是否合適。正式諮詢方案請預約確認。</p></div>
+      <div class="faq-answer"><p>讓彼此先確認是否合適。正式諮詢方案請在預約後透過信件確認。</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">諮詢以什麼形式進行？<span class="faq-icon">+</span></button>
@@ -421,14 +443,12 @@
     </div>
   </div>
 </section>
-
 <!-- CTA -->
 <section class="cta-band" id="contact">
   <h2>準備好了嗎？</h2>
   <p>第一步往往是最難的<br>預約一次，讓我們一起開始</p>
   <button class="btn-gold" onclick="openForm()">預約諮詢</button>
 </section>
-
 <!-- FOOTER -->
 <footer>
   <a href="#home" style="text-decoration:none;"><div class="footer-logo">職涯諮詢<span>三二事</span></div></a>
@@ -438,8 +458,18 @@
     <li><a href="#faq">FAQ</a></li>
   </ul>
 </footer>
-
 <script>
+  /* 將 VISUAL_CONFIG 的值注入 DOM，數字與符號分開渲染 */
+  (function() {
+    const raw = VISUAL_CONFIG.number;
+    const match = raw.match(/^(\d+)(.*)/);
+    const digit  = match ? match[1] : raw;
+    const suffix = match ? match[2] : '';
+    document.getElementById('vs-num').textContent    = digit;
+    document.getElementById('vs-suffix').textContent = suffix;
+    document.getElementById('vs-label').textContent  = VISUAL_CONFIG.label;
+  })();
+
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScFxA2Tkxi8Es59ld7SwPg7vDh1ZOd7fX_P2VyruDkkfCxPng/viewform';
   function openForm() { window.open(FORM_URL, '_blank'); }
   const nav = document.getElementById('nav');
