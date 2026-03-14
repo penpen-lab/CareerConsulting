@@ -1,1 +1,398 @@
-# CareerConsulting
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>職涯諮詢三二事</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1208;
+      --paper: #f5f0e8;
+      --cream: #ede7d3;
+      --gold: #c4922a;
+      --gold-light: #e8c06a;
+      --sage: #6b7c5e;
+      --muted: #7a6f5e;
+      --card-bg: #faf7f0;
+
+      /* Mobile-first font scale */
+      --fs-xs:   0.75rem;   /* 12px */
+      --fs-sm:   0.875rem;  /* 14px */
+      --fs-base: 1rem;      /* 16px */
+      --fs-md:   1.0625rem; /* 17px */
+      --fs-lg:   1.25rem;   /* 20px */
+      --fs-xl:   1.5rem;    /* 24px */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+      font-size: var(--fs-base);
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: .45;
+    }
+
+    /* ── NAV ── */
+    nav { display: none; }
+
+    /* ── HERO ── */
+    .hero {
+
+      display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+      text-align: center; padding: 0 24px 5mm; position: relative;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 80%, rgba(196,146,42,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 20%, rgba(107,124,94,.1) 0%, transparent 55%),
+        var(--paper);
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: clamp(0.85rem, 2.8vw, 0.95rem);
+      letter-spacing: .18em; color: var(--gold); text-transform: uppercase;
+      margin-top: 10mm;
+      margin-bottom: 5mm; opacity: 0; animation: fadeUp .8s .2s ease forwards;
+    }
+    .hero-title {
+      font-weight: 900; font-size: clamp(5rem, 15vw, 7rem);
+      line-height: 1.05; letter-spacing: -.02em;
+      opacity: 0; animation: fadeUp .9s .4s ease forwards;
+    }
+    .hero-title span.accent { color: var(--gold); font-style: italic; }
+    .hero-title .underline-deco { display: block; position: relative; }
+    .hero-title .underline-deco::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: -4px;
+      height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
+      border-radius: 2px;
+    }
+    .hero-sub {
+      margin-top: 28px; max-width: 480px;
+      font-size: clamp(var(--fs-base), 2.2vw, 1.05rem);
+      line-height: 1.9; color: var(--muted); font-weight: 300;
+      opacity: 0; animation: fadeUp .8s .65s ease forwards;
+    }
+    .hero-cta {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      margin-top: 40px; opacity: 0; animation: fadeUp .8s .85s ease forwards;
+    }
+    .btn-primary {
+      background: var(--ink); color: var(--paper); border: none;
+      padding: 15px 36px;
+      font-family: 'Noto Serif TC', serif; font-size: var(--fs-base); font-weight: 600;
+      letter-spacing: .04em; cursor: pointer; transition: all .3s; position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0; background: var(--gold);
+      transform: scaleX(0); transform-origin: left; transition: transform .35s ease; z-index: 0;
+    }
+    .btn-primary:hover::after { transform: scaleX(1); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-primary:hover { color: var(--ink); }
+    .btn-outline {
+      background: transparent; color: var(--ink); border: 1.5px solid var(--ink);
+      padding: 15px 36px;
+      font-family: 'Noto Serif TC', serif; font-size: var(--fs-base); font-weight: 400;
+      letter-spacing: .04em; cursor: pointer; transition: all .3s;
+    }
+    .btn-outline:hover { background: var(--cream); }
+    @keyframes scrollPulse { 0%,100%{opacity:.4;transform:scaleY(1);} 50%{opacity:1;transform:scaleY(1.15);} }
+    /* ── SECTIONS ── */
+    section { padding: 48px clamp(20px, 7vw, 100px); }
+    .section-label { font-family: 'DM Mono', monospace; font-size: var(--fs-xs); letter-spacing: .28em; text-transform: uppercase; color: var(--sage); margin-bottom: 14px; }
+    .section-heading { font-size: clamp(var(--fs-xl), 4vw, 3rem); font-weight: 700; line-height: 1.2; margin-bottom: 18px; }
+    .section-desc { font-size: var(--fs-base); line-height: 1.9; color: var(--muted); max-width: 540px; font-weight: 300; }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .about-visual { position: relative; }
+    .about-photo-placeholder {
+      width: 100%; aspect-ratio: 4/4;
+      background:
+        radial-gradient(ellipse 75% 65% at 35% 30%, #f5e4a8 0%, #f0d47a 45%, #e8c45a 100%);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-photo-placeholder::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 55% 55% at 68% 72%, rgba(255,240,180,.4) 0%, transparent 65%);
+    }
+    .about-photo-placeholder::before {
+      content: '諮';
+      font-size: clamp(9rem, 35vw, 14rem);
+      font-weight: 900;
+      color: rgba(180,130,30,.22);
+      line-height: 1;
+      position: relative; z-index: 1;
+      letter-spacing: -.05em;
+    }
+    .about-visual { position: relative; padding-bottom: 30px; padding-right: 30px; }
+    .about-badge {
+      position: absolute; bottom: 0; right: 0;
+      width: 90px; height: 90px; background: var(--ink); z-index: 2;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold);
+    }
+    .about-badge .num { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+    .about-badge .text { font-family: 'DM Mono', monospace; font-size: .5rem; letter-spacing: .1em; margin-top: 4px; color: var(--paper); }
+    .about-content { padding-left: 0; padding-top: 4px; }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+    .tag { border: 1px solid var(--cream); padding: 6px 14px; font-size: var(--fs-sm); color: var(--muted); background: var(--card-bg); font-family: 'DM Mono', monospace; letter-spacing: .05em; transition: all .25s; }
+    .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── SERVICES ── */
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .service-card {
+      background: var(--card-bg); padding: 24px 24px 20px; position: relative; overflow: hidden;
+      cursor: pointer; transition: background .3s; border: 1px solid var(--cream);
+    }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--gold); transition: height .4s; }
+    .service-card:hover::before { height: 100%; }
+    .service-card:hover { background: #fff; }
+    .card-number { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2rem; color: var(--cream); line-height: 1; margin-bottom: 10px; transition: color .3s; }
+    .service-card:hover .card-number { color: var(--gold-light); }
+    .card-title { font-size: var(--fs-lg); font-weight: 700; margin-bottom: 12px; }
+    .card-desc { font-size: var(--fs-sm); line-height: 1.85; color: var(--muted); font-weight: 300; }
+    .card-arrow { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-family: 'DM Mono', monospace; font-size: var(--fs-xs); letter-spacing: .1em; color: var(--gold); opacity: 0; transform: translateX(-8px); transition: all .3s; }
+    .service-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── FAQ ── */
+    .faq-list { margin-top: 40px; max-width: 760px; }
+    .faq-item { border-top: 1px solid var(--cream); }
+    .faq-item:last-child { border-bottom: 1px solid var(--cream); }
+    .faq-question {
+      width: 100%; background: none; border: none; display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 0; font-family: 'Noto Serif TC', serif;
+      font-size: var(--fs-base); font-weight: 600; color: var(--ink); cursor: pointer; text-align: left; gap: 16px;
+    }
+    .faq-icon { width: 28px; height: 28px; border: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; transition: all .3s; color: var(--ink); }
+    .faq-item.open .faq-icon { background: var(--ink); color: var(--paper); transform: rotate(45deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s; }
+    .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 22px; }
+    .faq-answer p { font-size: var(--fs-base); line-height: 1.9; color: var(--muted); font-weight: 300; }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(135deg, var(--ink) 0%, #2a1f0a 100%);
+      color: var(--paper); text-align: center; padding: 64px clamp(20px, 7vw, 100px);
+      position: relative; overflow: hidden;
+    }
+    .cta-band::before { content: '職'; position: absolute; font-size: 26rem; font-weight: 900; color: rgba(196,146,42,.04); top: 50%; left: 50%; transform: translate(-50%,-50%); line-height: 1; pointer-events: none; }
+    .cta-band h2 { font-size: clamp(var(--fs-xl), 5vw, 4rem); font-weight: 700; margin-bottom: 16px; position: relative; }
+    .cta-band p { color: rgba(245,240,232,.6); font-size: var(--fs-base); font-weight: 300; margin-bottom: 44px; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.9; position: relative; }
+    .btn-gold { background: var(--gold); color: var(--ink); border: none; padding: 17px 48px; font-family: 'Noto Serif TC', serif; font-size: var(--fs-base); font-weight: 700; letter-spacing: .05em; cursor: pointer; transition: all .3s; }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(196,146,42,.3); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px clamp(20px, 7vw, 120px);
+      display: flex; align-items: baseline; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px 24px;
+      border-top: 1px solid var(--cream);
+    }
+    .footer-logo { font-size: var(--fs-sm); font-weight: 700; font-family: 'DM Mono', monospace; letter-spacing: .06em; color: var(--muted); }
+    .footer-logo span { color: var(--gold); }
+    .footer-links { display: flex; gap: 24px; list-style: none; align-items: baseline; }
+    .footer-links a {
+      text-decoration: none; font-family: 'DM Mono', monospace;
+      font-size: var(--fs-xs); letter-spacing: .1em; color: var(--muted);
+      text-transform: uppercase; transition: color .25s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-family: 'DM Mono', monospace; font-size: var(--fs-xs); color: var(--muted); letter-spacing: .06em; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes scrollPulse { 0%,100%{opacity:.4;transform:scaleY(1);} 50%{opacity:1;transform:scaleY(1.15);} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-delay-1 { transition-delay:.1s; }
+    .reveal-delay-2 { transition-delay:.2s; }
+    .reveal-delay-3 { transition-delay:.3s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 28px; }
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <ul class="nav-links">
+    <li><a href="#about">關於我</a></li>
+    <li><a href="#services">服務項目</a></li>
+    <li><a href="#faq">常見問題</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <p class="hero-eyebrow">Career Consulting · 職涯諮詢</p>
+  <h1 class="hero-title">
+    <span class="underline-deco">職涯諮詢</span>
+    <span class="accent">三二事</span>
+  </h1>
+  <p class="hero-sub">
+    在每一個職涯的岔路口<br>
+    你不必獨自面對<br>
+    讓我們一起梳理困惑、找回方向<br>
+    走出屬於自己的路
+  </p>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+      <span>探索服務內容</span>
+    </button>
+    <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+      認識我
+    </button>
+  </div>
+
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-photo-placeholder"></div>
+      <div class="about-badge"><span class="num">8+</span><span class="text">YEARS EXP.</span></div>
+    </div>
+    <div class="about-content">
+      <p class="section-label reveal">About · 關於我</p>
+      <h2 class="section-heading reveal reveal-delay-1">陪你一起把想法<br>說得更清楚</h2>
+      <p class="section-desc reveal reveal-delay-2">
+        曾在科技業、新創與顧問業之間轉換，也在每一次的迷茫中，重新找到自己的答案。
+        如今把這些歷程轉化為方法論，陪伴每一位正在思考「下一步怎麼走」的你。
+      </p>
+      <div class="about-tags reveal reveal-delay-3">
+        <span class="tag">職涯轉職</span>
+        <span class="tag">求職面試</span>
+        <span class="tag">履歷健檢</span>
+        <span class="tag">適性檢測</span>
+        <span class="tag">自我探索</span>
+        <span class="tag">個人品牌</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="background:var(--card-bg);">
+  <div class="services-header">
+    <div>
+      <p class="section-label reveal">Services · 職涯服務</p>
+      <h2 class="section-heading reveal reveal-delay-1">職涯陪你前行</h2>
+    </div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal" onclick="openForm()">
+      <div class="card-number">01</div>
+      <h3 class="card-title">職涯探索諮詢</h3>
+      <p class="card-desc">不知道自己要什麼？透過結構化的對話，幫你梳理優勢、價值觀與興趣，找到最適合你的方向。適合初入職場或處於職涯瓶頸的你。</p>
+      <span class="card-arrow">預約 →</span>
+    </div>
+    <div class="service-card reveal reveal-delay-1" onclick="openForm()">
+      <div class="card-number">02</div>
+      <h3 class="card-title">轉職策略規劃</h3>
+      <p class="card-desc">有明確目標但不知如何下手？從履歷健診、求職策略到面試模擬，提供完整的轉職支援，讓每一步都走得更踏實。</p>
+      <span class="card-arrow">預約 →</span>
+    </div>
+    <div class="service-card reveal reveal-delay-2" onclick="openForm()">
+      <div class="card-number">03</div>
+      <h3 class="card-title">講座 × 企業培訓</h3>
+      <p class="card-desc">需要邀請演講或規劃職涯培訓課程？提供客製化的講座設計與團體工作坊，適合企業 HR、學校、社群組織。</p>
+      <span class="card-arrow">預約 →</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <p class="section-label reveal">FAQ · 常見問題</p>
+  <h2 class="section-heading reveal reveal-delay-1">你可能想知道的事</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">我適合職涯諮詢嗎？<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>只要你對自己的職涯感到困惑、想改變現況，或是有明確目標卻不知如何達成，都非常適合。諮詢沒有「太早」或「太晚」，任何時間點都是開始的好時機。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">諮詢的費用是多少？<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>讓彼此先確認是否合適。正式諮詢方案請在預約後透過信件確認。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">諮詢以什麼形式進行？<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>目前主要以視訊方式進行，在台北的朋友也可以約在咖啡廳面對面。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">可以協助指導履歷或準備面試嗎？<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>可以。如果你已經有明確的目標職位，我們可以從第一次對話就直接進入實戰準備。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">諮詢後可以保密嗎？<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>絕對。所有的諮詢內容嚴格保密，不會以任何形式分享給第三方。這是諮詢關係最基本的信任基礎，請放心暢所欲言。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band" id="contact">
+  <h2>準備好了嗎？</h2>
+  <p>第一步往往是最難的。<br>預約一次，我們一起開始。</p>
+  <button class="btn-gold" onclick="openForm()">預約諮詢</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">職涯諮詢<span>三二事</span></div>
+  <ul class="footer-links">
+    <li><a href="#about">關於我</a></li>
+    <li><a href="#services">服務</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+</footer>
+
+
+
+
+
+
+<script>
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScFxA2Tkxi8Es59ld7SwPg7vDh1ZOd7fX_P2VyruDkkfCxPng/viewform';
+  function openForm() { window.open(FORM_URL, '_blank'); }
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
