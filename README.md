@@ -281,7 +281,7 @@
     讓我們一起慢慢梳理<br>
     看見那些被忽略的能力與可能<br>
     職涯不只是找到一份工作<br>
-    更是走向更理解自己的旅程<br>
+    更是走向<br>更理解自己的旅程<br>
   </p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
