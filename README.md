@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
@@ -14,19 +15,15 @@
       --sage: #6b7c5e;
       --muted: #7a6f5e;
       --card-bg: #faf7f0;
-
-      /* Mobile-first font scale */
-      --fs-xs:   0.75rem;   /* 12px */
-      --fs-sm:   0.875rem;  /* 14px */
-      --fs-base: 1rem;      /* 16px */
-      --fs-md:   1.0625rem; /* 17px */
-      --fs-lg:   1.25rem;   /* 20px */
-      --fs-xl:   1.5rem;    /* 24px */
+      --fs-xs:   0.75rem;
+      --fs-sm:   0.875rem;
+      --fs-base: 1rem;
+      --fs-md:   1.0625rem;
+      --fs-lg:   1.25rem;
+      --fs-xl:   1.5rem;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
     body {
       font-family: 'Noto Serif TC', serif;
       background: var(--paper);
@@ -34,7 +31,6 @@
       overflow-x: hidden;
       font-size: var(--fs-base);
     }
-
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -47,7 +43,6 @@
 
     /* ── HERO ── */
     .hero {
-
       display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
       text-align: center; padding: 0 24px 5mm; position: relative;
       background:
@@ -58,8 +53,8 @@
     .hero-eyebrow {
       font-family: 'DM Mono', monospace; font-size: clamp(0.85rem, 2.8vw, 0.95rem);
       letter-spacing: .18em; color: var(--gold); text-transform: uppercase;
-      margin-top: 10mm;
-      margin-bottom: 5mm; opacity: 0; animation: fadeUp .8s .2s ease forwards;
+      margin-top: 10mm; margin-bottom: 5mm;
+      opacity: 0; animation: fadeUp .8s .2s ease forwards;
     }
     .hero-title {
       font-weight: 900; font-size: clamp(5rem, 15vw, 7rem);
@@ -103,7 +98,7 @@
       letter-spacing: .04em; cursor: pointer; transition: all .3s;
     }
     .btn-outline:hover { background: var(--cream); }
-    @keyframes scrollPulse { 0%,100%{opacity:.4;transform:scaleY(1);} 50%{opacity:1;transform:scaleY(1.15);} }
+
     /* ── SECTIONS ── */
     section { padding: 48px clamp(20px, 7vw, 100px); }
     .section-label { font-family: 'DM Mono', monospace; font-size: var(--fs-xs); letter-spacing: .28em; text-transform: uppercase; color: var(--sage); margin-bottom: 14px; }
@@ -118,35 +113,65 @@
       align-items: start;
     }
     .about-visual { position: relative; }
+
+    /* ── NEW VISUAL BLOCK (replaces 諮 placeholder) ── */
     .about-photo-placeholder {
       width: 100%; aspect-ratio: 4/4;
-      background:
-        radial-gradient(ellipse 75% 65% at 35% 30%, #f5e4a8 0%, #f0d47a 45%, #e8c45a 100%);
       position: relative; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      background: var(--cream);
     }
+    /* Bottom-left ink rectangle */
+    .about-photo-placeholder::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 60%; height: 55%;
+      background: var(--ink);
+      clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
+    }
+    /* Top-right gold rectangle */
     .about-photo-placeholder::after {
       content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 62%; height: 58%;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%);
+    }
+    /* SVG overlay: decorative lines + dot grid */
+    .visual-svg-overlay {
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse 55% 55% at 68% 72%, rgba(255,240,180,.4) 0%, transparent 65%);
+      width: 100%; height: 100%;
+      z-index: 2; pointer-events: none;
     }
-    .about-photo-placeholder::before {
-      content: '諮';
-      font-size: clamp(9rem, 35vw, 14rem);
-      font-weight: 900;
-      color: rgba(180,130,30,.22);
+    /* Stat label inside the visual — pinned near bottom border */
+    .visual-stat {
+      position: absolute;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .visual-stat .vs-num {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-weight: 700;
+      color: var(--paper);
       line-height: 1;
-      position: relative; z-index: 1;
-      letter-spacing: -.05em;
+      text-shadow: 0 2px 24px rgba(26,18,8,.35);
     }
-    .about-visual { position: relative; padding-bottom: 30px; padding-right: 30px; }
-    .about-badge {
-      position: absolute; bottom: 0; right: 0;
-      width: 90px; height: 90px; background: var(--ink); z-index: 2;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold);
+    .visual-stat .vs-label {
+      font-family: 'DM Mono', monospace;
+      font-size: .62rem;
+      letter-spacing: .22em;
+      color: rgba(245,240,232,.7);
+      text-transform: uppercase;
+      margin-top: 4px;
+      display: block;
     }
-    .about-badge .num { font-size: 1.6rem; font-weight: 900; line-height: 1; }
-    .about-badge .text { font-family: 'DM Mono', monospace; font-size: .5rem; letter-spacing: .1em; margin-top: 4px; color: var(--paper); }
+
     .about-content { padding-left: 0; padding-top: 4px; }
     .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
     .tag { border: 1px solid var(--cream); padding: 6px 14px; font-size: var(--fs-sm); color: var(--muted); background: var(--card-bg); font-family: 'DM Mono', monospace; letter-spacing: .05em; transition: all .25s; }
@@ -216,7 +241,6 @@
 
     /* ── ANIMATIONS ── */
     @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes scrollPulse { 0%,100%{opacity:.4;transform:scaleY(1);} 50%{opacity:1;transform:scaleY(1.15);} }
     .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease,transform .7s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
     .reveal-delay-1 { transition-delay:.1s; }
@@ -228,8 +252,6 @@
       .about-grid { grid-template-columns: 1fr; gap: 28px; }
       .services-grid { grid-template-columns: 1fr; }
     }
-
-
   </style>
 </head>
 <body>
@@ -269,15 +291,59 @@
       認識我
     </button>
   </div>
-
 </section>
 
 <!-- ABOUT -->
 <section id="about">
   <div class="about-grid">
     <div class="about-visual reveal">
-      <div class="about-photo-placeholder"></div>
-      <div class="about-badge"><span class="num">8+</span><span class="text">YEARS EXP.</span></div>
+      <!-- New geometric visual replacing the 諮 character -->
+      <div class="about-photo-placeholder">
+        <!-- SVG decorative layer -->
+        <svg class="visual-svg-overlay" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <!-- Dot grid (top-left area) -->
+          <g fill="rgba(196,146,42,0.25)">
+            <circle cx="32" cy="32" r="2.5"/>
+            <circle cx="56" cy="32" r="2.5"/>
+            <circle cx="80" cy="32" r="2.5"/>
+            <circle cx="104" cy="32" r="2.5"/>
+            <circle cx="32" cy="56" r="2.5"/>
+            <circle cx="56" cy="56" r="2.5"/>
+            <circle cx="80" cy="56" r="2.5"/>
+            <circle cx="104" cy="56" r="2.5"/>
+            <circle cx="32" cy="80" r="2.5"/>
+            <circle cx="56" cy="80" r="2.5"/>
+            <circle cx="80" cy="80" r="2.5"/>
+            <circle cx="104" cy="80" r="2.5"/>
+            <circle cx="32" cy="104" r="2.5"/>
+            <circle cx="56" cy="104" r="2.5"/>
+            <circle cx="80" cy="104" r="2.5"/>
+            <circle cx="104" cy="104" r="2.5"/>
+          </g>
+          <!-- Diagonal rule line across whole block -->
+          <line x1="0" y1="400" x2="400" y2="0" stroke="rgba(245,240,232,0.12)" stroke-width="1.5"/>
+          <!-- Thin border rect -->
+          <rect x="18" y="18" width="364" height="364" fill="none" stroke="rgba(196,146,42,0.18)" stroke-width="1"/>
+          <!-- Small corner marks -->
+          <line x1="18" y1="18" x2="44" y2="18" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="18" y1="18" x2="18" y2="44" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="382" y1="18" x2="356" y2="18" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="382" y1="18" x2="382" y2="44" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="18" y1="382" x2="44" y2="382" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="18" y1="382" x2="18" y2="356" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="382" y1="382" x2="356" y2="382" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <line x1="382" y1="382" x2="382" y2="356" stroke="rgba(196,146,42,0.5)" stroke-width="1.5"/>
+          <!-- Vertical rule (centre-right) -->
+          <line x1="268" y1="60" x2="268" y2="180" stroke="rgba(245,240,232,0.2)" stroke-width="1"/>
+          <!-- Horizontal rule (lower-left) -->
+          <line x1="60" y1="295" x2="190" y2="295" stroke="rgba(196,146,42,0.3)" stroke-width="1"/>
+        </svg>
+        <!-- Centre stat label -->
+        <div class="visual-stat">
+          <span class="vs-num">8+</span>
+          <span class="vs-label">YEARS EXP.</span>
+        </div>
+      </div>
     </div>
     <div class="about-content">
       <p class="section-label reveal">About · 關於我</p>
@@ -373,24 +439,16 @@
   </ul>
 </footer>
 
-
-
-
-
-
 <script>
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScFxA2Tkxi8Es59ld7SwPg7vDh1ZOd7fX_P2VyruDkkfCxPng/viewform';
   function openForm() { window.open(FORM_URL, '_blank'); }
-
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
-
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.1 });
   reveals.forEach(el => observer.observe(el));
-
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
@@ -398,6 +456,6 @@
     if (!isOpen) item.classList.add('open');
   }
 </script>
-
 </body>
 </html>
+
