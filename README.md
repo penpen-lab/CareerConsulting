@@ -405,7 +405,7 @@
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">諮詢的費用是多少？<span class="faq-icon">+</span></button>
-      <div class="faq-answer"><p>讓彼此先確認是否合適。正式諮詢方案請在預約後透過信件確認。</p></div>
+      <div class="faq-answer"><p>讓彼此先確認是否合適。正式諮詢方案請預約確認。</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-question" onclick="toggleFaq(this)">諮詢以什麼形式進行？<span class="faq-icon">+</span></button>
