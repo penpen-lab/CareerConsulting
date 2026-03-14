@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
@@ -280,8 +281,7 @@
     讓我們一起慢慢梳理<br>
     看見那些被忽略的能力與可能<br>
     職涯不只是找到一份工作<br>
-    更是走向<br>
-    更理解自己的旅程<br>
+    更是走向更理解自己的旅程<br>
   </p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
@@ -431,7 +431,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">職涯諮詢<span>三二事</span></div>
+  <a href="#home" style="text-decoration:none;"><div class="footer-logo">職涯諮詢<span>三二事</span></div></a>
   <ul class="footer-links">
     <li><a href="#about">關於我</a></li>
     <li><a href="#services">服務</a></li>
