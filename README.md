@@ -255,12 +255,11 @@
     你不必獨自面對<br>
     有時是迷惘 不知道下一步該往哪裡走<br>
     有時是卡關 明明很努力卻看不見出口<br>
-    也可能只是想停下來 好好思考方向<br>
+    有時可能只是想停下來 好好思考方向<br>
     讓我們一起慢慢梳理<br>
     看見那些被忽略的能力與可能<br>
-    因為每一條職涯道路<br>
-    都不只是選擇工作<br>
-    而是走向更理解自己的旅程<br>
+    職涯不只是找到一份工作<br>
+    更是走向更理解自己的旅程<br>
   </p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
