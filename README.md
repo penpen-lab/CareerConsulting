@@ -340,7 +340,7 @@
         </svg>
         <!-- Centre stat label -->
         <div class="visual-stat">
-          <span class="vs-num"9+</span>
+          <span class="vs-num"8+</span>
           <span class="vs-label">YEARS EXP.</span>
         </div>
       </div>
