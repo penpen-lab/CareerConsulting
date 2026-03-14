@@ -253,8 +253,14 @@
   <p class="hero-sub">
     在每一個職涯的岔路口<br>
     你不必獨自面對<br>
-    讓我們一起梳理困惑、找回方向<br>
-    走出屬於自己的路
+    有時是迷惘 不知道下一步該往哪裡走<br>
+    有時是卡關 明明很努力卻看不見出口<br>
+    也可能只是想停下來 好好思考方向<br>
+    讓我們一起慢慢梳理<br>
+    看見那些被忽略的能力與可能<br>
+    因為每一條職涯道路<br>
+    都不只是選擇工作<br>
+    而是走向更理解自己的旅程<br>
   </p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
