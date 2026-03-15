@@ -50,10 +50,9 @@
     }
     .hero-deco svg {
       position: absolute;
-      top: 0; left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
-      display: block;
     }
     /* push hero content above decoration */
     .hero-eyebrow,
@@ -67,7 +66,6 @@
     .hero {
       display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
       text-align: center; padding: 0 24px 5mm; position: relative;
-      min-height: 100svh;
       background:
         radial-gradient(ellipse 70% 50% at 20% 80%, rgba(196,146,42,.12) 0%, transparent 60%),
         radial-gradient(ellipse 50% 60% at 80% 20%, rgba(107,124,94,.1) 0%, transparent 55%),
@@ -80,7 +78,7 @@
       opacity: 0; animation: fadeUp .8s .2s ease forwards;
     }
     .hero-title {
-      font-weight: 900; font-size: clamp(4rem, 30vw, 3.75rem);
+      font-weight: 900; font-size: clamp(4rem, 30vw, 7.5rem);
       line-height: 1.05; letter-spacing: -.02em;
       opacity: 0; animation: fadeUp .9s .4s ease forwards;
     }
@@ -321,56 +319,59 @@
     <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
       <!-- Large ink triangle — top-left -->
       <polygon points="0,0 320,0 0,280" fill="rgba(26,18,8,0.06)"/>
+      <!-- Thin ink triangle outline — top-left -->
       <polygon points="0,0 380,0 0,340" fill="none" stroke="rgba(26,18,8,0.08)" stroke-width="1"/>
 
       <!-- Gold diagonal band — upper right -->
       <polygon points="900,0 1200,0 1200,220 1060,0" fill="rgba(196,146,42,0.07)"/>
+      <!-- Gold outline band -->
       <polygon points="840,0 1200,0 1200,280 980,0" fill="none" stroke="rgba(196,146,42,0.15)" stroke-width="1"/>
 
       <!-- Bottom-right ink block -->
       <polygon points="1200,700 900,700 1200,420" fill="rgba(26,18,8,0.05)"/>
 
       <!-- Dot grid — left side -->
-      <g fill="rgba(196,146,42,0.22)">
-        <circle cx="48"  cy="120" r="3.5"/><circle cx="80"  cy="120" r="3.5"/><circle cx="112" cy="120" r="3.5"/>
-        <circle cx="48"  cy="152" r="3.5"/><circle cx="80"  cy="152" r="3.5"/><circle cx="112" cy="152" r="3.5"/>
-        <circle cx="48"  cy="184" r="3.5"/><circle cx="80"  cy="184" r="3.5"/><circle cx="112" cy="184" r="3.5"/>
-        <circle cx="48"  cy="216" r="3.5"/><circle cx="80"  cy="216" r="3.5"/><circle cx="112" cy="216" r="3.5"/>
+      <g fill="rgba(196,146,42,0.18)">
+        <circle cx="48"  cy="120" r="2"/><circle cx="80"  cy="120" r="2"/><circle cx="112" cy="120" r="2"/>
+        <circle cx="48"  cy="152" r="2"/><circle cx="80"  cy="152" r="2"/><circle cx="112" cy="152" r="2"/>
+        <circle cx="48"  cy="184" r="2"/><circle cx="80"  cy="184" r="2"/><circle cx="112" cy="184" r="2"/>
+        <circle cx="48"  cy="216" r="2"/><circle cx="80"  cy="216" r="2"/><circle cx="112" cy="216" r="2"/>
       </g>
 
       <!-- Dot grid — right side -->
-      <g fill="rgba(196,146,42,0.22)">
-        <circle cx="1088" cy="400" r="3.5"/><circle cx="1120" cy="400" r="3.5"/><circle cx="1152" cy="400" r="3.5"/>
-        <circle cx="1088" cy="432" r="3.5"/><circle cx="1120" cy="432" r="3.5"/><circle cx="1152" cy="432" r="3.5"/>
-        <circle cx="1088" cy="464" r="3.5"/><circle cx="1120" cy="464" r="3.5"/><circle cx="1152" cy="464" r="3.5"/>
+      <g fill="rgba(196,146,42,0.18)">
+        <circle cx="1088" cy="400" r="2"/><circle cx="1120" cy="400" r="2"/><circle cx="1152" cy="400" r="2"/>
+        <circle cx="1088" cy="432" r="2"/><circle cx="1120" cy="432" r="2"/><circle cx="1152" cy="432" r="2"/>
+        <circle cx="1088" cy="464" r="2"/><circle cx="1120" cy="464" r="2"/><circle cx="1152" cy="464" r="2"/>
       </g>
 
-      <!-- Vertical / horizontal rule lines -->
-      <line x1="60"   y1="0"   x2="60"   y2="220"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
-      <line x1="1140" y1="0"   x2="1140" y2="200"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
+      <!-- Long diagonal rule lines -->
+      <line x1="0"    y1="420" x2="200"  y2="700"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
+      <line x1="60"   y1="0"   x2="60"   y2="180"  stroke="rgba(196,146,42,0.1)"  stroke-width="1"/>
+      <line x1="1140" y1="0"   x2="1140" y2="200"  stroke="rgba(196,146,42,0.1)"  stroke-width="1"/>
       <line x1="0"    y1="650" x2="500"  y2="650"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
 
       <!-- Corner bracket marks — top left -->
-      <line x1="30" y1="30" x2="80"  y2="30"  stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
-      <line x1="30" y1="30" x2="30"  y2="80"  stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
+      <line x1="30" y1="30" x2="80"  y2="30"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
+      <line x1="30" y1="30" x2="30"  y2="80"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
       <!-- Corner bracket marks — top right -->
-      <line x1="1170" y1="30" x2="1120" y2="30"  stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
-      <line x1="1170" y1="30" x2="1170" y2="80"  stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
+      <line x1="1170" y1="30" x2="1120" y2="30"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
+      <line x1="1170" y1="30" x2="1170" y2="80"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
       <!-- Corner bracket marks — bottom left -->
-      <line x1="30" y1="670" x2="80"  y2="670" stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
-      <line x1="30" y1="670" x2="30"  y2="620" stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
+      <line x1="30" y1="670" x2="80"  y2="670" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
+      <line x1="30" y1="670" x2="30"  y2="620" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
       <!-- Corner bracket marks — bottom right -->
-      <line x1="1170" y1="670" x2="1120" y2="670" stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
-      <line x1="1170" y1="670" x2="1170" y2="620" stroke="rgba(196,146,42,0.45)" stroke-width="2"/>
+      <line x1="1170" y1="670" x2="1120" y2="670" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
+      <line x1="1170" y1="670" x2="1170" y2="620" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
 
-      <!-- Cross mark — left centre -->
-      <line x1="28" y1="350" x2="52"  y2="350" stroke="rgba(196,146,42,0.4)" stroke-width="1.5"/>
-      <line x1="40" y1="338" x2="40"  y2="362" stroke="rgba(196,146,42,0.4)" stroke-width="1.5"/>
-      <!-- Cross mark — right centre -->
-      <line x1="1148" y1="350" x2="1172" y2="350" stroke="rgba(196,146,42,0.4)" stroke-width="1.5"/>
-      <line x1="1160" y1="338" x2="1160" y2="362" stroke="rgba(196,146,42,0.4)" stroke-width="1.5"/>
+      <!-- Cross mark — far left centre -->
+      <line x1="28" y1="348" x2="44" y2="348" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
+      <line x1="36" y1="340" x2="36" y2="356" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
+      <!-- Cross mark — far right -->
+      <line x1="1156" y1="348" x2="1172" y2="348" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
+      <line x1="1164" y1="340" x2="1164" y2="356" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
 
-      <!-- Bottom centre rule -->
+      <!-- Thin centre horizontal rule -->
       <line x1="480" y1="690" x2="720" y2="690" stroke="rgba(196,146,42,0.2)" stroke-width="1"/>
     </svg>
   </div>
