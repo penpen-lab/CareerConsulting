@@ -78,7 +78,7 @@
       opacity: 0; animation: fadeUp .8s .2s ease forwards;
     }
     .hero-title {
-      font-weight: 900; font-size: clamp(5rem, 15vw, 7rem);
+      font-weight: 900; font-size: clamp(10rem, 30vw, 14rem);
       line-height: 1.05; letter-spacing: -.02em;
       opacity: 0; animation: fadeUp .9s .4s ease forwards;
     }
@@ -393,7 +393,7 @@
   </p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
-      <span>探索服務內容</span>
+      <span>探索內容</span>
     </button>
     <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
       認識我們
@@ -574,4 +574,5 @@
 </script>
 </body>
 </html>
+
 
