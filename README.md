@@ -39,29 +39,6 @@
     }
     /* ── NAV ── */
     nav { display: none; }
-
-    /* ── HERO DECORATION ── */
-    .hero-deco {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-    .hero-deco svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-    /* push hero content above decoration */
-    .hero-eyebrow,
-    .hero-title,
-    .hero-sub,
-    .hero-cta {
-      position: relative;
-      z-index: 1;
-    }
     /* ── HERO ── */
     .hero {
       display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
@@ -78,13 +55,12 @@
       opacity: 0; animation: fadeUp .8s .2s ease forwards;
     }
     .hero-title {
-      font-weight: 900; font-size: clamp(4rem, 30vw, 7.5rem);
+      font-weight: 900; font-size: clamp(5rem, 15vw, 7rem);
       line-height: 1.05; letter-spacing: -.02em;
       opacity: 0; animation: fadeUp .9s .4s ease forwards;
     }
     .hero-title span.accent { color: var(--gold); font-style: italic; }
     .hero-title .underline-deco { display: block; position: relative; }
-
     .hero-title .underline-deco::after {
       content: ''; position: absolute; left: 0; right: 0; bottom: -4px;
       height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
@@ -313,69 +289,6 @@
 </nav>
 <!-- HERO -->
 <section class="hero" id="home">
-
-  <!-- Geometric background decoration -->
-  <div class="hero-deco">
-    <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-      <!-- Large ink triangle — top-left -->
-      <polygon points="0,0 320,0 0,280" fill="rgba(26,18,8,0.06)"/>
-      <!-- Thin ink triangle outline — top-left -->
-      <polygon points="0,0 380,0 0,340" fill="none" stroke="rgba(26,18,8,0.08)" stroke-width="1"/>
-
-      <!-- Gold diagonal band — upper right -->
-      <polygon points="900,0 1200,0 1200,220 1060,0" fill="rgba(196,146,42,0.07)"/>
-      <!-- Gold outline band -->
-      <polygon points="840,0 1200,0 1200,280 980,0" fill="none" stroke="rgba(196,146,42,0.15)" stroke-width="1"/>
-
-      <!-- Bottom-right ink block -->
-      <polygon points="1200,700 900,700 1200,420" fill="rgba(26,18,8,0.05)"/>
-
-      <!-- Dot grid — left side -->
-      <g fill="rgba(196,146,42,0.18)">
-        <circle cx="48"  cy="120" r="2"/><circle cx="80"  cy="120" r="2"/><circle cx="112" cy="120" r="2"/>
-        <circle cx="48"  cy="152" r="2"/><circle cx="80"  cy="152" r="2"/><circle cx="112" cy="152" r="2"/>
-        <circle cx="48"  cy="184" r="2"/><circle cx="80"  cy="184" r="2"/><circle cx="112" cy="184" r="2"/>
-        <circle cx="48"  cy="216" r="2"/><circle cx="80"  cy="216" r="2"/><circle cx="112" cy="216" r="2"/>
-      </g>
-
-      <!-- Dot grid — right side -->
-      <g fill="rgba(196,146,42,0.18)">
-        <circle cx="1088" cy="400" r="2"/><circle cx="1120" cy="400" r="2"/><circle cx="1152" cy="400" r="2"/>
-        <circle cx="1088" cy="432" r="2"/><circle cx="1120" cy="432" r="2"/><circle cx="1152" cy="432" r="2"/>
-        <circle cx="1088" cy="464" r="2"/><circle cx="1120" cy="464" r="2"/><circle cx="1152" cy="464" r="2"/>
-      </g>
-
-      <!-- Long diagonal rule lines -->
-      <line x1="0"    y1="420" x2="200"  y2="700"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
-      <line x1="60"   y1="0"   x2="60"   y2="180"  stroke="rgba(196,146,42,0.1)"  stroke-width="1"/>
-      <line x1="1140" y1="0"   x2="1140" y2="200"  stroke="rgba(196,146,42,0.1)"  stroke-width="1"/>
-      <line x1="0"    y1="650" x2="500"  y2="650"  stroke="rgba(196,146,42,0.12)" stroke-width="1"/>
-
-      <!-- Corner bracket marks — top left -->
-      <line x1="30" y1="30" x2="80"  y2="30"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <line x1="30" y1="30" x2="30"  y2="80"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <!-- Corner bracket marks — top right -->
-      <line x1="1170" y1="30" x2="1120" y2="30"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <line x1="1170" y1="30" x2="1170" y2="80"  stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <!-- Corner bracket marks — bottom left -->
-      <line x1="30" y1="670" x2="80"  y2="670" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <line x1="30" y1="670" x2="30"  y2="620" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <!-- Corner bracket marks — bottom right -->
-      <line x1="1170" y1="670" x2="1120" y2="670" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-      <line x1="1170" y1="670" x2="1170" y2="620" stroke="rgba(196,146,42,0.35)" stroke-width="1.5"/>
-
-      <!-- Cross mark — far left centre -->
-      <line x1="28" y1="348" x2="44" y2="348" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
-      <line x1="36" y1="340" x2="36" y2="356" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
-      <!-- Cross mark — far right -->
-      <line x1="1156" y1="348" x2="1172" y2="348" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
-      <line x1="1164" y1="340" x2="1164" y2="356" stroke="rgba(196,146,42,0.4)" stroke-width="1"/>
-
-      <!-- Thin centre horizontal rule -->
-      <line x1="480" y1="690" x2="720" y2="690" stroke="rgba(196,146,42,0.2)" stroke-width="1"/>
-    </svg>
-  </div>
-
   <p class="hero-eyebrow">Career Consulting · 職涯諮詢</p>
   <h1 class="hero-title">
     <span class="underline-deco">職涯諮詢</span>
