@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
@@ -78,12 +78,13 @@
       opacity: 0; animation: fadeUp .8s .2s ease forwards;
     }
     .hero-title {
-      font-weight: 900; font-size: clamp(10rem, 30vw, 14rem);
+      font-weight: 900; font-size: clamp(4rem, 30vw, 7.5rem);
       line-height: 1.05; letter-spacing: -.02em;
       opacity: 0; animation: fadeUp .9s .4s ease forwards;
     }
     .hero-title span.accent { color: var(--gold); font-style: italic; }
     .hero-title .underline-deco { display: block; position: relative; }
+
     .hero-title .underline-deco::after {
       content: ''; position: absolute; left: 0; right: 0; bottom: -4px;
       height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
@@ -574,5 +575,6 @@
 </script>
 </body>
 </html>
+
 
 
