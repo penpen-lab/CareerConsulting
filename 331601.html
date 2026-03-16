@@ -3,86 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>職場倫理潛力測驗</title>
+    <title>職場倫理潛力評估</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
-        .progress-container { width: 100%; background: #eee; height: 10px; border-radius: 5px; margin-bottom: 20px; }
-        #progress-bar { width: 0%; height: 100%; background: #4CAF50; border-radius: 5px; transition: 0.3s; }
-        .question { display: none; }
-        .question.active { display: block; }
-        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background: white; transition: 0.2s; }
-        button:hover { background: #e8f5e9; border-color: #4CAF50; }
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+        body { font-family: 'Segoe UI', Microsoft JhengHei, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 550px; }
+        
+        /* 進度條 */
+        .progress-wrapper { margin-bottom: 30px; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #64748b; }
+        .progress-bg { background: #e2e8f0; height: 8px; border-radius: 10px; overflow: hidden; }
+        #progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: 0.4s; }
+
+        .question-box { display: none; transition: 0.3s; }
+        .question-box.active { display: block; }
+        h2 { font-size: 1.4rem; margin-bottom: 25px; line-height: 1.4; }
+
+        /* 按鈕選項 */
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn { 
+            padding: 15px; border: 2px solid #f1f5f9; border-radius: 12px; cursor: pointer; 
+            background: white; font-size: 1rem; text-align: left; transition: all 0.2s; color: #475569;
+        }
+        .opt-btn:hover { border-color: var(--primary); background: #f5f3ff; color: var(--primary); transform: translateX(5px); }
+
+        /* 結果頁面 */
         #result-page { display: none; text-align: center; }
-        .dimension-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .dimension-box { background: #f9f9f9; padding: 10px; border-radius: 8px; border-left: 4px solid #4CAF50; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; border: 8px solid var(--secondary); display: flex; flex-direction: column; justify-content: center; margin: 0 auto 20px; }
+        .score-num { font-size: 2.5rem; font-weight: bold; color: var(--primary); }
+        
+        .ethics-icons { display: flex; justify-content: space-around; margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 15px; }
+        .icon-item { font-size: 0.8rem; color: #64748b; }
+        .icon-item span { display: block; font-size: 1.8rem; margin-bottom: 5px; }
+
+        .analysis-text { line-height: 1.6; padding: 15px; background: #f0fdf4; border-radius: 10px; color: #166534; font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="container">
     <div id="quiz-ui">
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <div id="quiz-container">
-            </div>
+        <div class="progress-wrapper">
+            <div class="progress-info"><span id="q-count">第 1 題</span><span>總計 10 題</span></div>
+            <div class="progress-bg"><div id="progress-fill"></div></div>
+        </div>
+        <div id="quiz-content"></div>
     </div>
 
     <div id="result-page">
-        <h2>測驗結果：<span id="total-score"></span> 分</h2>
-        <div class="dimension-grid" id="dimension-results"></div>
-        <hr>
-        <h3>職場潛力分析</h3>
-        <p id="potential-analysis"></p>
-        <button onclick="location.reload()" style="margin-top:20px; background:#4CAF50; color:white;">重新測驗</button>
+        <h3>測驗報告分析</h3>
+        <div class="score-circle">
+            <span class="score-num" id="total-score">0</span>
+            <span style="font-size:0.8rem; color:#94a3b8">總得分</span>
+        </div>
+        
+        <div class="ethics-icons">
+            <div class="icon-item"><span>🛡️</span>誠實誠信</div>
+            <div class="icon-item"><span>⚖️</span>公平公正</div>
+            <div class="icon-item"><span>🤝</span>人際尊重</div>
+            <div class="icon-item"><span>✅</span>責任擔當</div>
+        </div>
+
+        <p class="analysis-text" id="potential-analysis"></p>
+        <button onclick="location.reload()" style="margin-top:30px; border:none; background:var(--primary); color:white; padding:12px 30px; border-radius:10px; cursor:pointer;">重新檢測</button>
     </div>
 </div>
 
 <script>
     const questions = [
-        { q: "當發現工作流程有漏洞時，我會主動回報而非私下利用。", cat: "誠實誠信" },
-        { q: "我認為在公務報帳時，絕對不應包含個人私人開支。", cat: "誠實誠信" },
-        { q: "即使沒有人監督，我也會準時完成被交辦的任務。", cat: "責任感" },
-        { q: "當工作出現失誤時，我會先尋求補救而非推卸責任。", cat: "責任感" },
-        { q: "我願意在必要時為了團隊目標調整個人工作節奏。", cat: "責任感" },
-        { q: "我會尊重同事的不同意見，即時與我的想法分歧。", cat: "人際尊重" },
-        { q: "我不會在背後散布關於同事或主管的負面傳聞。", cat: "人際尊重" },
-        { q: "在職場溝通中，我能保持禮貌並體諒他人難處。", cat: "人際尊重" },
-        { q: "處理公司資源分配時，我能確保程序公開且透明。", cat: "公平公正" },
-        { q: "評估績效或推薦人選時，我能排除個人私交影響。", cat: "公平公正" }
+        "面對利益誘惑時，我能堅持誠實的原則。",
+        "在處理公務流程中，我會主動揭露潛在的利益衝突。",
+        "處理團隊資源時，我能做到透明化且不偏袒特定對象。",
+        "對於職場中的決策，我會以公眾利益為優先考量。",
+        "面對溝通衝突時，我能保持客觀禮貌的態度。",
+        "我會主動協助同事解決問題，並維護工作氣氛。",
+        "即使在沒有監督的情況下，我也能按時高品質交付任務。",
+        "當任務出現疏失時，我會主動承擔責任並修正。",
+        "我遵守公司的資訊安全規範，不私自傳播內部機密。",
+        "我對待實習生或基層夥伴，能保持與高層一致的尊重。"
     ];
 
-    const options = ["非常不同意", "不同意", "普通", "同意", "非常同意"];
+    const freqOptions = [
+        { label: "經常這麼做", val: 5 },
+        { label: "大多數時候如此", val: 4 },
+        { label: "偶爾如此", val: 3 },
+        { label: "很少這麼做", val: 2 },
+        { label: "從不這麼做", val: 1 }
+    ];
+
     let currentIdx = 0;
-    let scores = [];
-    let catScores = {};
+    let totalScore = 0;
 
-    function initQuiz() {
-        const container = document.getElementById('quiz-container');
-        questions.forEach((q, i) => {
-            let div = document.createElement('div');
-            div.className = `question ${i === 0 ? 'active' : ''}`;
-            div.innerHTML = `<h3>Q${i+1}. ${q.q}</h3><div class="options">` + 
-                options.map((opt, val) => `<button onclick="next(${val + 1}, '${q.cat}')">${opt}</button>`).join('') + `</div>`;
-            container.appendChild(div);
-        });
-        updateProgress();
+    function renderQuestion() {
+        const container = document.getElementById('quiz-content');
+        container.innerHTML = `
+            <div class="question-box active">
+                <h2>${questions[currentIdx]}</h2>
+                <div class="options">
+                    ${freqOptions.map(opt => `<button class="opt-btn" onclick="handleSelect(${opt.val})">${opt.label}</button>`).join('')}
+                </div>
+            </div>
+        `;
+        document.getElementById('q-count').innerText = `第 ${currentIdx + 1} 題`;
+        document.getElementById('progress-fill').style.width = ((currentIdx / questions.length) * 100) + '%';
     }
 
-    function updateProgress() {
-        document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
-    }
-
-    window.next = function(value, category) {
-        scores.push(value);
-        catScores[category] = (catScores[category] || 0) + value;
-        
-        document.querySelectorAll('.question')[currentIdx].classList.remove('active');
+    window.handleSelect = function(val) {
+        totalScore += val;
         currentIdx++;
-
         if (currentIdx < questions.length) {
-            document.querySelectorAll('.question')[currentIdx].classList.add('active');
-            updateProgress();
+            renderQuestion();
         } else {
             showResults();
         }
@@ -91,25 +126,19 @@
     function showResults() {
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('result-page').style.display = 'block';
-        
-        const total = scores.reduce((a, b) => a + b, 0);
-        document.getElementById('total-score').innerText = total;
-
-        const dimResult = document.getElementById('dimension-results');
-        for (let cat in catScores) {
-            dimResult.innerHTML += `<div class="dimension-box"><strong>${cat}</strong><br>得分：${catScores[cat]}</div>`;
-        }
+        document.getElementById('total-score').innerText = totalScore;
 
         let analysis = "";
-        if (total >= 40) analysis = "具備卓越的道德直覺與領導潛力，能成為團隊的信任基石，在複雜環境中仍能堅守原則，展現高度專業。";
-        else if (total >= 30) analysis = "倫理意識良好，能兼顧個人利益與組織規範，適應力強，是職場中穩定且可靠的核心成員。";
-        else analysis = "目前處於倫理磨合期，建議多觀察組織文化與規章，建立更清晰的行為準則以提升職場信任度與職涯廣度。";
+        if (totalScore >= 45) analysis = "您展現了卓越的道德自律與領導特質，能成為團隊的核心價值支柱，並在變動環境中引領正向風氣。";
+        else if (totalScore >= 35) analysis = "倫理意識穩定且行為可靠，能兼顧目標與規範，是企業中極具信賴度的核心人才，潛力卓越。";
+        else analysis = "建議進一步強化職場規範的理解，透過情境練習提升倫理決策的敏感度，將有助於開拓更廣闊的職涯機會。";
         
         document.getElementById('potential-analysis').innerText = analysis;
     }
 
-    initQuiz();
+    renderQuestion();
 </script>
 
 </body>
 </html>
+
