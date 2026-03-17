@@ -1,0 +1,193 @@
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職場倫理生存戰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet"><style>
+body{
+font-family:"Noto Sans TC",sans-serif;
+margin:0;
+background:linear-gradient(135deg,#5f9cff,#8fd3f4);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
+
+.container{
+width:92%;
+max-width:420px;
+background:white;
+padding:18px;
+border-radius:22px;
+box-shadow:0 12px 30px rgba(0,0,0,0.25);
+text-align:center;
+}
+
+h1{font-size:20px;margin:5px 0 10px;}
+
+.progress{
+height:8px;
+background:#eee;
+border-radius:10px;
+overflow:hidden;
+margin-bottom:10px;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:#5f9cff;
+transition:0.3s;
+}
+
+.card{
+margin-top:10px;
+padding:20px;
+border-radius:16px;
+background:#f9f9f9;
+transition:0.3s;
+position:relative;
+}
+
+.option{
+margin:10px 0;
+padding:14px;
+border-radius:12px;
+background:#ececec;
+cursor:pointer;
+transition:0.2s;
+}
+
+.option:active{
+transform:scale(0.96);
+}
+
+.swipe-hint{
+font-size:12px;
+color:#888;
+margin-top:8px;
+}
+
+.result{
+display:none;
+padding:22px;
+border-radius:18px;
+color:white;
+animation:fadeIn 0.8s;
+}
+
+.badge{
+font-size:40px;
+margin-bottom:10px;
+animation:bounce 1s infinite alternate;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);} 
+to{opacity:1;transform:translateY(0);} 
+}
+
+@keyframes bounce{
+from{transform:translateY(0);} 
+to{transform:translateY(-6px);} 
+}
+
+</style></head><body><div class="container">
+<h1>職場倫理生存戰</h1>
+<div class="progress"><div id="bar" class="progress-bar"></div></div>
+<div id="quiz"></div>
+<div id="result" class="result"></div>
+</div><script>
+
+const questions = [
+{q:"主管請你調整數據讓報表好看",options:["堅持不修改","詢問合理方式","小幅修改","直接照做"]},
+{q:"幫同事打卡？",options:["拒絕","幫一次","偶爾幫","長期幫"]},
+{q:"公司資料帶回家？",options:["不可以","詢問後","方便就帶","常常帶"]},
+{q:"客戶送禮",options:["依規定","告知主管","默默收","暗示要"]},
+{q:"同事犯錯",options:["主動提醒","私下告知","看情況","不管"]},
+{q:"用公司資源做私事",options:["完全不","偶爾","經常","大量"]},
+{q:"離職帶資料",options:["不帶","同意才","帶部分","全帶"]},
+{q:"社群抱怨公司",options:["不公開","模糊","限動","點名"]}
+];
+
+let index = 0;
+let score = 0;
+
+function render(){
+if(index >= questions.length){ showResult(); return; }
+
+const q = questions[index];
+
+document.getElementById("quiz").innerHTML = `
+<div class="card" id="card">
+<h3>第 ${index+1} 題</h3>
+<p>${q.q}</p>
+${q.options.map((opt,i)=>`<div class="option" onclick="select(${i})">${opt}</div>`).join("")}
+<div class="swipe-hint">點選答案快速作答</div>
+</div>`;
+
+updateBar();
+}
+
+function select(i){
+const point = [12.5,9,6,3];
+score += point[i];
+
+const card = document.getElementById("card");
+card.style.transform = "translateX(100%)";
+card.style.opacity = 0;
+
+setTimeout(()=>{
+index++;
+render();
+},250);
+}
+
+function updateBar(){
+const percent = (index/questions.length)*100;
+document.getElementById("bar").style.width = percent+"%";
+}
+
+function showResult(){
+document.getElementById("quiz").style.display="none";
+const r = document.getElementById("result");
+r.style.display="block";
+
+let text="";
+let color="";
+let icon="";
+
+if(score>=80){
+text="職場倫理模範生";
+color="#2ecc71";
+icon="🟢";
+}else if(score>=60){
+text="穩定安全派";
+color="#3498db";
+icon="🔵";
+}else if(score>=40){
+text="灰色地帶觀察者";
+color="#f1c40f";
+icon="🟡";
+}else{
+text="職場地雷製造機";
+color="#e74c3c";
+icon="🔴";
+}
+
+r.style.background=color;
+
+r.innerHTML=`
+<div class="badge">${icon}</div>
+<h2>${text}</h2>
+<p>你的分數：${Math.round(score)} / 100</p>
+<p style="font-size:13px;margin-top:10px;opacity:0.9">這不是結束，是你職場風格的開始 😏</p>
+`;
+}
+
+render();
+
+</script></body>
+</html>
