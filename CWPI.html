@@ -1,0 +1,941 @@
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職場倫理小測驗 ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #FFF0F5;
+  --bg2:       #FFF5F8;
+  --card:      #FFFFFF;
+  --pink:      #FF7BAC;
+  --pink-deep: #E8538A;
+  --pink-pale: #FFE4EF;
+  --pink-soft: #FFCCE0;
+  --pink-line: rgba(255,123,172,0.2);
+  --rose:      #FF9EC0;
+  --lilac:     #C9A8E8;
+  --lilac-pale:#F0E8FF;
+  --mint:      #7ECFC4;
+  --mint-pale: #E0F7F5;
+  --peach:     #FFB085;
+  --peach-pale:#FFE8D8;
+  --yellow:    #FFD166;
+  --yellow-pale:#FFF5D6;
+  --text:      #5A2A45;
+  --text-mid:  #9A5070;
+  --text-soft: #C8889A;
+  --text-pale: #E8C0CC;
+  --border:    #FFD6E5;
+  --shadow:    rgba(255,123,172,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.25rem 5rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* BUBBLE BG DECO */
+body::before {
+  content: '';
+  position: fixed;
+  top: -120px; right: -100px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,232,0.18) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -80px; left: -80px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(126,207,196,0.15) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── FLOATING DECO SHAPES ── */
+.deco {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  font-size: 22px;
+  opacity: 0.18;
+  animation: floatDeco 6s ease-in-out infinite;
+}
+.deco:nth-child(1) { top:8%;  left:4%;  animation-delay:0s;   font-size:18px; }
+.deco:nth-child(2) { top:18%; right:6%; animation-delay:1.2s; font-size:14px; }
+.deco:nth-child(3) { top:50%; left:2%;  animation-delay:2.4s; font-size:20px; }
+.deco:nth-child(4) { bottom:25%; right:3%; animation-delay:0.8s; font-size:16px; }
+.deco:nth-child(5) { bottom:10%; left:8%;  animation-delay:3s; font-size:12px; }
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: bounceIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--pink-pale);
+  color: var(--pink-deep);
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 6px 18px;
+  border-radius: 50px;
+  margin-bottom: 1.1rem;
+  border: 1.5px solid var(--pink-soft);
+}
+
+.header h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(24px, 6vw, 36px);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--pink-deep);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.header h1 .pop {
+  color: var(--lilac);
+  position: relative;
+  display: inline-block;
+}
+
+.header h1 .pop::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 0; right: 0;
+  height: 6px;
+  background: var(--yellow);
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+.header-sub {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.8;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  margin-bottom: 1.1rem;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-lbl {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.progress-num {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--pink);
+}
+
+.progress-track {
+  height: 10px;
+  background: var(--pink-pale);
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1.5px solid var(--pink-line);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rose), var(--pink));
+  border-radius: 50px;
+  transition: width 0.45s cubic-bezier(0.34,1.2,0.64,1);
+  width: 0%;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '♡';
+  position: absolute;
+  right: -6px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: white;
+  text-shadow: 0 1px 4px rgba(232,83,138,0.4);
+}
+
+/* ── DOTS ── */
+.dots-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 1.5rem;
+}
+
+.dot-step {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  border: 1.5px solid var(--border);
+  transition: all 0.35s cubic-bezier(0.34,1.4,0.64,1);
+  flex-shrink: 0;
+}
+
+.dot-step.done {
+  background: var(--rose);
+  border-color: var(--rose);
+}
+
+.dot-step.active {
+  background: var(--pink);
+  border-color: var(--pink-deep);
+  width: 24px;
+  border-radius: 50px;
+  box-shadow: 0 0 0 3px var(--pink-pale);
+}
+
+/* ── CARD STAGE ── */
+.card-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 8px 32px var(--shadow), 0 2px 8px rgba(255,123,172,0.08);
+  position: relative;
+}
+
+/* top wavy stripe */
+.q-card::before {
+  content: '';
+  display: block;
+  height: 6px;
+  background: linear-gradient(90deg,
+    var(--pink) 0%, var(--rose) 30%, var(--lilac) 60%, var(--mint) 100%);
+}
+
+.q-card.enter-right {
+  animation: slideInRight 0.4s cubic-bezier(0.34,1.15,0.64,1) both;
+}
+
+.q-card.exit-left {
+  animation: slideOutLeft 0.28s ease-in both;
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.q-inner { padding: 1.75rem 1.5rem 1.5rem; }
+
+.q-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.q-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 5px 14px;
+  border-radius: 50px;
+  background: var(--pink-pale);
+  color: var(--pink-deep);
+  border: 1.5px solid var(--pink-soft);
+}
+
+.q-num {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-pale);
+}
+
+.q-text {
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* ── OPTIONS ── */
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.opt-label {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.34,1.2,0.64,1);
+  background: var(--bg2);
+  user-select: none;
+}
+
+.opt-label:hover {
+  border-color: var(--pink);
+  background: var(--pink-pale);
+  transform: translateX(4px) scale(1.01);
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+.opt-label.selected {
+  border-color: var(--pink);
+  background: linear-gradient(135deg, var(--pink-pale), #FFE0EB);
+  transform: translateX(6px) scale(1.015);
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+.opt-label.locked { pointer-events: none; }
+.opt-label input  { display: none; }
+
+.opt-bubble {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: white;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-pale);
+}
+
+.opt-label.selected .opt-bubble {
+  border-color: var(--pink-deep);
+  background: var(--pink);
+  color: white;
+  box-shadow: 0 0 0 3px var(--pink-soft);
+}
+
+.opt-freq {
+  font-size: 13.5px;
+  color: var(--text-mid);
+  font-weight: 500;
+  flex: 1;
+  transition: color 0.15s;
+}
+
+.opt-label.selected .opt-freq {
+  color: var(--pink-deep);
+  font-weight: 700;
+}
+
+.opt-check {
+  width: 20px; height: 20px;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  font-size: 16px;
+  text-align: center;
+  line-height: 20px;
+}
+
+.opt-label.selected .opt-check {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ── RESULT ── */
+#result { display: none; }
+
+/* RESULT HERO */
+.result-hero {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 28px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: 0 12px 48px var(--shadow);
+  animation: bounceIn 0.6s cubic-bezier(0.34,1.4,0.64,1) both;
+}
+
+.result-hero::before {
+  content: '';
+  display: block;
+  height: 8px;
+  background: linear-gradient(90deg,
+    var(--pink) 0%, var(--rose) 25%, var(--lilac) 50%, var(--mint) 75%, var(--yellow) 100%);
+}
+
+.result-hero-inner {
+  padding: 2rem 2rem 2rem;
+  text-align: center;
+}
+
+.result-icon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 0.75rem;
+  animation: floatIcon 3s ease-in-out infinite;
+  line-height: 1;
+}
+
+.result-score-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-score {
+  font-family: 'Nunito', sans-serif;
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.result-score-unit {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.result-level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 8px 24px;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+  border: 2px solid;
+  letter-spacing: 0.05em;
+}
+
+.result-desc {
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--text-mid);
+  text-align: left;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  font-weight: 400;
+}
+
+/* INSIGHT */
+.insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+
+.insight-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 16px rgba(255,123,172,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.insight-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 20px 20px 0 0;
+}
+
+.insight-card.strength::before { background: linear-gradient(90deg, var(--pink), var(--rose)); }
+.insight-card.blind::before    { background: linear-gradient(90deg, var(--lilac), var(--mint)); }
+
+.insight-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.insight-card.strength .insight-label { color: var(--pink-deep); }
+.insight-card.blind    .insight-label { color: var(--lilac); }
+
+.insight-text {
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--text-mid);
+  font-weight: 400;
+}
+
+/* BREAKDOWN */
+.breakdown-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(255,123,172,0.08);
+  animation: fadeUp 0.5s 0.3s ease both;
+}
+
+.breakdown-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--pink-deep);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar-row {
+  margin-bottom: 1.1rem;
+}
+
+.bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.bar-name {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bar-tag {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 12px;
+  border-radius: 50px;
+}
+
+.bar-track {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 50px;
+  transition: width 1s cubic-bezier(0.34,1.1,0.64,1);
+  width: 0%;
+}
+
+/* TOPIC EMOJI */
+.topic-emoji { font-size: 14px; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+@keyframes bounceIn {
+  from { opacity:0; transform:scale(0.85) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(50px) scale(0.97); }
+  to   { opacity:1; transform:translateX(0) scale(1); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity:1; transform:translateX(0) scale(1); }
+  to   { opacity:0; transform:translateX(-50px) scale(0.97); }
+}
+
+@keyframes floatIcon {
+  0%,100% { transform:translateY(0) rotate(-3deg); }
+  50%     { transform:translateY(-10px) rotate(3deg); }
+}
+
+@keyframes floatDeco {
+  0%,100% { transform:translateY(0) rotate(0deg); }
+  50%     { transform:translateY(-12px) rotate(10deg); }
+}
+
+@media (max-width: 480px) {
+  .insight-grid { grid-template-columns: 1fr; }
+  .result-score { font-size: 56px; }
+}
+</style>
+</head>
+<body>
+
+<!-- DECO FLOATS -->
+<div class="deco">🌸</div>
+<div class="deco">✨</div>
+<div class="deco">🌷</div>
+<div class="deco">💫</div>
+<div class="deco">🌼</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">🌸 WORKPLACE ETHICS · 自我評估 🌸</div>
+    <h1>職場倫理<br><span class="pop">潛力測驗</span></h1>
+    <p class="header-sub">共 10 題，選完自動進入下一題 ✨<br>依日常工作中「實際做到」的頻率誠實作答喔！</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-lbl">🎀 答題進度</span>
+      <span class="progress-num" id="prog-count">0 / 10</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+  </div>
+
+  <!-- DOTS -->
+  <div class="dots-wrap" id="dots-wrap"></div>
+
+  <!-- CARD STAGE -->
+  <div class="card-stage" id="card-stage"></div>
+
+  <!-- RESULT -->
+  <div id="result"></div>
+
+</div>
+
+<script>
+const topicEmoji = {
+  "利益衝突":  "🤝",
+  "保密與資訊": "🔒",
+  "不當行為":  "🛡️",
+  "資源使用":  "💼",
+  "整體倫理":  "⭐"
+};
+
+const questions = [
+  { id:1,  topic:"利益衝突",  text:"當您與供應商或外部合作方有私人關係時，會主動向主管揭露並迴避相關決策。" },
+  { id:2,  topic:"利益衝突",  text:"收受廠商禮品或招待時，會主動確認是否符合公司政策，必要時予以婉拒。" },
+  { id:3,  topic:"保密與資訊", text:"處理客戶個人資料或商業機密時，嚴格遵守最小必要原則，不超出工作需要範圍使用。" },
+  { id:4,  topic:"保密與資訊", text:"在社群媒體發文時，確保內容不涉及公司內部資訊或可能損及公司形象的言論。" },
+  { id:5,  topic:"不當行為",  text:"目睹同事遭受霸凌或不公平對待時，會採取行動（安慰當事人、向主管反映或舉報）。" },
+  { id:6,  topic:"不當行為",  text:"面對職場性騷擾情境時，清楚知道公司的申訴程序，並有信心在必要時使用它。" },
+  { id:7,  topic:"資源使用",  text:"使用公司設備（電腦、印表機、網路等）時，將私人用途限制在公司明確允許的範圍內。" },
+  { id:8,  topic:"資源使用",  text:"在工作時間內，確保個人事務不佔用應用於工作的時間與精力。" },
+  { id:9,  topic:"整體倫理",  text:"面對倫理模糊地帶，傾向主動尋求主管或法遵部門的意見，而非自行判斷了事。" },
+  { id:10, topic:"整體倫理",  text:"當同事要求配合可能違反規定的做法時，能清楚地拒絕，不因人際壓力妥協。" }
+];
+
+const opts = [
+  { label:"總是如此",   score:10, emoji:"💖" },
+  { label:"經常如此",   score:8,  emoji:"🌸" },
+  { label:"有時如此",   score:6,  emoji:"🌼" },
+  { label:"偶爾如此",   score:4,  emoji:"🍃" },
+  { label:"幾乎不這樣", score:2,  emoji:"💭" }
+];
+
+const topics   = ["利益衝突","保密與資訊","不當行為","資源使用","整體倫理"];
+const topicMax = 20;
+
+const topicColors = {
+  "利益衝突":  { bar:"#FF7BAC", tag:"#FF7BAC", tagBg:"#FFE4EF" },
+  "保密與資訊": { bar:"#7ECFC4", tag:"#3AABA0", tagBg:"#E0F7F5" },
+  "不當行為":  { bar:"#C9A8E8", tag:"#9B6ED4", tagBg:"#F0E8FF" },
+  "資源使用":  { bar:"#FFB085", tag:"#E07840", tagBg:"#FFE8D8" },
+  "整體倫理":  { bar:"#FFD166", tag:"#C4960A", tagBg:"#FFF5D6" }
+};
+
+const levels = [
+  { min:0,  max:39,
+    label:"倫理萌芽期", icon:"🌱",
+    scoreColor:"#E8538A",
+    badgeBg:"#FFE4EF", badgeText:"#E8538A", badgeBorder:"#FFB0CC",
+    desc:"您目前在職場倫理實踐上仍在起步階段，面對情境時較依賴直覺。建議積極參與課程，培養主動確認規範的習慣，逐步建立屬於自己的倫理判斷系統。",
+    strength:"具備基本同理心，對不公平情境有直覺反應，是建立倫理意識的好基礎喔！",
+    blind:"面對壓力時容易以慣例替代判斷，還需要多練習建立一致的倫理行為標準。"
+  },
+  { min:40, max:55,
+    label:"倫理覺醒期", icon:"🌷",
+    scoreColor:"#E07840",
+    badgeBg:"#FFE8D8", badgeText:"#E07840", badgeBorder:"#FFBD9A",
+    desc:"您已具備基本倫理意識，在部分情境中能做出正確選擇，但仍有不一致的表現。建議聚焦強化「面對人際壓力」與「資源合理使用」兩個面向的判斷能力。",
+    strength:"能辨識明顯的倫理問題，在低壓情境下通常能做出合適選擇，意識持續提升中！",
+    blind:"面對人際壓力或模糊情境時，容易搖擺或妥協，行為一致性有待進一步強化唷。"
+  },
+  { min:56, max:71,
+    label:"倫理成長期", icon:"🌼",
+    scoreColor:"#3AABA0",
+    badgeBg:"#E0F7F5", badgeText:"#3AABA0", badgeBorder:"#A0DDD8",
+    desc:"您的職場倫理表現達到中等水準，在多數情境下能做出適當判斷。一致性是下一個關鍵——無論壓力或關係如何變化，都能保持同樣的倫理標準，才是真正的成熟。",
+    strength:"在多數常見情境下判斷準確，具有持續學習的意願，能從錯誤中調整行為模式！",
+    blind:"在高壓或人際關係複雜的情境下，行為一致性略顯不足，需要更穩固的原則支撐喔。"
+  },
+  { min:72, max:87,
+    label:"倫理實踐家", icon:"🌸",
+    scoreColor:"#9B6ED4",
+    badgeBg:"#F0E8FF", badgeText:"#9B6ED4", badgeBorder:"#D4BAFF",
+    desc:"您在職場倫理上展現出良好且一致的實踐能力，能在多數情境中正確判斷並付諸行動。您的行為已對周遭同事產生正向示範，是團隊的穩定力量！",
+    strength:"行為一致、有原則，能在多數情境中主動做出倫理選擇，並有意識地影響周圍氛圍！",
+    blind:"在極端壓力或涉及自身利益的情境下，仍有少數盲點需要留意，保持持續自我覺察喔。"
+  },
+  { min:88, max:100,
+    label:"倫理領航者", icon:"✨",
+    scoreColor:"#E8538A",
+    badgeBg:"linear-gradient(135deg,#FFE4EF,#F0E8FF)", badgeText:"#C040A0", badgeBorder:"#FFB0D8",
+    desc:"您的職場倫理實踐達到卓越水準，在各類情境中都能主動、一致地展現合乎倫理的行為。您不僅保護自己，也為組織文化貢獻正能量，具備倫理領導的潛力！",
+    strength:"全面且一致地實踐職場倫理，能在壓力下保持原則，自然成為團隊的倫理標竿！",
+    blind:"卓越者有時忽略他人的學習需求，建議主動分享判斷邏輯，帶動團隊一起成長喔！"
+  }
+];
+
+const answers = {};
+let busy = false;
+
+function buildDots() {
+  const w = document.getElementById('dots-wrap');
+  w.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot-step' + (i === 0 ? ' active' : '');
+    d.id = 'dot-' + i;
+    w.appendChild(d);
+  });
+}
+
+function updateDots(idx) {
+  questions.forEach((_, i) => {
+    const d = document.getElementById('dot-' + i);
+    if (!d) return;
+    d.className = 'dot-step' + (i < idx ? ' done' : i === idx ? ' active' : '');
+  });
+}
+
+function buildCard(q) {
+  const qi  = questions.indexOf(q);
+  const div = document.createElement('div');
+  div.className = 'q-card';
+  div.id = 'qcard-' + q.id;
+  div.innerHTML = `
+    <div class="q-inner">
+      <div class="q-header">
+        <span class="q-tag">${topicEmoji[q.topic]} ${q.topic}</span>
+        <span class="q-num">第 ${q.id} 題 / 10</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+      <div class="opts" id="opts-${q.id}">
+        ${opts.map((o, i) => `
+          <label class="opt-label" onclick="pick(${q.id},${i},${qi})">
+            <input type="radio" name="q${q.id}" value="${i}">
+            <div class="opt-bubble">${String.fromCharCode(65+i)}</div>
+            <span class="opt-freq">${o.label}</span>
+            <span class="opt-check">${o.emoji}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>`;
+  return div;
+}
+
+function showCard(idx, animate) {
+  const stage = document.getElementById('card-stage');
+  const card  = buildCard(questions[idx]);
+  if (animate) card.classList.add('enter-right');
+  stage.appendChild(card);
+  requestAnimationFrame(() => {
+    stage.style.minHeight = card.offsetHeight + 'px';
+  });
+}
+
+function pick(qid, optIdx, cardIdx) {
+  if (busy) return;
+  busy = true;
+
+  answers[qid] = optIdx;
+
+  document.querySelectorAll(`#opts-${qid} .opt-label`).forEach((el, i) => {
+    el.classList.toggle('selected', i === optIdx);
+    el.classList.add('locked');
+  });
+
+  const done = Object.keys(answers).length;
+  document.getElementById('prog-fill').style.width = (done / 10 * 100) + '%';
+  document.getElementById('prog-count').textContent = done + ' / 10';
+
+  setTimeout(() => {
+    const stage   = document.getElementById('card-stage');
+    const oldCard = document.getElementById('qcard-' + qid);
+    const next    = cardIdx + 1;
+
+    if (next < questions.length) {
+      if (oldCard) {
+        oldCard.classList.add('exit-left');
+        oldCard.addEventListener('animationend', () => {
+          oldCard.remove();
+          stage.style.minHeight = '';
+        }, { once: true });
+      }
+      updateDots(next);
+      showCard(next, true);
+      busy = false;
+    } else {
+      if (oldCard) {
+        oldCard.classList.add('exit-left');
+        oldCard.addEventListener('animationend', () => { oldCard.remove(); showResult(); }, { once: true });
+      } else { showResult(); }
+    }
+  }, 380);
+}
+
+function showResult() {
+  document.getElementById('card-stage').style.display    = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('dots-wrap').style.display     = 'none';
+  document.querySelector('.header').style.display        = 'none';
+
+  const total = questions.reduce((s, q) => s + opts[answers[q.id]].score, 0);
+  const lv    = levels.find(l => total >= l.min && total <= l.max);
+
+  const topicScores = {};
+  topics.forEach(t => { topicScores[t] = 0; });
+  questions.forEach(q => { topicScores[q.topic] += opts[answers[q.id]].score; });
+
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.innerHTML = `
+    <div class="result-hero">
+      <div class="result-hero-inner">
+        <span class="result-icon">${lv.icon}</span>
+        <div class="result-score-wrap">
+          <span class="result-score" style="color:${lv.scoreColor}" id="anim-score">0</span>
+          <span class="result-score-unit">分</span>
+        </div>
+        <div class="result-level-badge"
+          style="background:${lv.badgeBg};color:${lv.badgeText};border-color:${lv.badgeBorder}">
+          ${lv.icon} ${lv.label}
+        </div>
+        <div class="result-desc">${lv.desc}</div>
+      </div>
+    </div>
+
+    <div class="insight-grid">
+      <div class="insight-card strength">
+        <div class="insight-label">💖 您的優勢</div>
+        <div class="insight-text">${lv.strength}</div>
+      </div>
+      <div class="insight-card blind">
+        <div class="insight-label">🔮 值得留意</div>
+        <div class="insight-text">${lv.blind}</div>
+      </div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-title">🎀 各面向表現分析</div>
+      ${topics.map(t => {
+        const pct = topicScores[t] / topicMax * 100;
+        const lbl = pct >= 90 ? '超級棒棒' : pct >= 75 ? '表現良好' : pct >= 60 ? '持續成長' : pct >= 40 ? '初步建立' : '加油加油';
+        const tc  = topicColors[t];
+        return `<div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name"><span class="topic-emoji">${topicEmoji[t]}</span>${t}</span>
+            <span class="bar-tag" style="color:${tc.tag};background:${tc.tagBg};border:1.5px solid ${tc.bar}44;padding:2px 12px;border-radius:50px">${lbl}</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" id="bar-${t.replace(/[\s\/]/g,'_')}" style="background:linear-gradient(90deg,${tc.bar}AA,${tc.bar})"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  let cur = 0;
+  const scoreEl = document.getElementById('anim-score');
+  const step = Math.ceil(total / 40);
+  const timer = setInterval(() => {
+    cur = Math.min(cur + step, total);
+    scoreEl.textContent = cur;
+    if (cur >= total) clearInterval(timer);
+  }, 26);
+
+  setTimeout(() => {
+    topics.forEach(t => {
+      const bar = document.getElementById('bar-' + t.replace(/[\s\/]/g,'_'));
+      if (bar) bar.style.width = (topicScores[t] / topicMax * 100) + '%';
+    });
+  }, 400);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildDots();
+showCard(0, false);
+</script>
+</body>
+</html>
