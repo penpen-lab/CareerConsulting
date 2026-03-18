@@ -654,7 +654,7 @@ body::after {
   <!-- PROGRESS -->
   <div class="progress-wrap" id="progress-wrap">
     <div class="progress-top">
-      <span class="progress-lbl">🎀 答題進度</span>
+      <span class="progress-lbl">📋 答題進度</span>
       <span class="progress-num" id="prog-count">0 / 10</span>
     </div>
     <div class="progress-track">
@@ -898,7 +898,7 @@ function showResult() {
     </div>
 
     <div class="breakdown-card">
-      <div class="breakdown-title">🎀 各面向表現分析</div>
+      <div class="breakdown-title">📊 各面向表現分析</div>
       ${topics.map(t => {
         const pct = topicScores[t] / topicMax * 100;
         const lbl = pct >= 90 ? '超級棒棒' : pct >= 75 ? '表現良好' : pct >= 60 ? '持續成長' : pct >= 40 ? '初步建立' : '加油加油';
