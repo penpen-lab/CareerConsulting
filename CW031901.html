@@ -1,0 +1,976 @@
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職場倫理評估</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:   #FAFAFA;
+  --paper:   #F5F3EF;
+  --ink:     #1A1A1A;
+  --ink-mid: #555550;
+  --ink-soft:#999994;
+  --ink-line:#DDDDD8;
+  --ink-faint:#F0EFEB;
+  --red:     #D94F3D;
+  --red-pale:#FBF0EE;
+  --red-line:rgba(217,79,61,0.2);
+  --green:   #2E7D5E;
+  --blue:    #2B5BA8;
+  --amber:   #B8860B;
+  --purple:  #6B4FA0;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* TOP RULE */
+.top-rule {
+  height: 3px;
+  background: var(--ink);
+  width: 100%;
+}
+
+.mid-rule {
+  height: 1px;
+  background: var(--ink);
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* MASTHEAD */
+.masthead {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease both;
+}
+
+.masthead-left {}
+
+.issue-line {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.issue-line::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 1px;
+  background: var(--red);
+}
+
+.masthead h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.masthead h1 em {
+  font-style: italic;
+  color: var(--red);
+}
+
+.masthead-right {
+  text-align: right;
+  padding-bottom: 0.4rem;
+}
+
+.masthead-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  line-height: 1.9;
+  text-transform: uppercase;
+}
+
+/* DECK */
+.deck {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 2rem 0;
+  animation: fadeIn 0.5s 0.1s ease both;
+}
+
+.deck p {
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.8;
+  font-weight: 300;
+  border-left: 1px solid var(--red);
+  padding-left: 1rem;
+  max-width: 480px;
+}
+
+/* RULES */
+.rule-wrap {
+  max-width: 720px;
+  margin: 1.5rem auto 0;
+  padding: 0 2rem;
+}
+
+hr.double {
+  border: none;
+  border-top: 3px double var(--ink);
+  margin: 0;
+}
+
+hr.single {
+  border: none;
+  border-top: 0.5px solid var(--ink-line);
+  margin: 0;
+}
+
+/* PROGRESS BAR */
+.progress-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  border-bottom: 0.5px solid var(--ink-line);
+  animation: fadeIn 0.5s 0.15s ease both;
+}
+
+.prog-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-soft);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.prog-track {
+  flex: 1;
+  height: 1px;
+  background: var(--ink-line);
+  position: relative;
+}
+
+.prog-fill {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  height: 3px;
+  background: var(--ink);
+  transition: width 0.45s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+
+.prog-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+/* DOTS */
+.dots-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 0.5px solid var(--ink-line);
+  animation: fadeIn 0.5s 0.2s ease both;
+}
+
+.dot-step {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 0.5px solid var(--ink-soft);
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.34,1.2,0.64,1);
+  flex-shrink: 0;
+}
+
+.dot-step.done {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.dot-step.active {
+  background: var(--red);
+  border-color: var(--red);
+  width: 18px;
+  border-radius: 3px;
+}
+
+/* CARD STAGE */
+.card-stage {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Q-CARD */
+.q-card {
+  padding: 2.5rem 2rem 2rem;
+  background: var(--white);
+  width: 100%;
+}
+
+.q-card.enter-right {
+  animation: slideInRight 0.35s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.q-card.exit-left {
+  animation: slideOutLeft 0.25s ease-in both;
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.q-meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.q-category {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.q-category::before {
+  content: '';
+  display: block;
+  width: 12px;
+  height: 1px;
+  background: var(--red);
+}
+
+.q-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.05em;
+}
+
+.q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(17px, 2.8vw, 22px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.01em;
+  max-width: 560px;
+}
+
+/* OPTIONS */
+.opts {
+  display: flex;
+  flex-direction: column;
+  border-top: 0.5px solid var(--ink-line);
+}
+
+.opt-label {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.9rem 0;
+  border-bottom: 0.5px solid var(--ink-line);
+  cursor: pointer;
+  transition: background 0.12s ease;
+  user-select: none;
+  position: relative;
+}
+
+.opt-label::after {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  right: -2rem;
+  top: 0; bottom: 0;
+  background: transparent;
+  transition: background 0.12s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.opt-label:hover::after  { background: var(--ink-faint); }
+.opt-label.selected::after { background: var(--red-pale); }
+.opt-label.locked { pointer-events: none; }
+.opt-label input  { display: none; }
+
+.opt-index {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  width: 20px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.opt-label.selected .opt-index { color: var(--red); font-weight: 500; }
+
+.opt-tick {
+  width: 14px;
+  height: 14px;
+  border: 0.5px solid var(--ink-soft);
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.12s ease;
+}
+
+.opt-label.selected .opt-tick {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.opt-label.selected .opt-tick::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 4px; height: 4px;
+  background: white;
+  border-radius: 50%;
+}
+
+.opt-freq {
+  font-size: 13px;
+  color: var(--ink-mid);
+  font-weight: 300;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  transition: color 0.12s;
+}
+
+.opt-label.selected .opt-freq { color: var(--red); font-weight: 400; }
+
+/* RESULT */
+#result { display: none; }
+
+.result-masthead {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem 2rem;
+  animation: fadeIn 0.5s ease both;
+}
+
+.result-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.result-eyebrow::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--red);
+}
+
+.result-score-hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.result-score-big {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(72px, 16vw, 110px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+
+.result-score-right {
+  padding-bottom: 0.5rem;
+}
+
+.result-score-unit {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.result-level-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 1px;
+}
+
+.result-rule {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.result-desc-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem;
+  border-bottom: 0.5px solid var(--ink-line);
+}
+
+.result-desc {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--ink-mid);
+  font-weight: 400;
+  max-width: 560px;
+}
+
+/* INSIGHT COLUMNS */
+.insight-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 0.5px solid var(--ink-line);
+  animation: fadeIn 0.5s 0.2s ease both;
+}
+
+.insight-col {
+  padding: 1.75rem 0;
+}
+
+.insight-col:first-child {
+  border-right: 0.5px solid var(--ink-line);
+  padding-right: 2rem;
+}
+
+.insight-col:last-child {
+  padding-left: 2rem;
+}
+
+.insight-col-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.insight-col.strength .insight-col-label { color: var(--red); }
+.insight-col.blind    .insight-col-label { color: var(--ink-mid); }
+
+.insight-col-label::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 1px;
+}
+
+.insight-col.strength .insight-col-label::before { background: var(--red); }
+.insight-col.blind    .insight-col-label::before  { background: var(--ink-mid); }
+
+.insight-col-text {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+  font-weight: 300;
+}
+
+/* BREAKDOWN */
+.breakdown-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem 3rem;
+  animation: fadeIn 0.5s 0.3s ease both;
+}
+
+.breakdown-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.breakdown-header::after {
+  content: '';
+  flex: 1;
+  height: 0.5px;
+  background: var(--ink-line);
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 72px;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.8rem 0;
+  border-bottom: 0.5px solid var(--ink-faint);
+}
+
+.bar-name {
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.bar-track {
+  height: 1px;
+  background: var(--ink-line);
+  position: relative;
+}
+
+.bar-fill {
+  position: absolute;
+  top: -1.5px;
+  left: 0;
+  height: 4px;
+  border-radius: 0;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+
+.bar-tag {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* BOTTOM RULE */
+.bottom-rule {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(40px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity:1; transform:translateX(0); }
+  to   { opacity:0; transform:translateX(-40px); }
+}
+
+@keyframes popIn {
+  from { opacity:0; transform:scale(0.96) translateY(8px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 560px) {
+  .masthead         { grid-template-columns: 1fr; gap: 0.5rem; }
+  .masthead-right   { text-align: left; }
+  .insight-section  { grid-template-columns: 1fr; }
+  .insight-col:first-child { border-right: none; padding-right: 0; border-bottom: 0.5px solid var(--ink-line); }
+  .insight-col:last-child  { padding-left: 0; }
+  .bar-row { grid-template-columns: 80px 1fr 64px; gap: 0.75rem; }
+  .q-text  { font-size: 18px; }
+  .result-score-big { font-size: 72px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP RULE -->
+<div class="top-rule"></div>
+
+<!-- MASTHEAD -->
+<div class="masthead" id="masthead">
+  <div class="masthead-left">
+    <div class="issue-line">Workplace Ethics · Self-Assessment</div>
+    <h1>職場倫理<br><em>潛力測驗</em></h1>
+  </div>
+  <div class="masthead-right">
+    <div class="masthead-meta">
+      共計 10 題<br>
+      自動翻頁模式<br>
+      依頻率誠實作答
+    </div>
+  </div>
+</div>
+
+<!-- DECK -->
+<div class="deck" id="deck">
+  <p>請根據您在日常工作中「實際做到」的頻率作答，選完每題即自動進入下一題，無需按鍵。</p>
+</div>
+
+<!-- DOUBLE RULE -->
+<div class="rule-wrap" style="margin-top:1.5rem">
+  <hr class="double">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section" id="progress-section">
+  <span class="prog-label">Progress</span>
+  <div class="prog-track">
+    <div class="prog-fill" id="prog-fill"></div>
+  </div>
+  <span class="prog-count" id="prog-count">00 / 10</span>
+</div>
+
+<!-- DOTS -->
+<div class="dots-section" id="dots-section">
+  <div id="dots-wrap" style="display:flex;gap:4px;align-items:center"></div>
+</div>
+
+<!-- CARD STAGE -->
+<div class="card-stage" id="card-stage">
+  <div class="rule-wrap" style="margin:0"><hr class="single"></div>
+</div>
+
+<!-- RESULT -->
+<div id="result"></div>
+
+<script>
+const questions = [
+  { id:1,  topic:"利益衝突",  text:"當您與供應商或外部合作方有私人關係時，會主動向主管揭露並迴避相關決策。" },
+  { id:2,  topic:"利益衝突",  text:"收受廠商禮品或招待時，會主動確認是否符合公司政策，必要時予以婉拒。" },
+  { id:3,  topic:"保密與資訊", text:"處理客戶個人資料或商業機密時，嚴格遵守最小必要原則，不超出工作需要範圍使用。" },
+  { id:4,  topic:"保密與資訊", text:"在社群媒體發文時，確保內容不涉及公司內部資訊或可能損及公司形象的言論。" },
+  { id:5,  topic:"不當行為",  text:"目睹同事遭受霸凌或不公平對待時，會採取行動（安慰當事人、向主管反映或舉報）。" },
+  { id:6,  topic:"不當行為",  text:"面對職場性騷擾情境時，清楚知道公司的申訴程序，並有信心在必要時使用它。" },
+  { id:7,  topic:"資源使用",  text:"使用公司設備（電腦、印表機、網路等）時，將私人用途限制在公司明確允許的範圍內。" },
+  { id:8,  topic:"資源使用",  text:"在工作時間內，確保個人事務不佔用應用於工作的時間與精力。" },
+  { id:9,  topic:"整體倫理",  text:"面對倫理模糊地帶，傾向主動尋求主管或法遵部門的意見，而非自行判斷了事。" },
+  { id:10, topic:"整體倫理",  text:"當同事要求配合可能違反規定的做法時，能清楚地拒絕，不因人際壓力妥協。" }
+];
+
+const opts = [
+  { label:"總是如此",   score:10 },
+  { label:"經常如此",   score:8  },
+  { label:"有時如此",   score:6  },
+  { label:"偶爾如此",   score:4  },
+  { label:"幾乎不這樣", score:2  }
+];
+
+const topics   = ["利益衝突","保密與資訊","不當行為","資源使用","整體倫理"];
+const topicMax = 20;
+
+const topicColors = {
+  "利益衝突":  "#D94F3D",
+  "保密與資訊": "#2E7D5E",
+  "不當行為":  "#B8860B",
+  "資源使用":  "#2B5BA8",
+  "整體倫理":  "#6B4FA0"
+};
+
+const levels = [
+  { min:0,  max:39,
+    label:"倫理萌芽期",
+    scoreColor:"#D94F3D",
+    badgeBg:"#FBF0EE", badgeText:"#D94F3D", badgeBorder:"rgba(217,79,61,0.3)",
+    desc:"您目前在職場倫理實踐上仍在起步階段，面對情境時較依賴直覺。建議積極參與課程，培養主動確認規範的習慣，逐步建立屬於自己的倫理判斷系統。",
+    strength:"具備基本同理心，對不公平情境有直覺反應，是建立倫理意識的好基礎。",
+    blind:"面對壓力時容易以慣例替代判斷，尚未建立一致的倫理行為標準與決策框架。"
+  },
+  { min:40, max:55,
+    label:"倫理覺醒期",
+    scoreColor:"#B8860B",
+    badgeBg:"#FDFBF3", badgeText:"#B8860B", badgeBorder:"rgba(184,134,11,0.3)",
+    desc:"您已具備基本倫理意識，在部分情境中能做出正確選擇，但仍有不一致的表現。建議聚焦強化「面對人際壓力」與「資源合理使用」兩個面向的判斷能力。",
+    strength:"能辨識明顯的倫理問題，在低壓情境下通常能做出合適選擇，意識持續提升中。",
+    blind:"面對人際壓力或模糊情境時，容易搖擺或妥協，行為一致性有待進一步強化。"
+  },
+  { min:56, max:71,
+    label:"倫理成長期",
+    scoreColor:"#2B5BA8",
+    badgeBg:"#EEF3FC", badgeText:"#2B5BA8", badgeBorder:"rgba(43,91,168,0.3)",
+    desc:"您的職場倫理表現達到中等水準，在多數情境下能做出適當判斷。一致性是下一個關鍵——無論壓力或關係如何變化，都能保持同樣的倫理標準，才是真正的成熟。",
+    strength:"在多數常見情境下判斷準確，具有持續學習的意願，能從錯誤中調整行為模式。",
+    blind:"在高壓或人際關係複雜的情境下，行為一致性略顯不足，需要更穩固的原則支撐。"
+  },
+  { min:72, max:87,
+    label:"倫理實踐家",
+    scoreColor:"#2E7D5E",
+    badgeBg:"#EEF7F3", badgeText:"#2E7D5E", badgeBorder:"rgba(46,125,94,0.3)",
+    desc:"您在職場倫理上展現出良好且一致的實踐能力，能在多數情境中正確判斷並付諸行動。您的行為已對周遭同事產生正向示範，是團隊的穩定力量。",
+    strength:"行為一致、有原則，能在多數情境中主動做出倫理選擇，並有意識地影響周圍氛圍。",
+    blind:"在極端壓力或涉及自身利益的情境下，仍有少數盲點需要留意，保持持續自我覺察。"
+  },
+  { min:88, max:100,
+    label:"倫理領航者",
+    scoreColor:"#1A1A1A",
+    badgeBg:"#1A1A1A", badgeText:"#FAFAFA", badgeBorder:"#1A1A1A",
+    desc:"您的職場倫理實踐達到卓越水準，在各類情境中都能主動、一致地展現合乎倫理的行為。您不僅保護自己，也為組織文化貢獻正能量，具備倫理領導的潛力。",
+    strength:"全面且一致地實踐職場倫理，能在壓力下保持原則，並自然地成為團隊的倫理標竿。",
+    blind:"卓越者常忽略他人的倫理學習需求，建議主動分享判斷邏輯，避免以個人標準評判他人。"
+  }
+];
+
+const answers = {};
+let busy = false;
+
+/* DOTS */
+function buildDots() {
+  const w = document.getElementById('dots-wrap');
+  w.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot-step' + (i === 0 ? ' active' : '');
+    d.id = 'dot-' + i;
+    w.appendChild(d);
+  });
+}
+
+function updateDots(idx) {
+  questions.forEach((_, i) => {
+    const d = document.getElementById('dot-' + i);
+    if (!d) return;
+    d.className = 'dot-step' + (i < idx ? ' done' : i === idx ? ' active' : '');
+  });
+}
+
+/* BUILD CARD */
+function buildCard(q) {
+  const qi  = questions.indexOf(q);
+  const div = document.createElement('div');
+  div.className = 'q-card';
+  div.id = 'qcard-' + q.id;
+  div.innerHTML = `
+    <div class="q-meta-row">
+      <span class="q-category">${q.topic}</span>
+      <span class="q-number">${String(q.id).padStart(2,'0')} of 10</span>
+    </div>
+    <div class="q-text">${q.text}</div>
+    <div class="opts" id="opts-${q.id}">
+      ${opts.map((o, i) => `
+        <label class="opt-label" onclick="pick(${q.id},${i},${qi})">
+          <input type="radio" name="q${q.id}" value="${i}">
+          <span class="opt-index">${String.fromCharCode(65+i)}</span>
+          <div class="opt-tick"></div>
+          <span class="opt-freq">${o.label}</span>
+        </label>
+      `).join('')}
+    </div>`;
+  return div;
+}
+
+/* SHOW CARD */
+function showCard(idx, animate) {
+  const stage = document.getElementById('card-stage');
+  const card  = buildCard(questions[idx]);
+  if (animate) card.classList.add('enter-right');
+
+  // add bottom rule
+  const ruleDiv = document.createElement('div');
+  ruleDiv.className = 'rule-wrap';
+  ruleDiv.style.marginTop = '0';
+  ruleDiv.innerHTML = '<hr class="double">';
+  card.appendChild(ruleDiv);
+
+  stage.appendChild(card);
+  requestAnimationFrame(() => {
+    stage.style.minHeight = card.offsetHeight + 'px';
+  });
+}
+
+/* PICK */
+function pick(qid, optIdx, cardIdx) {
+  if (busy) return;
+  busy = true;
+
+  answers[qid] = optIdx;
+
+  document.querySelectorAll(`#opts-${qid} .opt-label`).forEach((el, i) => {
+    el.classList.toggle('selected', i === optIdx);
+    el.classList.add('locked');
+  });
+
+  const done = Object.keys(answers).length;
+  document.getElementById('prog-fill').style.width = (done / 10 * 100) + '%';
+  document.getElementById('prog-count').textContent = String(done).padStart(2,'0') + ' / 10';
+
+  setTimeout(() => {
+    const stage   = document.getElementById('card-stage');
+    const oldCard = document.getElementById('qcard-' + qid);
+    const next    = cardIdx + 1;
+
+    if (next < questions.length) {
+      if (oldCard) {
+        oldCard.classList.add('exit-left');
+        oldCard.addEventListener('animationend', () => {
+          oldCard.remove();
+          stage.style.minHeight = '';
+        }, { once: true });
+      }
+      updateDots(next);
+      showCard(next, true);
+      busy = false;
+    } else {
+      if (oldCard) {
+        oldCard.classList.add('exit-left');
+        oldCard.addEventListener('animationend', () => { oldCard.remove(); showResult(); }, { once: true });
+      } else { showResult(); }
+    }
+  }, 360);
+}
+
+/* RESULT */
+function showResult() {
+  document.getElementById('card-stage').style.display       = 'none';
+  document.getElementById('progress-section').style.display = 'none';
+  document.getElementById('dots-section').style.display     = 'none';
+  document.getElementById('masthead').style.display         = 'none';
+  document.getElementById('deck').style.display             = 'none';
+  document.querySelector('.rule-wrap').style.display        = 'none';
+
+  const total = questions.reduce((s, q) => s + opts[answers[q.id]].score, 0);
+  const lv    = levels.find(l => total >= l.min && total <= l.max);
+
+  const topicScores = {};
+  topics.forEach(t => { topicScores[t] = 0; });
+  questions.forEach(q => { topicScores[q.topic] += opts[answers[q.id]].score; });
+
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.innerHTML = `
+    <div class="top-rule"></div>
+
+    <div class="result-masthead">
+      <div class="result-eyebrow">Assessment Complete · 評估完成</div>
+      <div class="result-score-hero">
+        <div class="result-score-big" style="color:${lv.scoreColor}" id="anim-score">0</div>
+        <div class="result-score-right">
+          <span class="result-score-unit">/ 100 分</span>
+          <div class="result-level-badge"
+               style="background:${lv.badgeBg};color:${lv.badgeText};border:1px solid ${lv.badgeBorder}">
+            ${lv.label}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-wrap" style="margin:0"><hr class="double"></div>
+
+    <div class="result-desc-section">
+      <div class="result-desc">${lv.desc}</div>
+    </div>
+
+    <div class="insight-section">
+      <div class="insight-col strength">
+        <div class="insight-col-label">優勢 · Strengths</div>
+        <div class="insight-col-text">${lv.strength}</div>
+      </div>
+      <div class="insight-col blind">
+        <div class="insight-col-label">盲點 · Blind Spots</div>
+        <div class="insight-col-text">${lv.blind}</div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-header">各面向表現分析 · Dimension Analysis</div>
+      ${topics.map(t => {
+        const pct = topicScores[t] / topicMax * 100;
+        const lbl = pct >= 90 ? '表現卓越' : pct >= 75 ? '表現良好' : pct >= 60 ? '持續成長' : pct >= 40 ? '初步建立' : '需要加強';
+        return `<div class="bar-row">
+          <span class="bar-name">${t}</span>
+          <div class="bar-track">
+            <div class="bar-fill" id="bar-${t.replace(/[\s\/]/g,'_')}" style="background:${topicColors[t]}"></div>
+          </div>
+          <span class="bar-tag" style="color:${topicColors[t]}">${lbl}</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="bottom-rule"><hr class="double"></div>
+  `;
+
+  // count-up
+  let cur = 0;
+  const scoreEl = document.getElementById('anim-score');
+  const step = Math.ceil(total / 40);
+  const timer = setInterval(() => {
+    cur = Math.min(cur + step, total);
+    scoreEl.textContent = cur;
+    if (cur >= total) clearInterval(timer);
+  }, 24);
+
+  // bars
+  setTimeout(() => {
+    topics.forEach(t => {
+      const bar = document.getElementById('bar-' + t.replace(/[\s\/]/g,'_'));
+      if (bar) bar.style.width = (topicScores[t] / topicMax * 100) + '%';
+    });
+  }, 400);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* INIT */
+buildDots();
+showCard(0, false);
+</script>
+</body>
+</html>
