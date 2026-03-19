@@ -23,20 +23,16 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body {
-    height: 100%;
-  }
-
   body {
     font-family: 'Noto Sans TC', sans-serif;
     background: linear-gradient(150deg, #f5faf9 0%, #eaf4f1 40%, #f0f7f5 70%, #fafcfb 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     min-height: 100dvh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
-    overflow-y: auto;
     position: relative;
   }
 
@@ -82,11 +78,10 @@
     padding: 16px;
   }
 
-  /* On mobile, intro is top-aligned with breathing room; result starts near top */
-  @media (max-width: 640px) {
-    body { align-items: flex-start; }
-    .container { padding: 16px 12px 32px; }
-    .container.is-result { padding-top: 8px; } /* ~0.8cm */
+  /* Result mode: tight top spacing on mobile */
+  .container.is-result {
+    padding-top: 8px;
+    align-self: flex-start;
   }
 
   /* ── PROGRESS BAR ── */
@@ -524,13 +519,10 @@ const levels = [
   {
     name: "ESG 夥伴型",
     emoji: "🌿",
-    heroGrad: "linear-gradient(135deg, #1a6b45 0%, #2d9a6b 60%, #3ab87e 100%)",
-    badgeBg: "rgba(22,163,74,0.1)",
-    badgeColor: "#15803d",
-    ringColor: "#22c55e",
-    min: 0, max: 30,
-    status: "你已在用價值與文化做選擇，ESG 意識自然融入你的求職判斷中。",
-    features: ["在意公司理念、制度、氛圍", "對「人被怎麼對待」很敏感", "有清晰的選擇標準"],
+    heroGrad: "linear-gradient(135deg, #0f5c3a 0%, #1e8a5a 55%, #2db87a 100%)",
+    min: 0, max: 35,   // ~all A/B answers → very ESG aligned
+    status: "你已經在用價值與文化篩選工作，ESG 意識已是你求職時的自然直覺。",
+    features: ["主動在意公司理念與制度", "對人的對待方式非常敏感"],
     strategy: [
       "不只找工作，更要「選舞台」——主動篩選文化成熟、價值清楚的公司",
       "將 ESG 意識轉化為面試問題，直接問制度透明度與員工對待方式",
@@ -541,13 +533,10 @@ const levels = [
   {
     name: "ESG 潛力型",
     emoji: "🌱",
-    heroGrad: "linear-gradient(135deg, #1a4fa8 0%, #2d72d9 60%, #4a8fef 100%)",
-    badgeBg: "rgba(37,99,235,0.1)",
-    badgeColor: "#1d4ed8",
-    ringColor: "#3b82f6",
-    min: 31, max: 50,
-    status: "你有直覺，但判斷標準還不夠系統，感受需要轉化為能力。",
-    features: ["感受得到文化差異", "會在意某些細節", "判斷標準還在建立中"],
+    heroGrad: "linear-gradient(135deg, #1040a0 0%, #2060d0 55%, #3a85f0 100%)",
+    min: 36, max: 50,
+    status: "你對職場文化有敏銳感受，正在把直覺升級為有系統的判斷能力。",
+    features: ["感受得到公司文化的差異", "會留意細節並內心評估"],
     strategy: [
       "把直覺升級成能力——試著在面試後寫下對公司文化的評分與觀察",
       "比較不同公司的治理透明度，建立自己的篩選 checklist",
@@ -557,14 +546,11 @@ const levels = [
   },
   {
     name: "ESG 轉換型",
-    emoji: "🔄",
-    heroGrad: "linear-gradient(135deg, #7c4a00 0%, #b86d0a 60%, #d4891e 100%)",
-    badgeBg: "rgba(217,119,6,0.1)",
-    badgeColor: "#92400e",
-    ringColor: "#f59e0b",
+    emoji: "✨",
+    heroGrad: "linear-gradient(135deg, #6b2fa0 0%, #9b45d0 55%, #c060f0 100%)",
     min: 51, max: 65,
-    status: "你正在務實與價值之間來回，意識到文化重要，但還沒穩定下來。",
-    features: ["有時在意，有時不在意", "容易被環境影響判斷", "開始意識到文化的重要"],
+    status: "你正在建立自己的職場價值觀，開始懂得用文化與制度來評估公司。",
+    features: ["開始重視工作環境的品質", "正在形成自己的選擇標準"],
     strategy: [
       "先設定 1–2 個底線條件，比如「不接受制度不透明的公司」",
       "面試時多問一個關於文化的問題，養成習慣而不必全面轉型",
@@ -574,14 +560,11 @@ const levels = [
   },
   {
     name: "ESG 觀望型",
-    emoji: "👀",
-    heroGrad: "linear-gradient(135deg, #7a2800 0%, #b53d10 60%, #d45520 100%)",
-    badgeBg: "rgba(234,88,12,0.1)",
-    badgeColor: "#9a3412",
-    ringColor: "#f97316",
+    emoji: "🔭",
+    heroGrad: "linear-gradient(135deg, #c47000 0%, #e08a00 55%, #f5a800 100%)",
     min: 66, max: 80,
-    status: "務實優先，文化是加分項，但你偶爾也會感覺哪裡不太對。",
-    features: ["工作優先，價值觀其次", "對公司文化較被動接受", "實際條件是主要篩選標準"],
+    status: "你務實又有潛力，多一點資訊就能讓你的每次求職決策更有把握。",
+    features: ["重視實際條件與穩定性", "對職場文化保持開放態度"],
     strategy: [
       "下次面試多加一個問題：「公司如何處理員工反映的問題？」",
       "不必全面改變，但多了解一點資訊，決策就能更全面",
@@ -591,14 +574,11 @@ const levels = [
   },
   {
     name: "ESG 起步型",
-    emoji: "🔵",
-    heroGrad: "linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 60%, #3d74ad 100%)",
-    badgeBg: "rgba(45,125,111,0.1)",
-    badgeColor: "#1c4f48",
-    ringColor: "#4a9e8e",
+    emoji: "🚀",
+    heroGrad: "linear-gradient(135deg, #8b1a1a 0%, #c02828 55%, #e04040 100%)",
     min: 81, max: 100,
-    status: "你目前以穩定就業為優先，ESG 還不在你的求職雷達上。",
-    features: ["先找到工作是當前目標", "對 ESG 概念接觸較少", "判斷標準主要是實際條件"],
+    status: "你專注於找到機會，這是每段職涯的必要起點，未來空間大得很。",
+    features: ["專注於找到穩定的工作機會", "對職場有開放的探索心態"],
     strategy: [
       "先穩定，再升級——進入職場後開始留意公司的治理方式與文化",
       "觀察身邊同事的工作狀態，是否有明顯過勞或不公平跡象",
@@ -750,16 +730,14 @@ function startQuiz() {
 
 // ── RESULT ─────────────────────────────────────────────────────────────────────
 function showResult() {
-  const total = answers.reduce((a, b) => a + b, 0);
-  const pct = ((total - 25) / 75) * 100;
-  const lvl = levels.find(l => pct <= l.max) || levels[levels.length - 1];
+  const total = Math.round(answers.reduce((a, b) => a + b, 0));
+  // total ranges 25–100. Display as-is. Level boundaries map to total score.
+  const lvl = levels.find(l => total <= l.max) || levels[levels.length - 1];
 
   document.getElementById('progress-wrap').style.opacity = '0';
   setTimeout(() => { document.getElementById('progress-wrap').style.display = 'none'; }, 500);
 
-  // Mark container for result top-spacing
   document.querySelector('.container').classList.add('is-result');
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const card = document.getElementById('main-card');
@@ -769,7 +747,7 @@ function showResult() {
       <div class="result-hero" style="background:${lvl.heroGrad}">
         <div class="result-hero-top">
           <span class="result-type-label">測驗結果</span>
-          <span class="result-pct-chip">已靠近 ESG ${Math.round(100 - pct)}%</span>
+          <span class="result-pct-chip">已靠近 ESG ${total}%</span>
         </div>
         <div class="result-hero-body">
           <span class="result-emoji-large">${lvl.emoji}</span>
