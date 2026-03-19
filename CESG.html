@@ -200,13 +200,19 @@
   .intro-title {
     font-size: 28px; font-weight: 900;
     color: var(--ink);
-    line-height: 1.2; margin-bottom: 8px;
+    line-height: 1.2; margin-bottom: 14px;
     letter-spacing: -0.02em;
   }
   .intro-sub {
     font-size: 14px; color: var(--ink-light);
-    line-height: 1.85; margin-bottom: 28px;
+    line-height: 2; margin-bottom: 28px;
     max-width: 380px; margin-left: auto; margin-right: auto;
+  }
+  .intro-sub-em {
+    display: block; margin-top: 6px;
+    font-size: 13px; font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 0.01em;
   }
   .intro-meta { display: flex; gap: 10px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
   .intro-meta-item {
@@ -363,7 +369,7 @@
     .result-quote { font-size: 12px; padding: 10px 13px; margin-top: 12px; }
     .q-text { font-size: 17px; }
     .option { font-size: 14px; padding: 11px 13px; }
-    .intro-title { font-size: 22px; }
+    .intro-title { font-size: 31px; }
     .intro-sub { font-size: 13px; margin-bottom: 20px; }
     .intro-meta { gap: 7px; margin-bottom: 24px; }
     .start-btn { padding: 13px 30px; font-size: 15px; }
@@ -635,7 +641,7 @@ function renderIntro() {
   card.innerHTML = `
     <div class="intro-page">
       <div class="intro-title">我與 ESG 的距離</div>
-      <p class="intro-sub">請不要選「覺得應該如何」，<br>而是選「平常真的會怎麼做」</p>
+      <p class="intro-sub">請不要選擇你覺得應該怎麼做<br>而是選擇「你平常真正會怎麼做」<br><span class="intro-sub-em">只有貼近真實，才是開始改變的起點</span></p>
       <div class="intro-meta">
         <span class="intro-meta-item">📋 共 10 題</span>
         <span class="intro-meta-item">⏱ 約 3–5 分鐘</span>
@@ -731,7 +737,8 @@ function startQuiz() {
 // ── RESULT ─────────────────────────────────────────────────────────────────────
 function showResult() {
   const total = Math.round(answers.reduce((a, b) => a + b, 0));
-  // total ranges 25–100. Display as-is. Level boundaries map to total score.
+  // Lower total = more ESG aligned. Display inverted: 100-total = ESG closeness %.
+  const esgPct = 100 - total;
   const lvl = levels.find(l => total <= l.max) || levels[levels.length - 1];
 
   document.getElementById('progress-wrap').style.opacity = '0';
@@ -747,7 +754,7 @@ function showResult() {
       <div class="result-hero" style="background:${lvl.heroGrad}">
         <div class="result-hero-top">
           <span class="result-type-label">測驗結果</span>
-          <span class="result-pct-chip">已靠近 ESG ${total}%</span>
+          <span class="result-pct-chip">已靠近 ESG ${esgPct}%</span>
         </div>
         <div class="result-hero-body">
           <span class="result-emoji-large">${lvl.emoji}</span>
