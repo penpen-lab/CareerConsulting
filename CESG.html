@@ -200,19 +200,21 @@
   .intro-title {
     font-size: 28px; font-weight: 900;
     color: var(--ink);
-    line-height: 1.2; margin-bottom: 14px;
+    line-height: 1.25; margin-bottom: 16px;
     letter-spacing: -0.02em;
   }
+  .title-icon { font-size: 24px; vertical-align: middle; }
   .intro-sub {
     font-size: 14px; color: var(--ink-light);
-    line-height: 2; margin-bottom: 28px;
+    line-height: 2.1; margin-bottom: 28px;
     max-width: 380px; margin-left: auto; margin-right: auto;
   }
   .intro-sub-em {
-    display: block; margin-top: 6px;
-    font-size: 13px; font-weight: 600;
+    display: block; margin-top: 8px;
+    font-size: 13.5px; font-weight: 700;
     color: var(--teal);
     letter-spacing: 0.01em;
+    line-height: 1.9;
   }
   .intro-meta { display: flex; gap: 10px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
   .intro-meta-item {
@@ -519,14 +521,14 @@ const questions = [
   }
 ];
 
-const scores = { A: 2.5, B: 5, C: 7.5, D: 10 };
+const scores = { A: 10, B: 7.5, C: 5, D: 2.5 };
 
 const levels = [
   {
     name: "ESG 夥伴型",
     emoji: "🌿",
     heroGrad: "linear-gradient(135deg, #0f5c3a 0%, #1e8a5a 55%, #2db87a 100%)",
-    min: 0, max: 35,   // ~all A/B answers → very ESG aligned
+    min: 75, max: 100,   // all/mostly A answers
     status: "你已經在用價值與文化篩選工作，ESG 意識已是你求職時的自然直覺。",
     features: ["主動在意公司理念與制度", "對人的對待方式非常敏感"],
     strategy: [
@@ -540,7 +542,7 @@ const levels = [
     name: "ESG 潛力型",
     emoji: "🌱",
     heroGrad: "linear-gradient(135deg, #1040a0 0%, #2060d0 55%, #3a85f0 100%)",
-    min: 36, max: 50,
+    min: 60, max: 74,
     status: "你對職場文化有敏銳感受，正在把直覺升級為有系統的判斷能力。",
     features: ["感受得到公司文化的差異", "會留意細節並內心評估"],
     strategy: [
@@ -554,8 +556,7 @@ const levels = [
     name: "ESG 轉換型",
     emoji: "✨",
     heroGrad: "linear-gradient(135deg, #6b2fa0 0%, #9b45d0 55%, #c060f0 100%)",
-    min: 51, max: 65,
-    status: "你正在建立自己的職場價值觀，開始懂得用文化與制度來評估公司。",
+    min: 45, max: 59,
     features: ["開始重視工作環境的品質", "正在形成自己的選擇標準"],
     strategy: [
       "先設定 1–2 個底線條件，比如「不接受制度不透明的公司」",
@@ -568,7 +569,7 @@ const levels = [
     name: "ESG 觀望型",
     emoji: "🔭",
     heroGrad: "linear-gradient(135deg, #c47000 0%, #e08a00 55%, #f5a800 100%)",
-    min: 66, max: 80,
+    min: 35, max: 44,
     status: "你務實又有潛力，多一點資訊就能讓你的每次求職決策更有把握。",
     features: ["重視實際條件與穩定性", "對職場文化保持開放態度"],
     strategy: [
@@ -582,7 +583,7 @@ const levels = [
     name: "ESG 起步型",
     emoji: "🚀",
     heroGrad: "linear-gradient(135deg, #8b1a1a 0%, #c02828 55%, #e04040 100%)",
-    min: 81, max: 100,
+    min: 25, max: 34,
     status: "你專注於找到機會，這是每段職涯的必要起點，未來空間大得很。",
     features: ["專注於找到穩定的工作機會", "對職場有開放的探索心態"],
     strategy: [
@@ -643,8 +644,8 @@ function renderIntro() {
       <div class="intro-title">我與 ESG 的距離</div>
       <p class="intro-sub">請不要選擇你覺得應該怎麼做<br>而是選擇「你平常真正會怎麼做」<br><span class="intro-sub-em">只有貼近真實<br>才是開始改變的起點</span></p>
       <div class="intro-meta">
-        <span class="intro-meta-item">⏳ 約 3–5 分鐘<br></span></p>
-        <span class="intro-meta-item">🌳 共 10 題</span>
+        <span class="intro-meta-item">🌳 共 10 題<br></span></p>
+        <span class="intro-meta-item">⏳ 約 3–5 分鐘</span>
       </div>
       <svg class="q-illustration" viewBox="0 0 500 70" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -737,9 +738,9 @@ function startQuiz() {
 // ── RESULT ─────────────────────────────────────────────────────────────────────
 function showResult() {
   const total = Math.round(answers.reduce((a, b) => a + b, 0));
-  // Lower total = more ESG aligned. Display inverted: 100-total = ESG closeness %.
-  const esgPct = 100 - total;
-  const lvl = levels.find(l => total <= l.max) || levels[levels.length - 1];
+  // A=10, total 25–100. total directly = ESG closeness %.
+  // 夥伴型=highest scores, 起步型=lowest scores → reverse level lookup
+  const lvl = levels.slice().reverse().find(l => total >= l.min) || levels[0];
 
   document.getElementById('progress-wrap').style.opacity = '0';
   setTimeout(() => { document.getElementById('progress-wrap').style.display = 'none'; }, 500);
@@ -754,7 +755,7 @@ function showResult() {
       <div class="result-hero" style="background:${lvl.heroGrad}">
         <div class="result-hero-top">
           <span class="result-type-label">測驗結果</span>
-          <span class="result-pct-chip">已靠近 ESG ${esgPct}%</span>
+          <span class="result-pct-chip">已靠近 ESG ${total}%</span>
         </div>
         <div class="result-hero-body">
           <span class="result-emoji-large">${lvl.emoji}</span>
