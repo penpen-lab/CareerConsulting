@@ -23,14 +23,20 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html, body {
+    height: 100%;
+  }
+
   body {
     font-family: 'Noto Sans TC', sans-serif;
     background: linear-gradient(150deg, #f5faf9 0%, #eaf4f1 40%, #f0f7f5 70%, #fafcfb 100%);
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
   }
 
@@ -74,6 +80,13 @@
     position: relative; z-index: 10;
     width: 100%; max-width: 640px;
     padding: 16px;
+  }
+
+  /* On mobile, intro is top-aligned with breathing room; result starts near top */
+  @media (max-width: 640px) {
+    body { align-items: flex-start; }
+    .container { padding: 16px 12px 32px; }
+    .container.is-result { padding-top: 8px; } /* ~0.8cm */
   }
 
   /* ── PROGRESS BAR ── */
@@ -337,22 +350,29 @@
   }
 
   /* Result card: hero bleeds to edges */
-  .card:has(.result-page) { padding-top: 0; padding-left: 0; padding-right: 0; }
-  .result-body { padding: 18px 28px 4px; }
+  .card:has(.result-page) { padding-top: 0; padding-left: 0; padding-right: 0; padding-bottom: 0; }
+  .result-body { padding: 18px 28px 28px; }
 
   /* Divider */
   .divider { height: 1px; background: var(--border); margin: 20px 0; }
   .q-illustration { width: 100%; height: 70px; margin-bottom: 16px; }
 
   @media (max-width: 480px) {
-    .card { padding: 26px 18px 22px; }
+    .card { padding: 22px 18px 20px; }
     .card:has(.result-page) { padding: 0; }
-    .result-hero { padding: 22px 20px 18px; }
-    .result-body { padding: 14px 18px 2px; }
-    .q-text { font-size: 18px; }
-    .option { font-size: 14px; padding: 12px 14px; }
-    .intro-title { font-size: 24px; }
-    .intro-meta { gap: 7px; }
+    .result-hero { padding: 20px 18px 16px; }
+    .result-body { padding: 14px 16px 20px; }
+    .result-section { padding: 13px 14px; margin-bottom: 8px; }
+    .result-title { font-size: 22px; }
+    .result-emoji-large { font-size: 32px; margin-bottom: 6px; }
+    .result-quote { font-size: 12px; padding: 10px 13px; margin-top: 12px; }
+    .q-text { font-size: 17px; }
+    .option { font-size: 14px; padding: 11px 13px; }
+    .intro-title { font-size: 22px; }
+    .intro-sub { font-size: 13px; margin-bottom: 20px; }
+    .intro-meta { gap: 7px; margin-bottom: 24px; }
+    .start-btn { padding: 13px 30px; font-size: 15px; }
+    .q-illustration { height: 50px; margin-bottom: 10px; }
   }
 </style>
 </head>
@@ -715,6 +735,8 @@ function selectAnswer(letter, btn) {
 function startQuiz() {
   if (isAnimating) return;
   isAnimating = true;
+  document.querySelector('.container').classList.remove('is-result');
+  window.scrollTo({ top: 0, behavior: 'instant' });
   const card = document.getElementById('main-card');
   card.classList.add('exit');
   setTimeout(() => {
@@ -729,14 +751,16 @@ function startQuiz() {
 // ── RESULT ─────────────────────────────────────────────────────────────────────
 function showResult() {
   const total = answers.reduce((a, b) => a + b, 0);
-  const pct = ((total - 25) / 75) * 100; // 25–100 mapped to 0–100%
+  const pct = ((total - 25) / 75) * 100;
   const lvl = levels.find(l => pct <= l.max) || levels[levels.length - 1];
 
-  // hide progress
   document.getElementById('progress-wrap').style.opacity = '0';
-  setTimeout(() => {
-    document.getElementById('progress-wrap').style.display = 'none';
-  }, 500);
+  setTimeout(() => { document.getElementById('progress-wrap').style.display = 'none'; }, 500);
+
+  // Mark container for result top-spacing
+  document.querySelector('.container').classList.add('is-result');
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const card = document.getElementById('main-card');
   card.innerHTML = `
