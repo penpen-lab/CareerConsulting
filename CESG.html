@@ -1,0 +1,808 @@
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我與 ESG 的距離</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2b2b;
+    --ink-mid: #3d5050;
+    --ink-light: #6b7f7f;
+    --teal: #2d7d6f;
+    --teal-soft: #4a9e8e;
+    --teal-pale: #e0f2ee;
+    --teal-xpale: #f2faf8;
+    --slate: #f0f4f4;
+    --slate-2: #d8e4e4;
+    --white: #ffffff;
+    --border: #ccddd9;
+    --shadow: rgba(28,43,43,0.08);
+    --card-bg: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: linear-gradient(150deg, #f5faf9 0%, #eaf4f1 40%, #f0f7f5 70%, #fafcfb 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(45,125,111,0.07) 0%, transparent 65%);
+    top: -250px; right: -150px;
+    border-radius: 50%;
+    animation: drift 10s ease-in-out infinite alternate;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(74,158,142,0.05) 0%, transparent 65%);
+    bottom: -150px; left: -100px;
+    border-radius: 50%;
+    animation: drift2 12s ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(30px,-40px) scale(1.1); } }
+  @keyframes drift2 { from { transform: translate(0,0) scale(1); } to { transform: translate(-20px,30px) scale(1.1); } }
+
+  /* Floating particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(45,125,111,0.12);
+    animation: float-up linear infinite;
+  }
+  @keyframes float-up {
+    0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) translateX(var(--drift)) scale(1); opacity: 0; }
+  }
+
+  .container {
+    position: relative; z-index: 10;
+    width: 100%; max-width: 640px;
+    padding: 16px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin-bottom: 20px; transition: opacity 0.5s; }
+  .progress-bar-track {
+    height: 3px;
+    background: var(--slate-2);
+    border-radius: 2px; overflow: hidden; margin-bottom: 14px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-soft), var(--teal));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 6px rgba(45,125,111,0.3);
+  }
+  .dots-row { display: flex; gap: 6px; justify-content: center; }
+  .dot {
+    height: 8px; border-radius: 4px;
+    background: var(--slate-2);
+    transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    width: 8px;
+  }
+  .dot.answered { background: var(--teal-soft); width: 8px; }
+  .dot.current { background: var(--teal); width: 24px; box-shadow: 0 0 7px rgba(45,125,111,0.3); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px 32px;
+    box-shadow: 0 6px 32px var(--shadow), 0 1px 4px rgba(28,43,43,0.04);
+    animation: card-in 0.45s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card.exit { animation: card-out 0.25s cubic-bezier(.4,0,1,1) forwards; }
+  @keyframes card-out { to { opacity: 0; transform: translateY(-18px) scale(0.97); } }
+
+  /* Question badge */
+  .q-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--teal-xpale);
+    border: 1px solid var(--teal-pale);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px; font-weight: 500;
+    color: var(--teal);
+    margin-bottom: 18px;
+    letter-spacing: 0.04em;
+  }
+  .q-badge-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--teal);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.65); }
+  }
+
+  .q-text {
+    font-size: 20px; font-weight: 700;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 9px; }
+
+  .option {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--slate);
+    border: 1.5px solid var(--border);
+    border-radius: 13px;
+    padding: 13px 18px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    text-align: left;
+    color: var(--ink-mid);
+    font-size: 15px; font-weight: 400;
+    line-height: 1.5;
+    position: relative; overflow: hidden;
+  }
+  .option::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(45,125,111,0.04), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .option:hover { border-color: var(--teal-soft); background: var(--teal-xpale); transform: translateX(3px); color: var(--ink); }
+  .option:hover::before { opacity: 1; }
+
+  .option-letter {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--teal-pale);
+    border: 1.5px solid #b5dcd5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: var(--teal);
+    transition: all 0.2s;
+  }
+  .option:hover .option-letter { background: var(--teal); border-color: var(--teal); color: white; }
+  .option.selected { border-color: var(--teal); background: var(--teal-xpale); }
+  .option.selected .option-letter { background: var(--teal); border-color: var(--teal); color: white; }
+
+  /* ── INTRO PAGE ── */
+  .intro-page { text-align: center; animation: card-in 0.6s cubic-bezier(.22,1,.36,1); }
+  .intro-title {
+    font-size: 28px; font-weight: 900;
+    color: var(--ink);
+    line-height: 1.2; margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .intro-sub {
+    font-size: 14px; color: var(--ink-light);
+    line-height: 1.85; margin-bottom: 28px;
+    max-width: 380px; margin-left: auto; margin-right: auto;
+  }
+  .intro-meta { display: flex; gap: 10px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+  .intro-meta-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--ink-mid);
+    background: var(--slate); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 20px;
+  }
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--teal);
+    color: white; border: none;
+    padding: 15px 38px; border-radius: 50px;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 6px 24px rgba(45,125,111,0.3);
+    letter-spacing: 0.02em;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .start-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(45,125,111,0.35); background: #26705e; }
+  .start-btn:active { transform: translateY(0); }
+
+  /* ── RESULT PAGE ── */
+  .result-page { animation: card-in 0.6s cubic-bezier(.22,1,.36,1); }
+
+  /* Hero header band */
+  .result-hero {
+    padding: 28px 28px 22px;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .result-hero::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .result-hero::before {
+    content: '';
+    position: absolute;
+    right: 30px; bottom: -40px;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .result-hero-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 14px; position: relative; z-index: 1;
+  }
+  .result-type-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .result-pct-chip {
+    font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .result-hero-body { position: relative; z-index: 1; }
+  .result-emoji-large { font-size: 38px; line-height: 1; margin-bottom: 8px; display: block; }
+  .result-title {
+    font-size: 26px; font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1.15; margin-bottom: 0;
+  }
+
+  /* Quote */
+  .result-quote {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 13px; font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.65;
+    font-style: italic;
+    position: relative; z-index: 1;
+  }
+
+  /* Content sections below hero */
+  .result-body { padding: 0; }
+
+  .result-section {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px; margin-bottom: 10px; text-align: left;
+    background: var(--slate);
+  }
+  .result-section-label {
+    font-size: 10px; font-weight: 700;
+    color: var(--ink-light); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .result-section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .result-section-text { font-size: 14px; color: var(--ink-mid); line-height: 1.75; }
+  .result-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .result-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px; color: var(--ink-mid); font-weight: 400;
+  }
+
+  /* Strategy bullet list */
+  .strategy-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+  .strategy-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--ink-mid); line-height: 1.65;
+  }
+  .strategy-bullet {
+    flex-shrink: 0; margin-top: 2px;
+    width: 19px; height: 19px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 800; color: var(--ink-light);
+  }
+
+  /* Result card: hero bleeds to edges */
+  .card:has(.result-page) { padding-top: 0; padding-left: 0; padding-right: 0; }
+  .result-body { padding: 18px 28px 4px; }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .q-illustration { width: 100%; height: 70px; margin-bottom: 16px; }
+
+  @media (max-width: 480px) {
+    .card { padding: 26px 18px 22px; }
+    .card:has(.result-page) { padding: 0; }
+    .result-hero { padding: 22px 20px 18px; }
+    .result-body { padding: 14px 18px 2px; }
+    .q-text { font-size: 18px; }
+    .option { font-size: 14px; padding: 12px 14px; }
+    .intro-title { font-size: 24px; }
+    .intro-meta { gap: 7px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="container">
+  <div id="progress-wrap" class="progress-wrap" style="display:none">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="dots-row" id="dots-row"></div>
+  </div>
+
+  <div class="card" id="main-card">
+    <!-- content injected by JS -->
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const questions = [
+  {
+    id: 1,
+    category: "求職動機",
+    icon: "🎯",
+    text: "當你在看工作機會時，最優先考量的是？",
+    options: [
+      { letter: "A", text: "公司文化與價值是否認同" },
+      { letter: "B", text: "是否有成長與學習空間" },
+      { letter: "C", text: "薪資與穩定性" },
+      { letter: "D", text: "先有工作就好" }
+    ]
+  },
+  {
+    id: 2,
+    category: "職場文化感知",
+    icon: "🔍",
+    text: "看到職缺寫「需具備抗壓性」，你直覺是？",
+    options: [
+      { letter: "A", text: "會特別留意公司文化" },
+      { letter: "B", text: "還好，面試再確認" },
+      { letter: "C", text: "正常職場應該都這樣" },
+      { letter: "D", text: "沒差，有工作比較重要" }
+    ]
+  },
+  {
+    id: 3,
+    category: "公司誠信 (G)",
+    icon: "⚖️",
+    text: "如果面試時發現主管前後說法不一致，你會？",
+    options: [
+      { letter: "A", text: "會提高警覺，甚至不考慮" },
+      { letter: "B", text: "先觀察，不急著下判斷" },
+      { letter: "C", text: "覺得應該只是溝通問題" },
+      { letter: "D", text: "不太影響，能錄取比較重要" }
+    ]
+  },
+  {
+    id: 4,
+    category: "社會責任 (S)",
+    icon: "🤝",
+    text: "如果進公司後發現同事常加班到很晚，你會？",
+    options: [
+      { letter: "A", text: "會思考是否適合長期留下" },
+      { letter: "B", text: "先觀察一段時間" },
+      { letter: "C", text: "覺得職場本來就這樣" },
+      { letter: "D", text: "只要我能撐就好" }
+    ]
+  },
+  {
+    id: 5,
+    category: "價值判斷力",
+    icon: "🧭",
+    text: "公司說「重視員工」，但實際常加班，你會？",
+    options: [
+      { letter: "A", text: "覺得落差很大，會重新評估" },
+      { letter: "B", text: "還能接受，看整體狀況" },
+      { letter: "C", text: "覺得很多公司都這樣" },
+      { letter: "D", text: "不太在意" }
+    ]
+  },
+  {
+    id: 6,
+    category: "環境意識 (E)",
+    icon: "🌱",
+    text: "如果公司為了成本犧牲品質或環境，你會？",
+    options: [
+      { letter: "A", text: "會在意，影響長期發展" },
+      { letter: "B", text: "覺得有點不妥，但可理解" },
+      { letter: "C", text: "商業本來就要考量成本" },
+      { letter: "D", text: "完全不影響我" }
+    ]
+  },
+  {
+    id: 7,
+    category: "行動意願",
+    icon: "📚",
+    text: "如果公司提供 ESG 或企業文化相關課程，你會？",
+    options: [
+      { letter: "A", text: "主動參加" },
+      { letter: "B", text: "有空會參加" },
+      { letter: "C", text: "覺得跟我工作關聯不大" },
+      { letter: "D", text: "不太有興趣" }
+    ]
+  },
+  {
+    id: 8,
+    category: "職涯思維",
+    icon: "🚀",
+    text: "你認為「公司文化／價值」會影響你的職涯發展嗎？",
+    options: [
+      { letter: "A", text: "非常會" },
+      { letter: "B", text: "有一定影響" },
+      { letter: "C", text: "影響有限" },
+      { letter: "D", text: "幾乎沒有" }
+    ]
+  },
+  {
+    id: 9,
+    category: "價值排序",
+    icon: "⚡",
+    text: "兩間公司條件差不多，你會選？",
+    options: [
+      { letter: "A", text: "文化較健康、制度較透明的" },
+      { letter: "B", text: "發展性較高的" },
+      { letter: "C", text: "薪資較高的" },
+      { letter: "D", text: "比較容易進的" }
+    ]
+  },
+  {
+    id: 10,
+    category: "改變意願",
+    icon: "🌟",
+    text: "未來一年，你對「選對公司」這件事的想法是？",
+    options: [
+      { letter: "A", text: "會更認真篩選與判斷" },
+      { letter: "B", text: "有機會會多了解" },
+      { letter: "C", text: "順其自然" },
+      { letter: "D", text: "先有工作再說" }
+    ]
+  }
+];
+
+const scores = { A: 2.5, B: 5, C: 7.5, D: 10 };
+
+const levels = [
+  {
+    name: "ESG 夥伴型",
+    emoji: "🌿",
+    heroGrad: "linear-gradient(135deg, #1a6b45 0%, #2d9a6b 60%, #3ab87e 100%)",
+    badgeBg: "rgba(22,163,74,0.1)",
+    badgeColor: "#15803d",
+    ringColor: "#22c55e",
+    min: 0, max: 30,
+    status: "你已在用價值與文化做選擇，ESG 意識自然融入你的求職判斷中。",
+    features: ["在意公司理念、制度、氛圍", "對「人被怎麼對待」很敏感", "有清晰的選擇標準"],
+    strategy: [
+      "不只找工作，更要「選舞台」——主動篩選文化成熟、價值清楚的公司",
+      "將 ESG 意識轉化為面試問題，直接問制度透明度與員工對待方式",
+      "你已超前部署，持續精進判斷力，讓每一次選擇更精準"
+    ],
+    quote: "你其實做得比自己想像的多。"
+  },
+  {
+    name: "ESG 潛力型",
+    emoji: "🌱",
+    heroGrad: "linear-gradient(135deg, #1a4fa8 0%, #2d72d9 60%, #4a8fef 100%)",
+    badgeBg: "rgba(37,99,235,0.1)",
+    badgeColor: "#1d4ed8",
+    ringColor: "#3b82f6",
+    min: 31, max: 50,
+    status: "你有直覺，但判斷標準還不夠系統，感受需要轉化為能力。",
+    features: ["感受得到文化差異", "會在意某些細節", "判斷標準還在建立中"],
+    strategy: [
+      "把直覺升級成能力——試著在面試後寫下對公司文化的評分與觀察",
+      "比較不同公司的治理透明度，建立自己的篩選 checklist",
+      "多閱讀 ESG 相關案例，讓感受有具體依據可以對照"
+    ],
+    quote: "直覺是起點，判斷力才是終點。"
+  },
+  {
+    name: "ESG 轉換型",
+    emoji: "🔄",
+    heroGrad: "linear-gradient(135deg, #7c4a00 0%, #b86d0a 60%, #d4891e 100%)",
+    badgeBg: "rgba(217,119,6,0.1)",
+    badgeColor: "#92400e",
+    ringColor: "#f59e0b",
+    min: 51, max: 65,
+    status: "你正在務實與價值之間來回，意識到文化重要，但還沒穩定下來。",
+    features: ["有時在意，有時不在意", "容易被環境影響判斷", "開始意識到文化的重要"],
+    strategy: [
+      "先設定 1–2 個底線條件，比如「不接受制度不透明的公司」",
+      "面試時多問一個關於文化的問題，養成習慣而不必全面轉型",
+      "遇到職場不適感時，記錄原因，幫助下次選擇時更有依據"
+    ],
+    quote: "不需要全改變，從一個標準開始就夠了。"
+  },
+  {
+    name: "ESG 觀望型",
+    emoji: "👀",
+    heroGrad: "linear-gradient(135deg, #7a2800 0%, #b53d10 60%, #d45520 100%)",
+    badgeBg: "rgba(234,88,12,0.1)",
+    badgeColor: "#9a3412",
+    ringColor: "#f97316",
+    min: 66, max: 80,
+    status: "務實優先，文化是加分項，但你偶爾也會感覺哪裡不太對。",
+    features: ["工作優先，價值觀其次", "對公司文化較被動接受", "實際條件是主要篩選標準"],
+    strategy: [
+      "下次面試多加一個問題：「公司如何處理員工反映的問題？」",
+      "不必全面改變，但多了解一點資訊，決策就能更全面",
+      "觀察入職後的第一個月，留意制度與承諾是否一致"
+    ],
+    quote: "務實沒有錯，但資訊更多，選擇才會更好。"
+  },
+  {
+    name: "ESG 起步型",
+    emoji: "🔵",
+    heroGrad: "linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 60%, #3d74ad 100%)",
+    badgeBg: "rgba(45,125,111,0.1)",
+    badgeColor: "#1c4f48",
+    ringColor: "#4a9e8e",
+    min: 81, max: 100,
+    status: "你目前以穩定就業為優先，ESG 還不在你的求職雷達上。",
+    features: ["先找到工作是當前目標", "對 ESG 概念接觸較少", "判斷標準主要是實際條件"],
+    strategy: [
+      "先穩定，再升級——進入職場後開始留意公司的治理方式與文化",
+      "觀察身邊同事的工作狀態，是否有明顯過勞或不公平跡象",
+      "了解 ESG 基本概念，讓下一份工作的選擇比這次多一個維度"
+    ],
+    quote: "今天的起點，不代表明天的終點。"
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let current = -1; // -1 = intro
+let answers = [];
+let isAnimating = false;
+
+// ── PARTICLES ──────────────────────────────────────────────────────────────────
+function initParticles() {
+  const wrap = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      --drift: ${(Math.random()-0.5)*80}px;
+      animation-duration: ${6+Math.random()*10}s;
+      animation-delay: ${Math.random()*8}s;
+      width: ${2+Math.random()*3}px;
+      height: ${2+Math.random()*3}px;
+    `;
+    wrap.appendChild(p);
+  }
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────────────────────
+function updateProgress(idx) {
+  const wrap = document.getElementById('progress-wrap');
+  if (idx < 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  document.getElementById('progress-fill').style.width = `${((idx+1)/10)*100}%`;
+  const row = document.getElementById('dots-row');
+  if (!row.children.length) {
+    for (let i = 0; i < 10; i++) {
+      const d = document.createElement('div'); d.className = 'dot'; row.appendChild(d);
+    }
+  }
+  Array.from(row.children).forEach((d, i) => {
+    d.className = 'dot' + (i < idx ? ' answered' : i === idx ? ' current' : '');
+  });
+}
+
+// ── RENDER INTRO ───────────────────────────────────────────────────────────────
+function renderIntro() {
+  const card = document.getElementById('main-card');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="intro-page">
+      <div class="intro-title">我與 ESG 的距離</div>
+      <p class="intro-sub">請不要選「覺得應該如何」，<br>而是選「平常真的會怎麼做」</p>
+      <div class="intro-meta">
+        <span class="intro-meta-item">📋 共 10 題</span>
+        <span class="intro-meta-item">⏱ 約 3–5 分鐘</span>
+      </div>
+      <svg class="q-illustration" viewBox="0 0 500 70" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ig" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#f5faf9;stop-opacity:0"/>
+            <stop offset="25%" style="stop-color:#2d7d6f;stop-opacity:0.25"/>
+            <stop offset="75%" style="stop-color:#4a9e8e;stop-opacity:0.25"/>
+            <stop offset="100%" style="stop-color:#f5faf9;stop-opacity:0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,35 Q50,12 100,35 T200,35 T300,35 T400,35 T500,35" fill="none" stroke="url(#ig)" stroke-width="1.5"/>
+        <circle cx="100" cy="35" r="3.5" fill="#2d7d6f" opacity="0.45"/>
+        <circle cx="200" cy="35" r="3.5" fill="#4a9e8e" opacity="0.45"/>
+        <circle cx="300" cy="35" r="3.5" fill="#2d7d6f" opacity="0.45"/>
+        <circle cx="400" cy="35" r="3.5" fill="#4a9e8e" opacity="0.45"/>
+        <text x="87" y="26" fill="rgba(45,125,111,0.35)" font-size="8" font-family="sans-serif" font-weight="600">E</text>
+        <text x="197" y="26" fill="rgba(45,125,111,0.35)" font-size="8" font-family="sans-serif" font-weight="600">S</text>
+        <text x="297" y="26" fill="rgba(45,125,111,0.35)" font-size="8" font-family="sans-serif" font-weight="600">G</text>
+      </svg>
+      <button class="start-btn" onclick="startQuiz()">
+        開始測驗 →
+      </button>
+    </div>
+  `;
+}
+
+// ── RENDER QUESTION ────────────────────────────────────────────────────────────
+function renderQuestion(idx) {
+  const q = questions[idx];
+  const card = document.getElementById('main-card');
+  card.innerHTML = `
+    <div class="q-badge"><span class="q-badge-dot"></span>${q.icon} ${q.category}</div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+      ${q.options.map(o => `
+        <button class="option" onclick="selectAnswer('${o.letter}', this)">
+          <span class="option-letter">${o.letter}</span>
+          <span>${o.text}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ── SELECT ANSWER ──────────────────────────────────────────────────────────────
+function selectAnswer(letter, btn) {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  // visual feedback
+  btn.classList.add('selected');
+
+  const score = scores[letter];
+  answers.push(score);
+
+  setTimeout(() => {
+    const card = document.getElementById('main-card');
+    card.classList.add('exit');
+    setTimeout(() => {
+      card.classList.remove('exit');
+      if (answers.length >= 10) {
+        showResult();
+      } else {
+        current++;
+        updateProgress(current);
+        renderQuestion(current);
+        isAnimating = false;
+      }
+    }, 250);
+  }, 280);
+}
+
+// ── START ──────────────────────────────────────────────────────────────────────
+function startQuiz() {
+  if (isAnimating) return;
+  isAnimating = true;
+  const card = document.getElementById('main-card');
+  card.classList.add('exit');
+  setTimeout(() => {
+    card.classList.remove('exit');
+    current = 0;
+    updateProgress(0);
+    renderQuestion(0);
+    isAnimating = false;
+  }, 250);
+}
+
+// ── RESULT ─────────────────────────────────────────────────────────────────────
+function showResult() {
+  const total = answers.reduce((a, b) => a + b, 0);
+  const pct = ((total - 25) / 75) * 100; // 25–100 mapped to 0–100%
+  const lvl = levels.find(l => pct <= l.max) || levels[levels.length - 1];
+
+  // hide progress
+  document.getElementById('progress-wrap').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('progress-wrap').style.display = 'none';
+  }, 500);
+
+  const card = document.getElementById('main-card');
+  card.innerHTML = `
+    <div class="result-page">
+
+      <div class="result-hero" style="background:${lvl.heroGrad}">
+        <div class="result-hero-top">
+          <span class="result-type-label">測驗結果</span>
+          <span class="result-pct-chip">已靠近 ESG ${Math.round(100 - pct)}%</span>
+        </div>
+        <div class="result-hero-body">
+          <span class="result-emoji-large">${lvl.emoji}</span>
+          <div class="result-title">${lvl.name}</div>
+        </div>
+        <div class="result-quote">${lvl.quote}</div>
+      </div>
+
+      <div class="result-body">
+        <div class="result-section">
+          <div class="result-section-label">階段性現況</div>
+          <div class="result-section-text">${lvl.status}</div>
+          <div class="result-tags">
+            ${lvl.features.map(f => `<span class="result-tag">${f}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-section-label">求職策略</div>
+          <ul class="strategy-list">
+            ${lvl.strategy.map((s, i) => `
+              <li>
+                <span class="strategy-bullet">${i + 1}</span>
+                <span>${s}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  `;
+  isAnimating = false;
+}
+
+// ── RESET ──────────────────────────────────────────────────────────────────────
+function resetQuiz() {
+  if (isAnimating) return;
+  isAnimating = true;
+  answers = [];
+  current = -1;
+  const card = document.getElementById('main-card');
+  const pw = document.getElementById('progress-wrap');
+  pw.style.opacity = '';
+  pw.style.display = 'none';
+  document.getElementById('dots-row').innerHTML = '';
+  card.classList.add('exit');
+  setTimeout(() => {
+    card.classList.remove('exit');
+    renderIntro();
+    isAnimating = false;
+  }, 250);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+initParticles();
+renderIntro();
+</script>
+</body>
+</html>
