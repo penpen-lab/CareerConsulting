@@ -216,12 +216,14 @@
     letter-spacing: 0.01em;
     line-height: 1.9;
   }
-  .intro-meta { display: flex; gap: 10px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+  .intro-meta { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-bottom: 32px; }
   .intro-meta-item {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 13px; color: var(--ink-mid);
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    font-size: 13px; font-weight: 500; color: var(--ink-mid);
     background: var(--slate); border: 1px solid var(--border);
-    padding: 6px 14px; border-radius: 20px;
+    padding: 9px 28px; border-radius: 12px;
+    width: 160px; text-align: center;
   }
   .start-btn {
     display: inline-flex; align-items: center; gap: 10px;
@@ -372,8 +374,10 @@
     .q-text { font-size: 17px; }
     .option { font-size: 14px; padding: 11px 13px; }
     .intro-title { font-size: 31px; }
-    .intro-sub { font-size: 13px; margin-bottom: 20px; }
-    .intro-meta { gap: 7px; margin-bottom: 24px; }
+    .intro-sub { font-size: 14.7px; margin-bottom: 20px; }
+    .intro-sub-em { font-size: 14.2px; }
+    .intro-meta { gap: 10px; margin-bottom: 24px; }
+    .intro-meta-item { padding: 9px 16px; min-width: 80px; font-size: 12.5px; }
     .start-btn { padding: 13px 30px; font-size: 15px; }
     .q-illustration { height: 50px; margin-bottom: 10px; }
   }
@@ -406,9 +410,10 @@ const questions = [
     text: "當你在看工作機會時，最優先考量的是？",
     options: [
       { letter: "A", text: "公司文化與價值是否認同" },
-      { letter: "B", text: "是否有成長與學習空間" },
-      { letter: "C", text: "薪資與穩定性" },
-      { letter: "D", text: "先有工作就好" }
+      { letter: "B", text: "是否有成長與學習發展空間" },
+      { letter: "C", text: "薪資待遇與工作穩定性" },
+      { letter: "D", text: "先找到工作再說，之後再規劃" },
+      { letter: "E", text: "依當下情況彈性選擇，沒特別優先順序" }
     ]
   },
   {
@@ -417,10 +422,11 @@ const questions = [
     icon: "🔍",
     text: "看到職缺寫「需具備抗壓性」，你直覺是？",
     options: [
-      { letter: "A", text: "會特別留意公司文化" },
-      { letter: "B", text: "還好，面試再確認" },
+      { letter: "A", text: "會特別留意並研究公司文化" },
+      { letter: "B", text: "還好，面試時再確認" },
       { letter: "C", text: "正常職場應該都這樣" },
-      { letter: "D", text: "沒差，有工作比較重要" }
+      { letter: "D", text: "有工作比較重要" },
+      { letter: "E", text: "直接跳過這種職缺" }
     ]
   },
   {
@@ -429,10 +435,11 @@ const questions = [
     icon: "⚖️",
     text: "如果面試時發現主管前後說法不一致，你會？",
     options: [
-      { letter: "A", text: "會提高警覺，甚至不考慮" },
-      { letter: "B", text: "先觀察，不急著下判斷" },
-      { letter: "C", text: "覺得應該只是溝通問題" },
-      { letter: "D", text: "不太影響，能錄取比較重要" }
+      { letter: "A", text: "提高警覺，重新評估是否應徵" },
+      { letter: "B", text: "先放在心上觀察，不急著做決定" },
+      { letter: "C", text: "向認為可能只是溝通上的落差" },
+      { letter: "D", text: "影響不大，重點是能否順利錄取" },
+      { letter: "E", text: "先專注面試流程，細節之後再看" }
     ]
   },
   {
@@ -441,34 +448,37 @@ const questions = [
     icon: "🤝",
     text: "如果進公司後發現同事常加班到很晚，你會？",
     options: [
-      { letter: "A", text: "會思考是否適合長期留下" },
-      { letter: "B", text: "先觀察一段時間" },
-      { letter: "C", text: "覺得職場本來就這樣" },
-      { letter: "D", text: "只要我能撐就好" }
+      { letter: "A", text: "認真思考這份工作是否符合自己生活期待" },
+      { letter: "B", text: "先觀察團隊狀況，再決定自己步調" },
+      { letter: "C", text: "覺得職場中加班是常見現象" },
+      { letter: "D", text: "只要自己能適應，就先做下去" },
+      { letter: "E", text: "認為這就是工作的一部分，沒什麼影響" }
     ]
   },
   {
     id: 5,
     category: "價值判斷力",
     icon: "🧭",
-    text: "公司說「重視員工」，但實際常加班，你會？",
+    text: "公司說「重視員工」，但實際上常常要加班，你會？",
     options: [
-      { letter: "A", text: "覺得落差很大，會重新評估" },
-      { letter: "B", text: "還能接受，看整體狀況" },
-      { letter: "C", text: "覺得很多公司都這樣" },
-      { letter: "D", text: "不太在意" }
+      { letter: "A", text: "感覺落差很大，會重新評估去留" },
+      { letter: "B", text: "還能接受，會再觀察整體情況" },
+      { letter: "C", text: "覺得這是職場的常態之一" },
+      { letter: "D", text: "影響不大，重點是整體發展" },
+      { letter: "E", text: "只要付出有對應回報，可接受" }
     ]
   },
   {
     id: 6,
     category: "環境意識 (E)",
     icon: "🌱",
-    text: "如果公司為了成本犧牲品質或環境，你會？",
+    text: "如果公司為了降低成本而犧牲品質或環境，你會？",
     options: [
-      { letter: "A", text: "會在意，影響長期發展" },
-      { letter: "B", text: "覺得有點不妥，但可理解" },
-      { letter: "C", text: "商業本來就要考量成本" },
-      { letter: "D", text: "完全不影響我" }
+      { letter: "A", text: "這是原則問題，會影響我對公司的整體評價" },
+      { letter: "B", text: "覺得有點不妥，但仍能理解商業考量" },
+      { letter: "C", text: "認為企業本來就需要兼顧成本與效益" },
+      { letter: "D", text: "影響相對有限，重點是把自己的工作做好" },
+      { letter: "E", text: "還沒想好自己的立場" }
     ]
   },
   {
@@ -477,34 +487,37 @@ const questions = [
     icon: "📚",
     text: "如果公司提供 ESG 或企業文化相關課程，你會？",
     options: [
-      { letter: "A", text: "主動參加" },
-      { letter: "B", text: "有空會參加" },
-      { letter: "C", text: "覺得跟我工作關聯不大" },
-      { letter: "D", text: "不太有興趣" }
+      { letter: "A", text: "會主動報名參加，提升相關知識" },
+      { letter: "B", text: "若時間允許，願意參加了解" },
+      { letter: "C", text: "視內容而定，有需要才會考慮參加" },
+      { letter: "D", text: "目前優先專注本職工作，較少考慮參加" },
+      { letter: "E", text: "傾向不參與這類課程" }
     ]
   },
   {
     id: 8,
     category: "職涯思維",
     icon: "🚀",
-    text: "你認為「公司文化／價值」會影響你的職涯發展嗎？",
+    text: "你認為「公司文化與價值觀」會影響你的職涯發展嗎？",
     options: [
-      { letter: "A", text: "非常會" },
-      { letter: "B", text: "有一定影響" },
-      { letter: "C", text: "影響有限" },
-      { letter: "D", text: "幾乎沒有" }
+      { letter: "A", text: "非常關鍵，這是選擇公司的核心考量" },
+      { letter: "B", text: "有一定程度的影響，會作為選擇時的參考因素" },
+      { letter: "C", text: "影響有限，能力與發展機會更重要" },
+      { letter: "D", text: "影響不大，較少特別關注" },
+      { letter: "E", text: "非主要考量，優先考量其他條件如薪資與福利" }
     ]
   },
   {
     id: 9,
     category: "價值排序",
     icon: "⚡",
-    text: "兩間公司條件差不多，你會選？",
+    text: "兩間公司條件差不多，你最終會選哪種？",
     options: [
-      { letter: "A", text: "文化較健康、制度較透明的" },
-      { letter: "B", text: "發展性較高的" },
-      { letter: "C", text: "薪資較高的" },
-      { letter: "D", text: "比較容易進的" }
+      { letter: "A", text: "文化健康、制度透明的公司" },
+      { letter: "B", text: "發展潛力與學習機會較高的公司" },
+      { letter: "C", text: "薪資待遇相對較優的公司" },
+      { letter: "D", text: "選擇較容易進入可先累積經驗的公司" },
+      { letter: "E", text: "依實際進展，優先選擇通知錄取的公司" }
     ]
   },
   {
@@ -513,22 +526,23 @@ const questions = [
     icon: "🌟",
     text: "未來一年，你對「選對公司」這件事的想法是？",
     options: [
-      { letter: "A", text: "會更認真篩選與判斷" },
-      { letter: "B", text: "有機會會多了解" },
-      { letter: "C", text: "順其自然" },
-      { letter: "D", text: "先有工作再說" }
+      { letter: "A", text: "主動篩選與評估公司" },
+      { letter: "B", text: "有機會就多了解與比較" },
+      { letter: "C", text: "順其自然，依緣分與機會而定" },
+      { letter: "D", text: "先找到工作，再做後續考量" },
+      { letter: "E", text: "先觀察現況，再決定是否調整策略" }
     ]
   }
 ];
 
-const scores = { A: 10, B: 7.5, C: 5, D: 2.5 };
+const scores = { A: 9.5, B: 7.5, C: 5.5, D: 3.5, E: 1.5 };
 
 const levels = [
   {
     name: "ESG 夥伴型",
     emoji: "🌿",
-    heroGrad: "linear-gradient(135deg, #0f5c3a 0%, #1e8a5a 55%, #2db87a 100%)",
-    min: 75, max: 100,   // all/mostly A answers
+    heroGrad: "linear-gradient(135deg, #0a4a2c 0%, #1a7a4a 50%, #28a86a 100%)",
+    min: 76, max: 95,
     status: "你已經在用價值與文化篩選工作，ESG 意識已是你求職時的自然直覺。",
     features: ["主動在意公司理念與制度", "對人的對待方式非常敏感"],
     strategy: [
@@ -541,8 +555,8 @@ const levels = [
   {
     name: "ESG 潛力型",
     emoji: "🌱",
-    heroGrad: "linear-gradient(135deg, #1040a0 0%, #2060d0 55%, #3a85f0 100%)",
-    min: 60, max: 74,
+    heroGrad: "linear-gradient(135deg, #0a2d80 0%, #1550c8 50%, #2e72e8 100%)",
+    min: 56, max: 75,
     status: "你對職場文化有敏銳感受，正在把直覺升級為有系統的判斷能力。",
     features: ["感受得到公司文化的差異", "會留意細節並內心評估"],
     strategy: [
@@ -555,8 +569,9 @@ const levels = [
   {
     name: "ESG 轉換型",
     emoji: "✨",
-    heroGrad: "linear-gradient(135deg, #6b2fa0 0%, #9b45d0 55%, #c060f0 100%)",
-    min: 45, max: 59,
+    heroGrad: "linear-gradient(135deg, #4a1580 0%, #7a2ec0 50%, #a040e0 100%)",
+    min: 36, max: 55,
+    status: "你正在建立自己的職場價值觀，開始懂得用文化與制度來評估公司。",
     features: ["開始重視工作環境的品質", "正在形成自己的選擇標準"],
     strategy: [
       "先設定 1–2 個底線條件，比如「不接受制度不透明的公司」",
@@ -568,8 +583,8 @@ const levels = [
   {
     name: "ESG 觀望型",
     emoji: "🔭",
-    heroGrad: "linear-gradient(135deg, #c47000 0%, #e08a00 55%, #f5a800 100%)",
-    min: 35, max: 44,
+    heroGrad: "linear-gradient(135deg, #8a5000 0%, #c87800 50%, #f09600 100%)",
+    min: 16, max: 35,
     status: "你務實又有潛力，多一點資訊就能讓你的每次求職決策更有把握。",
     features: ["重視實際條件與穩定性", "對職場文化保持開放態度"],
     strategy: [
@@ -582,8 +597,8 @@ const levels = [
   {
     name: "ESG 起步型",
     emoji: "🚀",
-    heroGrad: "linear-gradient(135deg, #8b1a1a 0%, #c02828 55%, #e04040 100%)",
-    min: 25, max: 34,
+    heroGrad: "linear-gradient(135deg, #6e0e0e 0%, #b01c1c 50%, #d83030 100%)",
+    min: 0, max: 15,
     status: "你專注於找到機會，這是每段職涯的必要起點，未來空間大得很。",
     features: ["專注於找到穩定的工作機會", "對職場有開放的探索心態"],
     strategy: [
@@ -738,9 +753,8 @@ function startQuiz() {
 // ── RESULT ─────────────────────────────────────────────────────────────────────
 function showResult() {
   const total = Math.round(answers.reduce((a, b) => a + b, 0));
-  // A=10, total 25–100. total directly = ESG closeness %.
-  // 夥伴型=highest scores, 起步型=lowest scores → reverse level lookup
-  const lvl = levels.slice().reverse().find(l => total >= l.min) || levels[0];
+  // total = 15–95, directly used as %. Find level where total falls in range.
+  const lvl = levels.find(l => total >= l.min && total <= l.max) || levels[levels.length - 1];
 
   document.getElementById('progress-wrap').style.opacity = '0';
   setTimeout(() => { document.getElementById('progress-wrap').style.display = 'none'; }, 500);
