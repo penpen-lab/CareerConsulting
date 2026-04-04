@@ -417,7 +417,7 @@ const types = {
       jobs:['碳盤查分析師','永續數據工程師','LCA生命週期評估師'],
       strengths:['數據收集與量化分析能力','邏輯嚴謹與細節掌控','環境科學與減碳技術知識'],
       learn:['碳盤查工具（ISO 14064）','Python / Excel數據分析','ESG評分與評級機制'] },
-  C:{ name:'溝通推廣型', icon:'📣', iconClass:'c', direction:'CSR / 品牌傳播',
+  C:{ name:'溝通推廣型', icon:'📢', iconClass:'c', direction:'CSR / 品牌傳播',
       jobs:['CSR專員','ESG品牌行銷經理','永續報告溝通顧問'],
       strengths:['跨部門溝通與利害關係人管理','品牌故事化與內容傳播','影響力建立與公眾表達'],
       learn:['永續報告書撰寫技巧','利害關係人溝通框架','ESG品牌與媒體策略'] },
@@ -447,9 +447,9 @@ function renderIntro() {
   return `${hdr()}
   <div class="intro-page"><div class="intro-card">
     <div class="intro-deco">✦</div>
-    <p class="intro-desc">透過12道情境題，結合自我探索與產業理解的職涯盤點<br>在永續浪潮中看見自己的關鍵角色與可能性</p>
+    <p class="intro-desc">透過12道情境題<br>結合自我探索與產業理解的職涯盤點<br>在永續浪潮中看見自己的<br>關鍵角色與可能性</p>
     <div class="intro-features">
-      <div class="intro-feat">📝 12道情境題</div>
+      <div class="intro-feat">📋 12道情境題</div>
       <div class="intro-feat">⏱️ 約3-5分鐘</div>
     </div>
     <button class="btn-start" onclick="startQuiz()">
@@ -474,7 +474,7 @@ function renderQuiz() {
   return `${hdr()}
   <div class="progress-wrap">
     <div class="progress-meta">
-      <div class="progress-label">題目進度</div>
+      <div class="progress-label">職涯盤點進度</div>
       <span>${S.current+1} / ${n}</span>
     </div>
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
@@ -503,28 +503,28 @@ function renderResult() {
   }).join('');
 
   const cards = top2.map(([k],idx)=>{
-    const t=types[k], rankLabel=idx===0?'✦ 主要類型':'◆ 輔助類型', rankCls=idx===0?'gold':'', primary=idx===0?'primary':'';
+    const t=types[k], rankLabel=idx===0?'✦ 永續職涯主要類型':'◆ 永續職涯輔助類型', rankCls=idx===0?'gold':'', primary=idx===0?'primary':'';
     return `<div class="type-card ${primary}">
       <div class="type-card-header">
         <div class="type-icon ${t.iconClass}">${t.icon}</div>
         <div class="type-info">
           <div class="type-rank ${rankCls}">${rankLabel}</div>
           <div class="type-name">${t.name}</div>
-          <div class="type-direction">職務方向：${t.direction}</div>
+          <div class="type-direction">職務類型：${t.direction}</div>
         </div>
       </div>
       <div class="divider"></div>
       <div class="type-card-body">
         <div class="type-section">
-          <div class="type-section-title">適合職缺</div>
+          <div class="type-section-title">參照職缺參考</div>
           <div class="tag-list">${t.jobs.map(j=>`<span class="tag job">${j}</span>`).join('')}</div>
         </div>
         <div class="type-section">
-          <div class="type-section-title">核心優勢</div>
+          <div class="type-section-title">永續核心優勢</div>
           <div class="tag-list">${t.strengths.map(s=>`<span class="tag str">✓ ${s}</span>`).join('')}</div>
         </div>
         <div class="type-section">
-          <div class="type-section-title">補強學習項目</div>
+          <div class="type-section-title">持續學習方向</div>
           <div class="tag-list">${t.learn.map(l=>`<span class="tag lrn">◎ ${l}</span>`).join('')}</div>
         </div>
       </div>
@@ -534,7 +534,7 @@ function renderResult() {
   return `${hdr()}
   <div class="result-page">
     <div class="result-header"><div class="result-badge">✦ 測驗完成</div></div>
-    <div class="score-overview"><h3>四大類型分佈</h3>${bars}</div>
+    <div class="score-overview"><h3>永續特質</h3>${bars}</div>
     ${cards}
   </div>`;
 }
