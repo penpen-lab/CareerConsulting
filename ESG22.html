@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESG職涯定位測驗</title>
+<title>永續職涯類型評估</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -417,7 +417,7 @@ const types = {
       jobs:['碳盤查分析師','永續數據工程師','LCA生命週期評估師'],
       strengths:['數據收集與量化分析能力','邏輯嚴謹與細節掌控','環境科學與減碳技術知識'],
       learn:['碳盤查工具（ISO 14064）','Python / Excel數據分析','ESG評分與評級機制'] },
-  C:{ name:'溝通推廣型', icon:'📢', iconClass:'c', direction:'CSR / 品牌傳播',
+  C:{ name:'溝通推廣型', icon:'📣', iconClass:'c', direction:'CSR / 品牌傳播',
       jobs:['CSR專員','ESG品牌行銷經理','永續報告溝通顧問'],
       strengths:['跨部門溝通與利害關係人管理','品牌故事化與內容傳播','影響力建立與公眾表達'],
       learn:['永續報告書撰寫技巧','利害關係人溝通框架','ESG品牌與媒體策略'] },
@@ -439,7 +439,7 @@ function render() {
 function hdr() {
   return `<div class="quiz-header">
     <span class="header-icon">🌿</span>
-    <h1 class="quiz-title">ESG職涯定位測驗</h1>
+    <h1 class="quiz-title">永續職涯類型評估</h1>
   </div>`;
 }
 
@@ -474,7 +474,7 @@ function renderQuiz() {
   return `${hdr()}
   <div class="progress-wrap">
     <div class="progress-meta">
-      <div class="progress-label">職涯盤點進度</div>
+      <div class="progress-label">永續職涯類型評估進度</div>
       <span>${S.current+1} / ${n}</span>
     </div>
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
@@ -510,13 +510,13 @@ function renderResult() {
         <div class="type-info">
           <div class="type-rank ${rankCls}">${rankLabel}</div>
           <div class="type-name">${t.name}</div>
-          <div class="type-direction">職務類型：${t.direction}</div>
+          <div class="type-direction">永續方向：${t.direction}</div>
         </div>
       </div>
       <div class="divider"></div>
       <div class="type-card-body">
         <div class="type-section">
-          <div class="type-section-title">參照職缺參考</div>
+          <div class="type-section-title">職務參考</div>
           <div class="tag-list">${t.jobs.map(j=>`<span class="tag job">${j}</span>`).join('')}</div>
         </div>
         <div class="type-section">
