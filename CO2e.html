@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>綠色生活實驗室 🔬</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a4a2e;
+    --moss: #2d6a4f;
+    --leaf: #52b788;
+    --mint: #95d5b2;
+    --sky: #d8f3dc;
+    --cream: #f8fdf9;
+    --bark: #6b4226;
+    --sun: #f4a261;
+    --danger: #e63946;
+    --warn: #f4a261;
+    --good: #52b788;
+    --card-shadow: 0 8px 32px rgba(26,74,46,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--forest);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(82,183,136,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(45,106,79,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(26,74,46,0.8) 0%, var(--forest) 70%);
+    z-index: 0;
+  }
+  .particles { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .particle {
+    position: absolute;
+    opacity: 0.12;
+    animation: particleFall linear infinite;
+    font-size: 14px;
+    user-select: none;
+  }
+  @keyframes particleFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.12; }
+    90% { opacity: 0.08; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+  .app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+  .header { text-align: center; padding: 20px 0 16px; animation: slideDown 0.6s ease; }
+  .header-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header h1 { color: var(--mint); font-size: 1.4rem; font-weight: 900; letter-spacing: 0.05em; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .header p { color: rgba(149,213,178,0.7); font-size: 0.78rem; margin-top: 4px; }
+  .progress-section { margin: 0 0 16px; animation: slideDown 0.6s ease 0.1s both; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-label { color: var(--mint); font-size: 0.75rem; font-weight: 500; }
+  .progress-count { color: var(--leaf); font-family: 'Space Mono', monospace; font-size: 0.75rem; }
+  .progress-bar-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 100px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--leaf), var(--mint));
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 10px rgba(82,183,136,0.5);
+    position: relative; overflow: hidden;
+  }
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer { to { left: 200%; } }
+  .category-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(82,183,136,0.2); border: 1px solid rgba(82,183,136,0.3);
+    color: var(--mint); font-size: 0.72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 100px; letter-spacing: 0.05em;
+  }
+  .card-wrapper { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .question-card {
+    background: var(--cream); border-radius: 24px;
+    padding: 24px 20px; box-shadow: var(--card-shadow);
+    animation: cardIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative; overflow: hidden;
+  }
+  .question-card::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(82,183,136,0.08) 0%, transparent 70%);
+    border-radius: 0 24px 0 120px;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes cardOut {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  }
+  .card-leaving { animation: cardOut 0.3s ease forwards; }
+  .q-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .q-icon { font-size: 2.2rem; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+  .q-text { color: var(--forest); font-size: 1rem; font-weight: 700; line-height: 1.5; flex: 1; }
+  .q-sub { color: var(--moss); font-size: 0.78rem; margin-top: 4px; font-weight: 400; }
+  .choices { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .choice-btn {
+    background: white; border: 2px solid #e8f5ee; border-radius: 14px;
+    padding: 12px 16px; cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 12px; text-align: left;
+    position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent;
+    width: 100%;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn:hover { border-color: var(--leaf); background: #f0faf4; transform: translateX(3px); }
+  .choice-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .choice-text { flex: 1; color: var(--forest); font-size: 0.88rem; font-weight: 500; line-height: 1.4; text-align: left; }
+  .choice-carbon { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--moss); white-space: nowrap; flex-shrink: 0; text-align: right; }
+  .choice-btn.selected-low { border-color: var(--good); background: #f0faf4; animation: pulse-green 0.4s ease; }
+  .choice-btn.selected-mid { border-color: var(--warn); background: #fff8f0; animation: pulse-orange 0.4s ease; }
+  .choice-btn.selected-high { border-color: var(--danger); background: #fff5f5; animation: pulse-red 0.4s ease; }
+  @keyframes pulse-green { 0%{transform:scale(1)}50%{transform:scale(1.02);box-shadow:0 0 0 4px rgba(82,183,136,0.2)}100%{transform:scale(1)} }
+  @keyframes pulse-orange { 0%{transform:scale(1)}50%{transform:scale(1.02);box-shadow:0 0 0 4px rgba(244,162,97,0.2)}100%{transform:scale(1)} }
+  @keyframes pulse-red { 0%{transform:scale(1)}50%{transform:scale(1.02);box-shadow:0 0 0 4px rgba(230,57,70,0.2)}100%{transform:scale(1)} }
+  .feedback-bubble {
+    margin-top: 12px; background: linear-gradient(135deg,#eafaf1,#d8f3dc);
+    border: 1px solid var(--mint); border-radius: 14px; padding: 12px 14px;
+    font-size: 0.82rem; color: var(--moss); line-height: 1.5;
+    animation: fadeIn 0.3s ease; display: none;
+  }
+  .feedback-bubble.show { display: block; }
+  .feedback-bubble.warn-bg { background: linear-gradient(135deg,#fff8f0,#fde8d0); border-color: var(--warn); }
+  .feedback-bubble.danger-bg { background: linear-gradient(135deg,#fff5f5,#fde8e8); border-color: var(--danger); }
+  /* countdown ring shown after selection */
+  .next-hint {
+    margin-top: 10px; text-align: center;
+    font-size: 0.72rem; color: rgba(45,106,79,0.6);
+    display: none; animation: fadeIn 0.3s ease;
+  }
+  .next-hint.show { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
+  .carbon-mini {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(149,213,178,0.2);
+    border-radius: 16px; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    animation: slideDown 0.6s ease 0.2s both;
+  }
+  .carbon-label { color: rgba(149,213,178,0.8); font-size: 0.72rem; }
+  .carbon-value { font-family: 'Space Mono', monospace; color: var(--mint); font-size: 1.1rem; font-weight: 700; transition: all 0.3s ease; }
+  .carbon-value.bump { animation: bump 0.4s ease; }
+  @keyframes bump { 0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)} }
+  .co2-bar { height: 6px; width: 120px; background: rgba(255,255,255,0.1); border-radius: 100px; overflow: hidden; }
+  .co2-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease, background 0.5s ease; }
+  .result-screen { display: none; flex-direction: column; align-items: center; gap: 16px; animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  .result-screen.show { display: flex; }
+  .result-emoji { font-size: 5rem; text-align: center; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); animation: bounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+  @keyframes bounce { from{opacity:0;transform:scale(0.3) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0deg)} }
+  .result-card { background: var(--cream); border-radius: 24px; padding: 24px 20px; width: 100%; box-shadow: var(--card-shadow); text-align: center; }
+  .result-title { color: var(--forest); font-size: 1.4rem; font-weight: 900; margin-bottom: 4px; }
+  .result-co2 { font-family: 'Space Mono', monospace; font-size: 2.4rem; font-weight: 700; margin: 12px 0; }
+  .result-co2 small { font-size: 0.9rem; opacity: 0.6; }
+  .result-grade { display: inline-block; padding: 6px 20px; border-radius: 100px; font-size: 0.85rem; font-weight: 700; margin-bottom: 16px; }
+  .result-compare { background: #f0faf4; border-radius: 14px; padding: 14px; font-size: 0.82rem; color: var(--moss); line-height: 1.6; margin-bottom: 12px; }
+  .result-tips { text-align: left; margin-top: 4px; }
+  .tip-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid #e8f5ee; font-size: 0.82rem; color: var(--forest); line-height: 1.4; }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-icon { font-size: 1rem; flex-shrink: 0; }
+  .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .breakdown-item { background: white; border-radius: 12px; padding: 10px; text-align: center; border: 1px solid #e8f5ee; }
+  .breakdown-icon { font-size: 1.3rem; }
+  .breakdown-label { font-size: 0.68rem; color: var(--moss); margin: 2px 0; }
+  .breakdown-val { font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--forest); }
+  .restart-btn {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--leaf), var(--moss));
+    color: white; border: none; border-radius: 16px;
+    font-family: 'Noto Sans TC', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(82,183,136,0.4);
+    transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
+  }
+  .restart-btn:active { transform: scale(0.98); }
+  .start-screen { display: flex; flex-direction: column; align-items: center; gap: 20px; animation: cardIn 0.6s ease; }
+  .start-card { background: var(--cream); border-radius: 24px; padding: 28px 22px; width: 100%; text-align: center; box-shadow: var(--card-shadow); }
+  .start-bigicon { font-size: 4rem; margin-bottom: 12px; display: block; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+  .start-title { color: var(--forest); font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; }
+  .start-desc { color: var(--moss); font-size: 0.85rem; line-height: 1.7; margin-bottom: 20px; }
+  .category-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .cat-tag { background: #f0faf4; border: 1px solid #c8e6c9; border-radius: 10px; padding: 8px 10px; font-size: 0.8rem; color: var(--moss); display: flex; align-items: center; gap: 6px; }
+  .start-btn {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--leaf), var(--moss));
+    color: white; border: none; border-radius: 16px;
+    font-family: 'Noto Sans TC', sans-serif; font-size: 1.05rem; font-weight: 900;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(82,183,136,0.5);
+    letter-spacing: 0.05em; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;
+  }
+  .start-btn:active { transform: scale(0.98); }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)} }
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; width: 100%; gap: 12px; }
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="app">
+  <div class="header">
+    <span class="header-icon">🔬</span>
+    <h1>綠色生活實驗室</h1>
+    <p>用科學角度檢測你的碳排放，看地球給你幾分</p>
+  </div>
+
+  <!-- Start Screen -->
+  <div class="screen active" id="startScreen">
+    <div class="start-card">
+      <span class="start-bigicon">🧪</span>
+      <div class="start-title">開始你的碳排放實驗</div>
+      <div class="start-desc">
+        回答 10 個關於你日常生活的問題<br>
+        看看你每年的碳排放量<br>
+        和台灣平均相比如何！
+      </div>
+      <div class="category-list">
+        <div class="cat-tag">🍽️ 飲食習慣</div>
+        <div class="cat-tag">🚗 交通方式</div>
+        <div class="cat-tag">🏠 居家用電</div>
+        <div class="cat-tag">🛍️ 消費購物</div>
+        <div class="cat-tag">♻️ 垃圾回收</div>
+        <div class="cat-tag">✈️ 旅遊出行</div>
+      </div>
+      <button class="start-btn" onclick="startGame()">🔬 開始實驗</button>
+    </div>
+    <div style="color:rgba(149,213,178,0.4);font-size:0.7rem;text-align:center;padding-bottom:16px;">
+      參考台灣環境部「淨零綠生活」計算方法
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div class="screen" id="quizScreen">
+    <div class="progress-section">
+      <div class="progress-meta">
+        <span class="progress-label" id="progressLabel">實驗進度 1 / 10</span>
+        <span class="progress-count" id="progressCount">1 / 10</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:10%"></div>
+      </div>
+    </div>
+    <div class="carbon-mini">
+      <div>
+        <div class="carbon-label">📊 即時碳排估算</div>
+        <div class="carbon-value" id="carbonValue">0 <small style="font-size:0.65rem;opacity:0.6">公斤 CO₂/年</small></div>
+      </div>
+      <div style="text-align:right">
+        <div class="carbon-label" style="margin-bottom:6px">排放指數</div>
+        <div class="co2-bar">
+          <div class="co2-fill" id="co2Fill" style="width:0%;background:var(--good)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-wrapper" id="cardWrapper"></div>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="screen" id="resultScreen">
+    <div class="result-screen show" id="resultContent"></div>
+  </div>
+</div>
+
+<script>
+// Floating science + eco particles
+(function() {
+  const container = document.getElementById('particles');
+  const symbols = ['⚗️','🧬','🌡️','💧','☀️','🌱','⚡','🍃','🔭','🧫'];
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    p.style.cssText = `left:${Math.random()*100}%;font-size:${10+Math.random()*8}px;animation-duration:${10+Math.random()*14}s;animation-delay:${-Math.random()*18}s;`;
+    container.appendChild(p);
+  }
+})();
+
+const questions = [
+  {
+    category: '🍽️ 飲食實驗', icon: '🥗',
+    text: '你平均一週吃幾次肉類（牛豬雞魚）？',
+    sub: '包括午餐、晚餐的葷食料理',
+    choices: [
+      { icon:'🥦', text:'幾乎吃素 / 純素', carbon:300, level:'low', note:'太棒了！植物性飲食比葷食減少高達 73% 的碳排放 🌱' },
+      { icon:'🍗', text:'每週 1–3 次（彈性素食）', carbon:800, level:'low', note:'不錯喔！減少肉類攝取對地球很友好 🐔' },
+      { icon:'🥩', text:'每週 4–6 次（一般葷食）', carbon:1400, level:'mid', note:'可以試著每週一天無肉日，輕鬆減碳！' },
+      { icon:'🍖', text:'每天都吃、大量牛肉', carbon:2500, level:'high', note:'牛肉是碳足跡最高的食物之一，試試雞肉或豆類替代！' },
+    ]
+  },
+  {
+    category: '🚗 移動實驗', icon: '🗺️',
+    text: '你平日主要的通勤方式是什麼？',
+    sub: '以最常使用的交通工具為主',
+    choices: [
+      { icon:'🚶', text:'步行 / 騎自行車', carbon:0, level:'low', note:'零碳通勤！身體健康又環保，超讚 🚴' },
+      { icon:'🚇', text:'大眾運輸（捷運、公車）', carbon:200, level:'low', note:'大眾運輸是最環保的通勤選擇之一 🚇' },
+      { icon:'🛵', text:'機車 / 電動車', carbon:600, level:'mid', note:'電動機車比燃油更環保，若是油車可考慮共乘！' },
+      { icon:'🚗', text:'自用汽車（每天開）', carbon:1800, level:'high', note:'汽車是個人碳排大戶，可試試共乘或大眾運輸！' },
+    ]
+  },
+  {
+    category: '⚡ 能源實驗', icon: '🔌',
+    text: '你家每月電費大約多少？',
+    sub: '台灣平均家庭每月約 300–500 度',
+    choices: [
+      { icon:'🌙', text:'500 元以下（節能達人）', carbon:400, level:'low', note:'非常節能！記得使用節能標章電器 ⭐' },
+      { icon:'💡', text:'500–1,500 元（普通）', carbon:900, level:'low', note:'在平均值附近，可試著關掉待機電器省電！' },
+      { icon:'🌡️', text:'1,500–3,000 元（偏高）', carbon:1600, level:'mid', note:'冷氣、熱水器是大電量耗電大戶，設定定時器吧！' },
+      { icon:'❄️', text:'3,000 元以上（超高）', carbon:2800, level:'high', note:'換成變頻冷氣、LED 燈泡，可大幅降低電費和碳排！' },
+    ]
+  },
+  {
+    category: '✈️ 旅行實驗', icon: '🌐',
+    text: '你一年大概搭幾次飛機？',
+    sub: '包含國內外旅遊、出差等',
+    choices: [
+      { icon:'🏡', text:'從不搭飛機', carbon:0, level:'low', note:'太厲害了！飛機是碳排放最密集的交通工具 🌿' },
+      { icon:'🏖️', text:'1–2 次（短程/日韓）', carbon:800, level:'low', note:'偶爾出遊，合理範圍！可以購買碳抵換來補償 ✈️' },
+      { icon:'🌏', text:'3–5 次（東南亞/中程）', carbon:2200, level:'mid', note:'試著延長每次旅遊時間、減少飛行次數！' },
+      { icon:'🌍', text:'6 次以上或長程洲際', carbon:4500, level:'high', note:'考慮視訊會議取代出差，或購買碳抵換！' },
+    ]
+  },
+  {
+    category: '🍱 惜食實驗', icon: '⚖️',
+    text: '你平均多久丟一次廚餘或剩菜？',
+    sub: '食物浪費也是重要的碳排放來源',
+    choices: [
+      { icon:'🫙', text:'幾乎不浪費、吃多少煮多少', carbon:50, level:'low', note:'珍惜食物就是減碳！堅持下去 💪' },
+      { icon:'🥡', text:'偶爾剩菜，隔天吃完', carbon:200, level:'low', note:'不錯！善用剩菜料理也是環保好習慣 🥘' },
+      { icon:'🗑️', text:'常常丟剩飯剩菜', carbon:500, level:'mid', note:'食物從種植到棄置都排碳，試著少買多做！' },
+      { icon:'😬', text:'大量外食、常整份丟棄', carbon:900, level:'high', note:'外食浪費產生雙倍碳排，試著打包或選小份量！' },
+    ]
+  },
+  {
+    category: '🚿 用水實驗', icon: '💧',
+    text: '你平常洗澡習慣是？',
+    sub: '熱水加熱需要大量能源',
+    choices: [
+      { icon:'⏱️', text:'快速淋浴 5 分鐘以內', carbon:100, level:'low', note:'超省水節能！5 分鐘以內是黃金標準 🥇' },
+      { icon:'🚿', text:'淋浴約 10–15 分鐘', carbon:250, level:'low', note:'還不錯！試試看縮短到 10 分鐘 ⏱️' },
+      { icon:'🛁', text:'長時間淋浴或泡澡', carbon:500, level:'mid', note:'泡澡用水量是淋浴的 3 倍，減少頻率吧！' },
+      { icon:'🌊', text:'每天泡澡 + 長時間淋浴', carbon:900, level:'high', note:'省水蓮蓬頭每年可減少大量用水，考慮換裝！' },
+    ]
+  },
+  {
+    category: '🛒 消費實驗', icon: '🏷️',
+    text: '你多久買一次新衣服或 3C 產品？',
+    sub: '快時尚和電子產品製造耗費大量資源',
+    choices: [
+      { icon:'🔧', text:'很少買，以二手或維修為主', carbon:200, level:'low', note:'循環經濟超棒！二手物品減少大量製造碳排 ♻️' },
+      { icon:'🎁', text:'每季或節日才買', carbon:600, level:'low', note:'理性消費好習慣！買好、買少，用久一點 👍' },
+      { icon:'🛒', text:'每月都會添購新物品', carbon:1200, level:'mid', note:'減少衝動購物，先問問自己真的需要嗎？' },
+      { icon:'📦', text:'每週都在網購、快時尚', carbon:2400, level:'high', note:'時尚產業是全球第二大污染產業，慢時尚是趨勢！' },
+    ]
+  },
+  {
+    category: '♻️ 分類實驗', icon: '🗂️',
+    text: '你的垃圾回收習慣如何？',
+    sub: '正確分類可大幅減少掩埋場碳排',
+    choices: [
+      { icon:'✅', text:'認真分類：紙、塑膠、廚餘都分', carbon:0, level:'low', note:'完美！正確回收讓資源再生，減少垃圾場甲烷！' },
+      { icon:'📰', text:'基本分類：紙和瓶罐有分', carbon:150, level:'low', note:'不錯！再加上廚餘分類就更完整了 🌿' },
+      { icon:'🤔', text:'有時分、有時直接丟', carbon:400, level:'mid', note:'養成習慣就不難！在廚房放個小回收桶幫助分類' },
+      { icon:'❌', text:'幾乎不回收、直接丟垃圾桶', carbon:800, level:'high', note:'垃圾掩埋產生大量甲烷，是溫室氣體的強力來源！' },
+    ]
+  },
+  {
+    category: '🍽️ 肉食實驗', icon: '🧫',
+    text: '如果你吃肉，最常吃哪種？',
+    sub: '不同肉類的碳足跡差異極大',
+    choices: [
+      { icon:'🐟', text:'主要吃魚類海鮮', carbon:200, level:'low', note:'魚類碳足跡相對低，但選永續漁業認證更好 🐟' },
+      { icon:'🐔', text:'主要吃雞肉、雞蛋', carbon:400, level:'low', note:'雞肉是肉類中碳足跡最低的選擇之一 🐥' },
+      { icon:'🐷', text:'主要吃豬肉', carbon:800, level:'mid', note:'豬肉碳排放是雞肉的兩倍，偶爾換換口味！' },
+      { icon:'🐄', text:'主要吃牛肉', carbon:2000, level:'high', note:'牛肉碳足跡是雞肉的 20 倍！偶爾享用就好 🐮' },
+    ]
+  },
+  {
+    category: '🌍 習慣實驗', icon: '📋',
+    text: '你有哪些減碳生活習慣？',
+    sub: '選最符合你的一項',
+    choices: [
+      { icon:'☀️', text:'用再生能源、種植物、積極行動', carbon:-200, level:'low', note:'環保行動家！你的努力讓地球更美好 🌏💚' },
+      { icon:'🧴', text:'自備餐具、購物袋、省水省電', carbon:-100, level:'low', note:'生活小習慣大不同！持續保持 ♻️' },
+      { icon:'📖', text:'知道重要，但還在學習中', carbon:100, level:'mid', note:'有意識就是改變的開始！從一件小事做起 😊' },
+      { icon:'😅', text:'很少特別注意環保習慣', carbon:300, level:'high', note:'沒關係，今天做完這個測驗就是第一步！加油 🌟' },
+    ]
+  },
+];
+
+let currentQ = 0, totalCarbon = 0, selectedChoice = null, isAnimating = false;
+
+function startGame() {
+  currentQ = 0; totalCarbon = 0; selectedChoice = null;
+  showScreen('quizScreen');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const pct = ((currentQ + 1) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `實驗進度 ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progressCount').textContent = `${currentQ + 1} / ${questions.length}`;
+
+  const choicesHTML = q.choices.map((c, i) => `
+    <button class="choice-btn" id="choice-${i}" onclick="selectChoice(${i})">
+      <span class="choice-icon">${c.icon}</span>
+      <span class="choice-text">${c.text}</span>
+      <span class="choice-carbon">${c.carbon > 0 ? '+' : ''}${c.carbon}<br><span style="font-size:0.6rem;opacity:0.6">kg</span></span>
+    </button>
+  `).join('');
+
+  const isLast = currentQ === questions.length - 1;
+
+  document.getElementById('cardWrapper').innerHTML = `
+    <div class="question-card" id="questionCard">
+      <div style="margin-bottom:10px"><span class="category-pill">${q.category}</span></div>
+      <div class="q-header">
+        <span class="q-icon">${q.icon}</span>
+        <div>
+          <div class="q-text">${q.text}</div>
+          <div class="q-sub">${q.sub}</div>
+        </div>
+      </div>
+      <div class="choices">${choicesHTML}</div>
+    </div>
+  `;
+  selectedChoice = null;
+}
+
+function selectChoice(idx) {
+  if (selectedChoice !== null) return;
+  selectedChoice = idx;
+  const c = questions[currentQ].choices[idx];
+  totalCarbon = Math.max(0, totalCarbon + c.carbon);
+  updateCarbonMeter();
+  nextQuestion();
+}
+
+function updateCarbonMeter() {
+  const val = document.getElementById('carbonValue');
+  val.innerHTML = `${totalCarbon.toLocaleString()} <small style="font-size:0.65rem;opacity:0.6">公斤 CO₂/年</small>`;
+  val.classList.remove('bump'); void val.offsetWidth; val.classList.add('bump');
+  const pct = Math.min((totalCarbon / 15000) * 100, 100);
+  const fill = document.getElementById('co2Fill');
+  fill.style.width = pct + '%';
+  fill.style.background = pct < 40 ? 'var(--good)' : pct < 70 ? 'var(--warn)' : 'var(--danger)';
+}
+
+function nextQuestion() {
+  if (isAnimating) return;
+  isAnimating = true;
+  const card = document.getElementById('questionCard');
+  if (card) card.classList.add('card-leaving');
+  setTimeout(() => {
+    currentQ++; isAnimating = false;
+    if (currentQ >= questions.length) showResult();
+    else renderQuestion();
+  }, 300);
+}
+
+function showResult() {
+  showScreen('resultScreen');
+  let emoji, title, grade, gradeColor, gradeBg, tips;
+  if (totalCarbon < 4000) {
+    emoji='🏆'; title='地球英雄！'; grade='超低碳生活'; gradeColor='#2d6a4f'; gradeBg='#d8f3dc';
+    tips=['繼續維持你的環保習慣！','可以和朋友分享你的減碳心得','考慮加入社區環保活動'];
+  } else if (totalCarbon < 7000) {
+    emoji='🌿'; title='綠色生活達人'; grade='低碳生活'; gradeColor='#40916c'; gradeBg='#d8f3dc';
+    tips=['你已比台灣平均低很多！','試著進一步減少肉類攝取','可考慮購買碳抵換支持再生能源'];
+  } else if (totalCarbon < 11000) {
+    emoji='📊'; title='實驗結果：普通'; grade='接近平均水準'; gradeColor='#f4a261'; gradeBg='#fff8f0';
+    tips=['接近台灣平均，有改善空間','試試每週一天無肉日','通勤改搭大眾運輸'];
+  } else if (totalCarbon < 16000) {
+    emoji='⚠️'; title='需要加油了！'; grade='高碳生活'; gradeColor='#e63946'; gradeBg='#fff5f5';
+    tips=['減少長途飛行次數','考慮換購電動車或使用大眾運輸','改變飲食習慣，減少牛肉攝取'];
+  } else {
+    emoji='🆘'; title='地球需要你改變'; grade='超高碳生活'; gradeColor='#c1121f'; gradeBg='#ffe8e8';
+    tips=['大幅減少飛行和開車','轉向植物性飲食','評估家中能源使用並節電'];
+  }
+  const vsAvg = totalCarbon - 10800;
+  const vsText = vsAvg > 0
+    ? `比台灣平均<span style="color:#e63946;font-weight:700">多 ${vsAvg.toLocaleString()} 公斤</span>`
+    : `比台灣平均<span style="color:#52b788;font-weight:700">少 ${Math.abs(vsAvg).toLocaleString()} 公斤</span>`;
+  const trees = Math.ceil(totalCarbon / 21);
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-emoji">${emoji}</div>
+    <div class="result-card">
+      <div class="result-title">${title}</div>
+      <div class="result-co2" style="color:${gradeColor}">${totalCarbon.toLocaleString()}<small> 公斤 CO₂/年</small></div>
+      <span class="result-grade" style="color:${gradeColor};background:${gradeBg}">${grade}</span>
+      <div class="result-compare">
+        你的年度碳足跡 ${vsText}（台灣均值約 10,800 公斤）<br><br>
+        需要種植 <strong>${trees.toLocaleString()} 棵樹</strong> 才能吸收你一年的碳排放 🌳
+      </div>
+      <div class="breakdown-grid">
+        <div class="breakdown-item"><div class="breakdown-icon">🍽️</div><div class="breakdown-label">飲食</div><div class="breakdown-val" style="color:#2d6a4f">${Math.round(totalCarbon*0.28).toLocaleString()} kg</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🚗</div><div class="breakdown-label">交通</div><div class="breakdown-val" style="color:#2d6a4f">${Math.round(totalCarbon*0.32).toLocaleString()} kg</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🏠</div><div class="breakdown-label">居家</div><div class="breakdown-val" style="color:#2d6a4f">${Math.round(totalCarbon*0.22).toLocaleString()} kg</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🛍️</div><div class="breakdown-label">消費</div><div class="breakdown-val" style="color:#2d6a4f">${Math.round(totalCarbon*0.18).toLocaleString()} kg</div></div>
+      </div>
+      <div class="result-tips">
+        <div style="font-size:0.85rem;font-weight:700;color:#1a4a2e;margin-bottom:4px">🔬 實驗室給你的減碳建議</div>
+        ${tips.map(t => `<div class="tip-item"><span class="tip-icon">💡</span>${t}</div>`).join('')}
+      </div>
+    </div>
+    <div style="color:rgba(149,213,178,0.4);font-size:0.7rem;text-align:center;padding-bottom:20px">
+      數據參考台灣環境部淨零綠生活平台，為簡化估算值
+    </div>
+  `;
+}
+
+function restartGame() {
+  totalCarbon = 0; currentQ = 0;
+  document.getElementById('carbonValue').innerHTML = `0 <small style="font-size:0.65rem;opacity:0.6">公斤 CO₂/年</small>`;
+  document.getElementById('co2Fill').style.width = '0%';
+  showScreen('startScreen');
+}
+</script>
+</body>
+</html>
