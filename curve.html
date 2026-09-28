@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -82,6 +83,7 @@
     font-size:13px;color:var(--ink-dim);
     display:flex;align-items:center;
   }
+  .req{color:#e0666f;font-weight:700;margin-right:4px;}
   input[type=number], input[type=text], textarea, select{
     width:100%;
     background:var(--bg-2);
@@ -271,9 +273,9 @@
 
   <!-- FORM -->
   <section class="panel">
-    <p class="panel-title">新增一個事件</p>
+    <p class="panel-title">新增一個事件<span style="text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px"><span class="req" style="margin:0">*</span> 為必填</span></p>
     <div class="form-grid">
-      <label for="ev-age">年齡 / 年份</label>
+      <label for="ev-age"><span class="req">*</span>年齡 / 年份</label>
       <div class="age-field">
         <div class="seg" id="mode-seg">
           <button type="button" data-mode="age" class="on">年齡</button>
@@ -291,14 +293,14 @@
         <div class="err" id="birth-err"></div>
       </div>
 
-      <label for="ev-name">事件名稱</label>
+      <label for="ev-name"><span class="req">*</span>事件名稱</label>
       <div>
         <input type="text" id="ev-name" placeholder="點下方常見事件快速填入，或自己輸入" maxlength="40" list="preset-list">
         <div class="presets" id="presets"></div>
       </div>
       <datalist id="preset-list"></datalist>
 
-      <label>當時心情</label>
+      <label for="ev-mood"><span class="req">*</span>當時心情</label>
       <div>
         <div class="mood-field">
           <input type="number" id="ev-mood" min="-20" max="20" step="1" placeholder="-20 ~ 20">
