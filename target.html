@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><title>啟航你的目標探索</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7fb;--card:#fff;--tx:#1f2937;--mu:#6b7280;--ac:#4f6bed;--ac2:#e8ecff;--bd:#d9dde8}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161d;--card:#1e212b;--tx:#e8eaf0;--mu:#9aa1b2;--ac:#8ea2ff;--ac2:#2a3050;--bd:#343849}}
+:root[data-theme="dark"]{--bg:#14161d;--card:#1e212b;--tx:#e8eaf0;--mu:#9aa1b2;--ac:#8ea2ff;--ac2:#2a3050;--bd:#343849}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6}
+main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:26px;margin:4px 0 12px}
+.prog{display:flex;gap:6px;margin-bottom:16px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--bd)}.prog i.on{background:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:20px}
+h2{margin:0 0 4px;font-size:20px}.sub{color:var(--mu);margin:0 0 14px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
+.chip.sel{background:var(--ac);color:#fff;border-color:var(--ac)}
+.add{display:flex;gap:8px;margin-top:8px}
+input,select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:9px 10px;min-width:0}
+.add input{flex:1}
+button.pri{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;cursor:pointer}
+button.pri:disabled{opacity:.4;cursor:not-allowed}
+button.gh{background:var(--ac2);color:var(--tx);border:0;border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:8px}
+.cnt{color:var(--mu);font-size:14px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{border:1px solid var(--bd);padding:8px;text-align:center}
+th{background:var(--ac2);font-size:14px}
+td select{width:100%}
+.res{margin-top:16px;padding:14px;border-radius:14px;background:var(--ac2);font-size:17px}
+.res p{margin:6px 0}
+.spin{animation:s .25s}@keyframes s{50%{transform:scale(1.04)}}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.tag{display:inline-block;background:var(--card);border:1px solid var(--bd);border-radius:999px;padding:3px 12px;margin:3px 4px 3px 0;font-size:15px}.ext{margin-top:14px;padding:14px;border:1px solid var(--bd);border-radius:14px}.ext h3{margin:0 0 6px;font-size:16px}
+
+:root{--g1:#ffe9f3;--g2:#e6f0ff;--g3:#fff4d6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--g1:#2b1d33;--g2:#1a2440;--g3:#2f2a1a}}
+:root[data-theme="dark"]{--g1:#2b1d33;--g2:#1a2440;--g3:#2f2a1a}
+body{background:linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--g3)) fixed}
+h1{cursor:pointer;background:linear-gradient(90deg,#ff5fa2,#ff9f43,#4f6bed);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.card{border-radius:26px;box-shadow:0 10px 30px rgba(79,107,237,.15);border-width:2px}
+.prog i{height:8px;border-radius:4px;transition:.3s}.prog i.on{background:linear-gradient(90deg,#ff5fa2,#ff9f43)}
+.chip{transition:transform .15s;border-width:2px}.chip:hover{transform:translateY(-3px) rotate(-2deg)}
+.chip:nth-child(4n+1){border-color:#ff8fb8}.chip:nth-child(4n+2){border-color:#ffb86b}.chip:nth-child(4n+3){border-color:#7fd6a4}.chip:nth-child(4n){border-color:#8fa3ff}
+.chip.sel{background:linear-gradient(135deg,#ff5fa2,#ff9f43);border-color:transparent;transform:scale(1.06)}
+button.pri{background:linear-gradient(135deg,#ff5fa2,#ff9f43);border-radius:999px;font-weight:700;box-shadow:0 4px 12px rgba(255,95,162,.35);transition:transform .15s}
+button.pri:hover:not(:disabled){transform:scale(1.05)}
+button.gh{border-radius:999px}
+.hero{text-align:center;padding:10px 0 4px}
+.big{font-size:64px;display:inline-block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px) rotate(6deg)}}
+.hero h2{font-size:26px;margin:8px 0}
+.flow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+.flow span{padding:8px 14px;border-radius:16px;font-weight:700;background:var(--ac2)}
+.flow span:nth-child(1){background:#ffd6e7;color:#8a1f4d}.flow span:nth-child(3){background:#ffe7c2;color:#8a4a00}.flow span:nth-child(5){background:#d3f3e0;color:#1c6a3c}
+.note{margin-top:14px;font-size:14px;color:var(--mu);background:var(--ac2);border-radius:14px;padding:10px 14px}
+.hero .pri{font-size:20px;padding:14px 36px;margin-top:8px}
+.res{background:linear-gradient(135deg,var(--g1),var(--g2))}
+</style></head><body><main>
+<h1 id="home">🎯 目標陳述法</h1>
+<div class="prog" id="prog"></div>
+<div class="card" id="view"></div>
+</main>
+<script>
+const steps=[
+{k:'act',t:'做什麼事 (Activities)',d:'選下三或四件最能樂在其中、專注心力去做的事(用動詞)',sug:['教學','創作','設計','寫作','研究','演講','照顧','組織','分享','傾聽','帶領','烹飪']},
+{k:'ppl',t:'跟什麼人 (People)',d:'選下幾個最願意花時間相處的人或團體(用名詞)',sug:['社會新鮮人','年輕的創作者','青少年','長輩','創業者','新住民','學生','病友','上班族','孩子','弱勢家庭','夥伴']},
+{k:'help',t:'如何提供協助 (Helping)',d:'用三或四個動詞來精確描述你將如何幫助別人',sug:['激勵','支持','理解','記得','陪伴','啟發','引導','鼓勵','教導','連結','照顧','賦能']}];
+const S={act:[],ppl:[],help:[]};let step=0;const rows=[[ '','','' ],['','',''],['','',''],['','','']];
+const v=document.getElementById('view'),p=document.getElementById('prog');
+function toggle(k,x){const a=S[k],i=a.indexOf(x);if(i>=0)a.splice(i,1);else if(a.length<4)a.push(x);render()}
+let started=false;
+function render(){
+if(!started){p.innerHTML='';v.innerHTML=`<div class="hero"><div class="big">🚀</div><h2>找到你的人生目標!</h2><p class="sub">3 分鐘,用三個問題拼出專屬於你的目標陳述句,還能看到延伸職務與能力建議 ✨</p>
+<div class="flow"><span>🎨 做什麼事</span><span>+</span><span>🤝 跟什麼人</span><span>+</span><span>💡 如何協助</span></div>
+<button class="pri" id="go">開始玩 🎉</button>
+<div class="note">📌 建議是規則式對照,僅供探索方向參考</div></div>`;document.getElementById('go').onclick=()=>{started=true;render()};return}
+p.innerHTML=[0,1,2,3].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('');
+if(step<3){const s=steps[step],a=S[s.k],all=[...new Set([...s.sug,...a])];
+v.innerHTML=`<h2>第 ${step+1} 步:${s.t}</h2><p class="sub">${s.d}(最多 4 個)</p>
+<div class="chips">${all.map(x=>`<button class="chip ${a.includes(x)?'sel':''}" data-x="${x}">${x}</button>`).join('')}</div>
+<div class="add"><input id="c" placeholder="沒有想要的?自己輸入…" maxlength="12"><button class="gh" id="ad">加入</button></div>
+<div class="nav"><button class="gh" id="bk" ${step?'':'disabled'}>← 上一步</button><span class="cnt">已選 ${a.length}/4</span><button class="pri" id="nx" ${a.length<3?'disabled':''}>下一步 →</button></div>`;
+v.querySelectorAll('.chip').forEach(b=>b.onclick=()=>toggle(s.k,b.dataset.x));
+const add=()=>{const i=document.getElementById('c'),x=i.value.trim();if(x&&S[s.k].length<4&&!S[s.k].includes(x))S[s.k].push(x);render()};
+document.getElementById('ad').onclick=add;document.getElementById('c').onkeydown=e=>{if(e.key==='Enter')add()};
+}else{
+v.innerHTML=`<h2>第 4 步:組合你的目標 🎲</h2><p class="sub">從你的選擇裡組出 4 組「經由做什麼 → 幫助 → 什麼人」,可手動選,也可以隨機抽!</p>
+<div class="tools"><button class="pri" id="rnd">🎲 全部隨機</button><button class="gh" id="clr">清空</button></div>
+<div class="tw" style="margin-top:12px"><table><tr><th>經由做什麼(動詞)</th><th>幫助(動詞)</th><th>什麼人(名詞)</th><th></th></tr>
+${rows.map((r,i)=>`<tr>${['act','help','ppl'].map((k,j)=>`<td><select data-r="${i}" data-c="${j}"><option value="">—</option>${S[k].map(x=>`<option ${r[j]===x?'selected':''}>${x}</option>`).join('')}</select></td>`).join('')}<td><button class="gh" data-d="${i}">🎲</button></td></tr>`).join('')}</table></div>
+<div class="res" id="res"></div>
+<div class="nav"><button class="gh" id="bk">← 上一步</button><button class="pri" id="cp">複製結果</button></div>`;
+v.querySelectorAll('select').forEach(s=>s.onchange=()=>{rows[s.dataset.r][s.dataset.c]=s.value;out()});
+v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{roll(+b.dataset.d);render()});
+document.getElementById('rnd').onclick=()=>{rows.forEach((_,i)=>roll(i));render();v.classList.add('spin');setTimeout(()=>v.classList.remove('spin'),250)};
+document.getElementById('clr').onclick=()=>{rows.forEach(r=>r.fill(''));render()};
+document.getElementById('cp').onclick=e=>{try{navigator.clipboard.writeText(text());e.target.textContent='已複製 ✓'}catch(_){e.target.textContent='請手動複製'}};
+out()}
+const bk=document.getElementById('bk');if(bk)bk.onclick=()=>{step--;render()};
+const nx=document.getElementById('nx');if(nx)nx.onclick=()=>{step++;render()};
+}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function roll(i){rows[i]=[pick(S.act),pick(S.help),pick(S.ppl)]}
+function lines(){return rows.filter(r=>r.every(Boolean)).map(r=>`我想要經由「${r[0]}」來「${r[1]}」「${r[2]}」`)}
+function text(){const e=document.querySelector('.ext');return lines().join('\n')+(e?'\n\n'+e.innerText:'')}
+const JOB={教學:['老師','培訓講師','教學設計師'],創作:['內容創作者','作家','插畫/影像創作者'],設計:['UX 設計師','教育產品設計師','服務設計師'],寫作:['編輯','文案企劃','記者'],研究:['研究員','使用者研究員','政策分析師'],演講:['講師','公眾溝通顧問','Podcast 主持人'],照顧:['社工','護理師','長照/托育督導'],組織:['專案經理','活動策展人','社群經營者'],分享:['社群經理','知識型創作者','公益倡議者'],傾聽:['諮商心理師','職涯諮詢師','客戶成功經理'],帶領:['團隊主管','營隊/工作坊帶領人','創業者'],烹飪:['料理教學老師','餐飲創業者','食育推廣者']};
+const SK={激勵:['激勵式溝通','同理心'],支持:['傾聽與回饋','資源整合'],理解:['深度訪談','觀察力'],記得:['關係經營','資料整理'],陪伴:['情緒覺察','耐心與穩定度'],啟發:['提問技巧','故事表達'],引導:['引導式對話','課程/活動設計'],鼓勵:['正向回饋','建立信任'],教導:['教學設計','簡化複雜概念'],連結:['人脈網絡','跨領域合作'],照顧:['照護知識','界線管理'],賦能:['教練技巧','培力式領導']};
+const ASK={教學:'簡報與教材製作',創作:'作品集經營',設計:'設計思考',寫作:'文字表達',研究:'資料蒐集與分析',演講:'臺風與表達',照顧:'專業證照/訓練',組織:'專案管理',分享:'社群與內容經營',傾聽:'諮詢基礎訓練',帶領:'團隊領導',烹飪:'專業技術與食安知識'};
+function uniq(a){return [...new Set(a.flat())]}
+function tags(a){return a.map(x=>`<span class="tag">${x}</span>`).join('')}
+function out(){const l=lines(),f=rows.filter(r=>r.every(Boolean));
+let h=l.length?l.map(x=>`<p>✨ ${x}</p>`).join(''):'<span class="sub">填滿任一列,這裡就會出現你的目標陳述句。</span>';
+if(f.length){const A=uniq(f.map(r=>r[0])),H=uniq(f.map(r=>r[1])),P=uniq(f.map(r=>r[2]));
+const jobs=uniq(A.map(a=>JOB[a]||[`${a}相關專業人員`,'顧問/講師','自由工作者']));
+const sk=uniq([...H.map(x=>SK[x]||[`「${x}」的實務經驗`]),...A.map(a=>ASK[a]||`${a}的專業技能`),...P.map(x=>`了解「${x}」的需求(訪談、觀察)`),'自我覺察與持續學習']);
+h+=`<div class="ext"><h3>💼 延伸職務</h3>${tags(jobs)}<h3 style="margin-top:12px">🛠️ 建議具備的能力</h3>${tags(sk)}<p class="sub" style="margin:10px 0 0">※ 建議是規則式對照,僅供探索方向參考。</p></div>`}
+document.getElementById('res').innerHTML=h}
+document.addEventListener('click',e=>{if(e.target.id==='bk'){}});
+document.getElementById('home').onclick=()=>{started=false;step=0;render()};
+render();
+</script></body></html>
