@@ -267,14 +267,15 @@
   <header>
     <div class="eyebrow">Life Curve · 生命歷程圖</div>
     <h1>生命歷程圖</h1>
-    <p>從有記憶開始，一直延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的歷程曲線——回顧過去，看清現在，思考未來。</p>
+    <p>從有記憶開始，延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的歷程曲線——回顧過去，看清現在，思考未來。</p>
+    <div class="eyebrow">資料只存在你的裝置上，重新整理不會消失，如要全部重新填寫須按重新載入</div>
   </header>
 
   <!-- FORM -->
   <section class="panel">
     <p class="panel-title">新增一個事件</p>
     <div class="form-grid">
-      <label for="ev-age">年齡 / 年份</label>
+      <label for="ev-age">年齡 / 年份(二選一)</label>
       <div class="age-field">
         <div class="seg" id="mode-seg">
           <button type="button" data-mode="age" class="on">年齡</button>
@@ -320,7 +321,7 @@
 
   <!-- CHART -->
   <section class="panel chart-panel">
-    <p class="panel-title">你的曲線</p>
+    <p class="panel-title">你的歷程曲線</p>
     <div class="chart-wrap" id="chart-wrap">
       <canvas id="chart" height="340"></canvas>
       <div class="tooltip" id="tooltip"></div>
