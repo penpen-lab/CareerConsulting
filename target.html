@@ -75,7 +75,7 @@ const v=document.getElementById('view'),p=document.getElementById('prog');
 function toggle(k,x){const a=S[k],i=a.indexOf(x);if(i>=0)a.splice(i,1);else if(a.length<4)a.push(x);render()}
 let started=false;
 function render(){
-if(!started){p.innerHTML='';v.innerHTML=`<div class="hero"><div class="big">🚀</div><h2>找到你的人生目標!</h2><p class="sub">3 分鐘,用三個問題拼出專屬於你的目標陳述句,還能看到延伸職務與能力建議 ✨</p>
+if(!started){p.innerHTML='';v.innerHTML=`<div class="hero"><div class="big">🚀</div><h2>啟航你的目標探索</h2><p class="sub">3 分鐘,用三個問題拼出專屬於你的目標陳述句,還能看到延伸職務與能力建議 ✨</p>
 <div class="flow"><span>🎨 做什麼事</span><span>+</span><span>🤝 跟什麼人</span><span>+</span><span>💡 如何協助</span></div>
 <button class="pri" id="go">開始玩 🎉</button>
 <div class="note">📌 建議是規則式對照,僅供探索方向參考</div></div>`;document.getElementById('go').onclick=()=>{started=true;render()};return}
