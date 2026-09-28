@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -267,7 +266,7 @@
   <header>
     <div class="eyebrow">Life Curve · 生命歷程圖</div>
     <h1>生命歷程圖</h1>
-    <p>從有記憶開始，一直延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的曲線——回顧過去，看清現在，找到往下走的方向。</p>
+    <p>從有記憶開始，一直延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的歷程曲線——回顧過去，看清現在，思考未來。</p>
   </header>
 
   <!-- FORM -->
@@ -303,9 +302,9 @@
       <div>
         <div class="mood-field">
           <input type="number" id="ev-mood" min="-20" max="20" step="1" placeholder="-20 ~ 20">
-          <span class="mood-scale">-20 最低落 ／ 0 平靜 ／ +20 最顛峰</span>
+          <span class="mood-scale">-20 最低落 ／ 0 平靜 ／ +20 最顛峰（直接輸入 -20 到 20 之間的整數）</span>
         </div>
-        <div class="mood-readout" id="mood-readout">直接輸入 -20 到 20 之間的整數</div>
+        <div class="mood-readout" id="mood-readout"></div>
       </div>
 
       <label for="ev-note">補充（選填）</label>
@@ -342,9 +341,9 @@
 </div>
 
 <script>
-const PRESETS = ['搬家','畢業','第一份工作','升職','旅遊','戀愛','結婚','生小孩','買房子','考試失利','失戀','換第二份工作','家人過世'];
+const PRESETS = ['搬家','考試順利','畢業','第一份工作（公司名＋職稱）','第二份工作（公司名＋職稱）','升職（公司名＋職稱）','創業','旅遊','戀愛','結婚','生小孩','買房子','考試失利','失戀','工作挫折','生離死別','健康危機','婚姻與家庭改變','失業','退休','經濟壓力或負債'];
 const MMIN = -20, MMAX = 20;
-const MOOD_HINT = '直接輸入 -20 到 20 之間的整數';
+const MOOD_HINT = '';
 
 function moodInfo(v){
   if(v<=-16) return {emoji:'😭',label:'崩潰谷底'};
