@@ -157,6 +157,13 @@
     box-shadow: 0 12px 22px -10px rgba(182,122,42,0.55);
     transition: transform .15s ease, box-shadow .15s ease;
   }
+  .disclaimer{
+    margin:12px 0 0;
+    font-size:12px;
+    line-height:1.7;
+    color: var(--muted);
+    text-align:center;
+  }
   .btn-primary:active{ transform: translateY(1px) scale(.99); }
 
   /* ---- quiz viewport ---- */
@@ -516,14 +523,15 @@
 
     <!-- 介紹頁 -->
     <div id="intro" class="intro">
-      <h2>花五分鐘，<br/>聽聽心裡真正的偏好</h2>
-      <p>探索「實作、研究、藝術、社會、企業、常規」六大職涯密碼，量身打造更貼近的職涯方向。</p>
+      <h2>花五分鐘，<br/>傾聽內心的真實偏好</h2>
+      <p>測驗沒有標準答案，只要憑直覺回答就好。<br>情境題將解鎖在「實作、研究、藝術、社會、企業、常規」六大職涯傾向的比重，幫我們更了解自我，量身打造更貼近自己的職涯方向。</p>
       <div class="tags">
         <span>共 24 題</span>
         <span>約 5 分鐘</span>
-        <span>直覺作答</span>
+        
       </div>
       <button class="btn btn-primary" onclick="startQuiz()">開始測驗</button>
+      <p class="disclaimer">此為簡化的趣味版本，結果僅供自我探索參考，非正式心理測驗</p>
     </div>
 
     <!-- 測驗頁（初始隱藏） -->
