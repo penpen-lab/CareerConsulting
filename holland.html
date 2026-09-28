@@ -516,12 +516,12 @@
 
     <!-- 介紹頁 -->
     <div id="intro" class="intro">
-      <h2>花三分鐘，<br/>聽聽心裡真正的偏好</h2>
-      <p>沒有標準答案，只要憑直覺回答。<p>探索「實作、研究、藝術、社會、企業、常規」六大職涯密碼，量身打造更貼近自己的職涯方向。</p>
+      <h2>花五分鐘，<br/>聽聽心裡真正的偏好</h2>
+      <p>探索「實作、研究、藝術、社會、企業、常規」六大職涯密碼，量身打造更貼近的職涯方向。</p>
       <div class="tags">
-        <span>共 10 題</span>
-        <span>約 3 分鐘</span>
-        
+        <span>共 24 題</span>
+        <span>約 5 分鐘</span>
+        <span>直覺作答</span>
       </div>
       <button class="btn btn-primary" onclick="startQuiz()">開始測驗</button>
     </div>
@@ -534,7 +534,7 @@
         </button>
         <div class="progress-wrap">
           <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-          <div class="progress-label" id="progressLabel">1 / 10</div>
+          <div class="progress-label" id="progressLabel">1 / 24</div>
         </div>
       </div>
 
@@ -601,10 +601,27 @@
     { type:"S", text:"我樂於傾聽別人的煩惱，也喜歡陪伴、教導或幫助身邊的人。" },
     { type:"E", text:"我喜歡說服別人接受我的想法，也享受帶領團隊達成目標。" },
     { type:"C", text:"我喜歡把事情安排得井井有條，照表操課讓我感到踏實。" },
+
     { type:"R", text:"比起整天待在辦公室，我更喜歡在戶外或需要體力活動的環境工作。" },
     { type:"I", text:"面對複雜的數據或資訊，我會想先深入分析，而不是急著下結論。" },
     { type:"A", text:"比起照著固定流程走，我更享受自由發揮、打破常規的過程。" },
+    { type:"S", text:"看到別人遇到困難時，我會主動想伸出援手。" },
     { type:"E", text:"面對挑戰與競爭，我感到興奮，而不是壓力。" },
+    { type:"C", text:"我習慣把資料、檔案或物品分類整理，讓每樣東西一目了然。" },
+
+    { type:"R", text:"我對機器、工具或設備怎麼運作感到好奇，喜歡親手操作看看。" },
+    { type:"I", text:"我喜歡閱讀科學、科技或知識類的內容，並思考背後的原理。" },
+    { type:"A", text:"我對色彩、聲音、空間或文字的美感很敏感，常常注意到細節。" },
+    { type:"S", text:"我喜歡和不同的人交流，也擅長讓團體的氣氛變得融洽。" },
+    { type:"E", text:"我願意主動爭取機會，即使有風險也想試試看。" },
+    { type:"C", text:"我做事講求正確，會反覆檢查數字或細節有沒有出錯。" },
+
+    { type:"R", text:"親眼看到自己做出實際的成品，會讓我特別有成就感。" },
+    { type:"I", text:"我享受獨自安靜地思考、研究一個困難的題目。" },
+    { type:"A", text:"我喜歡嘗試新奇、與眾不同的做法，而不是跟著大家走。" },
+    { type:"S", text:"我覺得能為別人的生活帶來正面影響，是工作最大的意義。" },
+    { type:"E", text:"我很在意自己在團隊或組織中的影響力與成就。" },
+    { type:"C", text:"我喜歡有明確規範與步驟可以依循的工作，讓我知道該怎麼做。" },
   ];
 
   const SCALE = [
@@ -821,3 +838,4 @@
 </script>
 </body>
 </html>
+
