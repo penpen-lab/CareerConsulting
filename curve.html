@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生命歷程圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1320;
+    --bg-2:#161b2c;
+    --surface:#1b2136;
+    --surface-2:#232a42;
+    --line:#2c3350;
+    --ink:#eef0f6;
+    --ink-dim:#9098b3;
+    --ink-faint:#5c6486;
+    --gold:#e8c468;
+    --gold-dim:#8a7343;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(232,196,104,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 100% 0%, rgba(111,179,217,0.06), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans TC','Space Grotesk',sans-serif;
+    min-height:100vh;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  header{margin-bottom:36px;}
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:10px;font-weight:600;
+  }
+  h1{
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:900;
+    font-size:clamp(28px,5vw,42px);
+    margin:0 0 10px;
+    letter-spacing:.02em;
+  }
+  header p{
+    color:var(--ink-dim);
+    font-size:15px;line-height:1.75;max-width:640px;margin:0;
+  }
+
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+    margin-bottom:24px;
+  }
+  .panel-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 18px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .panel-title::before{
+    content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 3px rgba(232,196,104,.15);
+  }
+
+  /* ---- form ---- */
+  .form-grid{
+    display:grid;
+    grid-template-columns: 150px 1fr;
+    gap:14px 16px;
+  }
+  @media (max-width:640px){ .form-grid{grid-template-columns:1fr;} }
+
+  label{
+    font-size:13px;color:var(--ink-dim);
+    display:flex;align-items:center;
+  }
+  input[type=number], input[type=text], textarea, select{
+    width:100%;
+    background:var(--bg-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--ink);
+    padding:10px 12px;
+    font-size:14px;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .15s;
+  }
+  input[type=number]{ -moz-appearance:textfield; }
+  input[type=number]:focus, input[type=text]:focus, textarea:focus, select:focus{
+    border-color:var(--gold-dim);
+  }
+  textarea{resize:vertical;min-height:52px;}
+
+  .age-field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .age-field input{max-width:120px;}
+  .age-field .unit{color:var(--ink-faint);font-size:13px;min-width:16px;}
+  .seg{display:inline-flex;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:3px;}
+  .seg button{
+    background:transparent;color:var(--ink-dim);padding:6px 14px;font-size:13px;border-radius:7px;
+  }
+  .seg button.on{background:var(--gold);color:#1a1406;}
+  .birth-prompt{
+    grid-column:1/-1;display:none;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--bg-2);border:1px dashed var(--gold-dim);border-radius:10px;
+    padding:12px 14px;font-size:13px;color:var(--ink-dim);
+  }
+  .birth-prompt.show{display:flex;}
+  .birth-prompt input{max-width:110px;}
+  .birth-prompt .err{color:#e0666f;width:100%;}
+
+  .presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .preset{
+    background:var(--bg-2);border:1px solid var(--line);color:var(--ink-dim);
+    font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:999px;
+  }
+  .preset:hover{border-color:var(--gold-dim);color:var(--ink);}
+  .preset-hint{font-size:11.5px;color:var(--ink-faint);margin-top:8px;}
+  .mood-field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .mood-field input{max-width:110px;}
+  .mood-scale{font-size:12px;color:var(--ink-faint);}
+  .mood-chip{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--bg-2);
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    color:var(--ink-faint);
+    transition:transform .12s, border-color .12s, background .12s, color .12s;
+  }
+  .mood-chip:hover{transform:translateY(-2px);}
+  .mood-chip.active{
+    color:#101423;
+    border-color:transparent;
+    background:var(--chip-color, var(--gold));
+    font-weight:700;
+  }
+  .mood-readout{
+    margin-top:10px;font-size:13px;color:var(--ink-faint);
+    display:flex;align-items:center;gap:6px;min-height:20px;
+  }
+  .mood-readout .re-emoji{font-size:16px;}
+  .mood-readout.chosen{color:var(--ink);}
+
+  .form-actions{
+    grid-column:1/-1;
+    display:flex;justify-content:flex-end;gap:10px;margin-top:6px;
+  }
+  button{
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border-radius:10px;
+    border:none;
+    padding:11px 22px;
+    cursor:pointer;
+    transition:filter .12s, transform .12s;
+  }
+  button:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--gold),#d9a949);
+    color:#1a1406;
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+  }
+  .btn-ghost:hover{color:var(--ink);border-color:var(--ink-faint);}
+  .btn-small{padding:7px 14px;font-size:13px;border-radius:8px;}
+
+  /* ---- chart ---- */
+  .chart-panel{padding-bottom:8px;}
+  .chart-empty{
+    text-align:center;padding:60px 20px;color:var(--ink-faint);
+    font-size:14px;line-height:1.9;
+  }
+  .chart-empty b{color:var(--ink-dim);}
+  canvas{width:100%;display:block;cursor:crosshair;}
+  .tooltip{
+    position:absolute;
+    pointer-events:none;
+    background:var(--surface-2);
+    border:1px solid var(--gold-dim);
+    border-radius:10px;
+    padding:10px 13px;
+    font-size:13px;
+    line-height:1.6;
+    color:var(--ink);
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+    opacity:0;
+    transition:opacity .1s;
+    max-width:220px;
+    z-index:10;
+  }
+  .tooltip .t-age{color:var(--gold);font-family:'Space Grotesk';font-size:11px;letter-spacing:.05em;}
+  .tooltip .t-name{font-weight:700;margin:2px 0;}
+  .tooltip .t-note{color:var(--ink-dim);font-size:12px;}
+  .chart-wrap{position:relative;}
+
+  /* ---- list ---- */
+  .event-list{display:flex;flex-direction:column;gap:8px;}
+  .event-row{
+    display:flex;align-items:center;gap:12px;
+    background:var(--bg-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 14px;
+  }
+  .event-row .emoji{font-size:20px;flex-shrink:0;}
+  .event-row .meta{flex:1;min-width:0;}
+  .event-row .ev-age{
+    font-family:'Space Grotesk';font-size:11px;color:var(--ink-faint);letter-spacing:.04em;
+  }
+  .event-row .ev-name{font-size:14px;font-weight:600;margin-top:1px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .event-row .ev-note{font-size:12px;color:var(--ink-dim);margin-top:2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row-actions{display:flex;gap:6px;flex-shrink:0;}
+  .icon-btn{
+    background:none;border:none;color:var(--ink-faint);
+    font-size:15px;cursor:pointer;padding:5px 7px;border-radius:6px;
+  }
+  .icon-btn:hover{background:var(--surface-2);color:var(--ink);}
+  .empty-list{color:var(--ink-faint);font-size:13px;padding:8px 4px;}
+
+  /* edit mode row */
+  .event-row.editing{
+    flex-direction:column;align-items:stretch;gap:10px;
+    border-color:var(--gold-dim);
+    background:var(--surface-2);
+  }
+  .edit-grid{
+    display:grid;
+    grid-template-columns: 100px 1fr 100px;
+    gap:10px;
+  }
+  @media (max-width:640px){ .edit-grid{grid-template-columns:1fr;} }
+  .edit-grid input, .edit-grid select, .edit-grid textarea{font-size:13px;padding:8px 10px;}
+  .edit-actions{display:flex;justify-content:flex-end;gap:8px;}
+
+  .foot-note{
+    text-align:center;color:var(--ink-faint);font-size:12px;margin-top:36px;line-height:1.8;
+  }
+  .foot-note a{color:var(--ink-faint);}
+
+  ::selection{background:rgba(232,196,104,.3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Life Curve · 生命歷程圖</div>
+    <h1>生命歷程圖</h1>
+    <p>從有記憶開始，一直延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的曲線——回顧過去，看清現在，找到往下走的方向。</p>
+  </header>
+
+  <!-- FORM -->
+  <section class="panel">
+    <p class="panel-title">新增一個事件</p>
+    <div class="form-grid">
+      <label for="ev-age">年齡 / 年份</label>
+      <div class="age-field">
+        <div class="seg" id="mode-seg">
+          <button type="button" data-mode="age" class="on">年齡</button>
+          <button type="button" data-mode="year">西元年</button>
+        </div>
+        <input type="number" id="ev-age" min="0" max="120" step="0.5" placeholder="18">
+        <span class="unit" id="ev-unit">歲</span>
+      </div>
+
+      <div class="birth-prompt" id="birth-prompt">
+        <span>要把既有事件換算成新單位，請輸入你的出生年：</span>
+        <input type="number" id="birth-year" min="1800" max="2200" step="1" placeholder="1990">
+        <button class="btn-primary btn-small" id="birth-ok">換算</button>
+        <button class="btn-ghost btn-small" id="birth-cancel">取消</button>
+        <div class="err" id="birth-err"></div>
+      </div>
+
+      <label for="ev-name">事件名稱</label>
+      <div>
+        <input type="text" id="ev-name" placeholder="點下方常見事件快速填入，或自己輸入" maxlength="40" list="preset-list">
+        <div class="presets" id="presets"></div>
+      </div>
+      <datalist id="preset-list"></datalist>
+
+      <label>當時心情</label>
+      <div>
+        <div class="mood-field">
+          <input type="number" id="ev-mood" min="-20" max="20" step="1" placeholder="-20 ~ 20">
+          <span class="mood-scale">-20 最低落 ／ 0 平靜 ／ +20 最顛峰</span>
+        </div>
+        <div class="mood-readout" id="mood-readout">直接輸入 -20 到 20 之間的整數</div>
+      </div>
+
+      <label for="ev-note">補充（選填）</label>
+      <textarea id="ev-note" placeholder="這件事帶給你什麼影響或意義？" maxlength="140"></textarea>
+
+      <div class="form-actions">
+        <button class="btn-ghost" id="clear-form">清空</button>
+        <button class="btn-primary" id="add-event">＋ 加入曲線</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHART -->
+  <section class="panel chart-panel">
+    <p class="panel-title">你的曲線</p>
+    <div class="chart-wrap" id="chart-wrap">
+      <canvas id="chart" height="340"></canvas>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="chart-empty" id="chart-empty">
+      這裡還是一片空白。<br>
+      加入第一個事件，開始畫出<b>你的</b>生命歷程。
+    </div>
+  </section>
+
+  <!-- LIST -->
+  <section class="panel">
+    <p class="panel-title">事件清單</p>
+    <div class="event-list" id="event-list"></div>
+  </section>
+
+  <div class="foot-note">資料只存在你的裝置上，重新整理不會消失。靈感來自 <a href="https://hamr-lab.com/my-life-curve/" target="_blank" rel="noopener">倉鼠人生實驗室</a> 的生命曲線圖。</div>
+
+</div>
+
+<script>
+const PRESETS = ['搬家','畢業','第一份工作','升職','旅遊','戀愛','結婚','生小孩','買房子','考試失利','失戀','換第二份工作','家人過世'];
+const MMIN = -20, MMAX = 20;
+const MOOD_HINT = '直接輸入 -20 到 20 之間的整數';
+
+function moodInfo(v){
+  if(v<=-16) return {emoji:'😭',label:'崩潰谷底'};
+  if(v<=-11) return {emoji:'😢',label:'非常痛苦'};
+  if(v<=-6)  return {emoji:'😞',label:'低落'};
+  if(v<=-1)  return {emoji:'🙁',label:'有點差'};
+  if(v===0)  return {emoji:'😐',label:'平靜'};
+  if(v<=5)   return {emoji:'🙂',label:'還不錯'};
+  if(v<=10)  return {emoji:'😊',label:'不錯'};
+  if(v<=15)  return {emoji:'😄',label:'很開心'};
+  return {emoji:'🥳',label:'人生巔峰'};
+}
+function fmtMood(v){ return v>0 ? `+${v}` : `${v}`; }
+function parseMood(str){
+  if(str==='' || str===null) return null;
+  const n = Math.round(Number(str));
+  if(!Number.isFinite(n) || n<MMIN || n>MMAX) return null;
+  return n;
+}
+function moodColor(v){
+  const t = (v-MMIN)/(MMAX-MMIN);
+  return `hsl(${(t*130).toFixed(0)}, 68%, 58%)`;
+}
+
+const STORAGE_KEY = 'life-curve-events-v4';
+const V3_KEY = 'life-curve-events-v3';
+const V2_KEY = 'life-curve-events-v2';
+let events = [];
+let mode = 'age';
+let birthYear = null;
+let pendingMode = null;
+let editingId = null;
+
+const els = {
+  age: document.getElementById('ev-age'),
+  unit: document.getElementById('ev-unit'),
+  seg: document.getElementById('mode-seg'),
+  birthPrompt: document.getElementById('birth-prompt'),
+  birthYear: document.getElementById('birth-year'),
+  birthErr: document.getElementById('birth-err'),
+  name: document.getElementById('ev-name'),
+  note: document.getElementById('ev-note'),
+  mood: document.getElementById('ev-mood'),
+  presets: document.getElementById('presets'),
+  presetList: document.getElementById('preset-list'),
+  moodReadout: document.getElementById('mood-readout'),
+  addBtn: document.getElementById('add-event'),
+  clearBtn: document.getElementById('clear-form'),
+  list: document.getElementById('event-list'),
+  canvas: document.getElementById('chart'),
+  chartEmpty: document.getElementById('chart-empty'),
+  chartWrap: document.getElementById('chart-wrap'),
+  tooltip: document.getElementById('tooltip'),
+};
+
+/* preset event buttons: fill the name box, still fully editable */
+PRESETS.forEach(name=>{
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'preset'; b.textContent = name;
+  b.addEventListener('click', ()=>{ els.name.value = name; els.name.focus(); });
+  els.presets.appendChild(b);
+  const o = document.createElement('option'); o.value = name; els.presetList.appendChild(o);
+});
+
+function updateReadout(){
+  const v = parseMood(els.mood.value);
+  if(v===null){
+    els.moodReadout.classList.remove('chosen');
+    els.moodReadout.textContent = MOOD_HINT;
+    return;
+  }
+  const m = moodInfo(v);
+  els.moodReadout.classList.add('chosen');
+  els.moodReadout.innerHTML = `<span class="re-emoji">${m.emoji}</span> ${m.label} · ${fmtMood(v)}`;
+}
+els.mood.addEventListener('input', updateReadout);
+
+function clearForm(){
+  els.age.value = '';
+  els.name.value = '';
+  els.note.value = '';
+  els.mood.value = '';
+  updateReadout();
+}
+els.clearBtn.addEventListener('click', clearForm);
+
+els.addBtn.addEventListener('click', ()=>{
+  if(els.age.value===''){ flashInvalid(els.age); return; }
+  if(!els.name.value.trim()){ flashInvalid(els.name); return; }
+  const moodVal = parseMood(els.mood.value);
+  if(moodVal===null){ flashInvalid(els.mood); return; }
+
+  events.push({
+    id: 'ev_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+    x: Number(els.age.value),
+    name: els.name.value.trim(),
+    note: els.note.value.trim(),
+    mood: moodVal
+  });
+
+  // update the curve immediately; storage happens in the background
+  // so a slow/unavailable connection never blocks the visual update.
+  clearForm();
+  render();
+  save();
+});
+
+function flashInvalid(el){
+  el.style.borderColor = '#e0666f';
+  setTimeout(()=>{ el.style.borderColor = ''; }, 700);
+}
+
+function removeEvent(id){
+  if(editingId===id) editingId = null;
+  events = events.filter(e=>e.id!==id);
+  render();
+  save();
+}
+
+function startEdit(id){
+  editingId = id;
+  render();
+}
+
+function cancelEdit(){
+  editingId = null;
+  render();
+}
+
+async function saveEdit(id){
+  const row = document.querySelector(`.event-row[data-id="${id}"]`);
+  if(!row) return;
+  const age = row.querySelector('.edit-age').value;
+  const name = row.querySelector('.edit-name').value.trim();
+  const mood = parseMood(row.querySelector('.edit-mood').value);
+  const note = row.querySelector('.edit-note').value.trim();
+
+  if(age===''){ flashInvalid(row.querySelector('.edit-age')); return; }
+  if(!name){ flashInvalid(row.querySelector('.edit-name')); return; }
+  if(mood===null){ flashInvalid(row.querySelector('.edit-mood')); return; }
+
+  const ev = events.find(e=>e.id===id);
+  if(ev){
+    ev.x = Number(age);
+    ev.name = name;
+    ev.mood = mood;
+    ev.note = note;
+  }
+  editingId = null;
+  render();
+  save();
+}
+
+async function save(){
+  if(!window.storage || typeof window.storage.set !== 'function') return;
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify({mode, birthYear, events}), false);
+  }catch(err){ console.error('storage set failed', err); }
+}
+
+async function readKey(k){
+  try{ const r = await window.storage.get(k, false); return r && r.value ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function load(){
+  if(window.storage && typeof window.storage.get === 'function'){
+    const d4 = await readKey(STORAGE_KEY);
+    if(d4){
+      events = d4.events || []; mode = d4.mode || 'age'; birthYear = d4.birthYear ?? null;
+    } else {
+      const d3 = await readKey(V3_KEY);   // mood 1..20  ->  -20..20
+      if(d3){
+        events = (d3.events||[]).map(e=>({...e, mood:Math.round((e.mood-10.5)*2)}));
+        mode = d3.mode || 'age'; birthYear = d3.birthYear ?? null;
+      } else {
+        const d2 = await readKey(V2_KEY); // age-only, mood 1..10
+        if(Array.isArray(d2)){
+          events = d2.map(e=>({id:e.id,x:e.age,name:e.name,note:e.note,mood:Math.round((e.mood-5.5)*40/9)}));
+        }
+      }
+    }
+  }
+  applyModeUI();
+  render();
+}
+
+function fmtX(v){
+  return mode==='age' ? `${+v.toFixed(1)} 歲` : `${Math.round(v)} 年`;
+}
+function xAttrs(){
+  return mode==='age' ? 'min="0" max="120" step="0.5"' : 'min="1800" max="2200" step="1"';
+}
+
+function applyModeUI(){
+  [...els.seg.children].forEach(b=>b.classList.toggle('on', b.dataset.mode===mode));
+  els.unit.textContent = mode==='age' ? '歲' : '年';
+  els.age.min = mode==='age' ? 0 : 1800;
+  els.age.max = mode==='age' ? 120 : 2200;
+  els.age.step = mode==='age' ? 0.5 : 1;
+  els.age.placeholder = mode==='age' ? '18' : String(new Date().getFullYear()-10);
+}
+function closeBirthPrompt(){
+  pendingMode = null;
+  els.birthPrompt.classList.remove('show');
+  els.birthErr.textContent = '';
+}
+function convertEvents(newMode){
+  if(newMode==='age' && events.some(e=> e.x - birthYear < 0)) return false;
+  events.forEach(e=>{ e.x = newMode==='year' ? birthYear + e.x : e.x - birthYear; });
+  return true;
+}
+function setMode(newMode){
+  if(newMode===mode) return;
+  els.age.value = '';
+  if(events.length===0){
+    mode = newMode; closeBirthPrompt(); applyModeUI(); render(); save(); return;
+  }
+  if(birthYear!==null && convertEvents(newMode)){
+    mode = newMode; closeBirthPrompt(); applyModeUI(); render(); save(); return;
+  }
+  pendingMode = newMode;
+  els.birthErr.textContent = '';
+  els.birthPrompt.classList.add('show');
+}
+els.seg.addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  setMode(b.dataset.mode);
+});
+document.getElementById('birth-cancel').addEventListener('click', closeBirthPrompt);
+document.getElementById('birth-ok').addEventListener('click', ()=>{
+  const by = Number(els.birthYear.value);
+  if(!els.birthYear.value || by<1800 || by>2200){ els.birthErr.textContent = '請輸入有效的出生年（例如 1990）。'; return; }
+  const prev = birthYear;
+  birthYear = by;
+  const target = pendingMode;
+  if(!convertEvents(target)){
+    els.birthErr.textContent = '這個出生年會讓部分事件變成負的年齡，請重新確認。';
+    birthYear = prev; return;
+  }
+  mode = target; closeBirthPrompt(); applyModeUI(); render(); save();
+});
+
+function sortedEvents(){
+  return [...events].sort((a,b)=> a.x - b.x);
+}
+
+/* ---------------- render list ---------------- */
+function renderList(){
+  const sorted = sortedEvents();
+  if(sorted.length===0){
+    els.list.innerHTML = '<div class="empty-list">還沒有任何事件。</div>';
+    return;
+  }
+  els.list.innerHTML = sorted.map(ev=>{
+    const m = moodInfo(ev.mood);
+    if(editingId === ev.id){
+      return `<div class="event-row editing" data-id="${ev.id}">
+        <div class="edit-grid">
+          <input type="number" class="edit-age" ${xAttrs()} value="${ev.x}">
+          <input type="text" class="edit-name" maxlength="40" list="preset-list" value="${escapeAttr(ev.name)}">
+          <input type="number" class="edit-mood" min="-20" max="20" step="1" value="${ev.mood}" title="心情 -20 ~ 20">
+        </div>
+        <textarea class="edit-note" maxlength="140" placeholder="補充（選填）">${escapeHtml(ev.note||'')}</textarea>
+        <div class="edit-actions">
+          <button class="btn-ghost btn-small" onclick="cancelEdit()">取消</button>
+          <button class="btn-primary btn-small" onclick="saveEdit('${ev.id}')">儲存</button>
+        </div>
+      </div>`;
+    }
+    return `<div class="event-row" data-id="${ev.id}">
+      <div class="emoji">${m.emoji}</div>
+      <div class="meta">
+        <div class="ev-age">${fmtX(ev.x)}</div>
+        <div class="ev-name">${escapeHtml(ev.name)}</div>
+        ${ev.note ? `<div class="ev-note">${escapeHtml(ev.note)}</div>` : ''}
+      </div>
+      <div class="row-actions">
+        <button class="icon-btn" title="編輯" onclick="startEdit('${ev.id}')">✎</button>
+        <button class="icon-btn" title="刪除" onclick="removeEvent('${ev.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s){ return escapeHtml(s); }
+
+/* ---------------- render chart ---------------- */
+let chartPoints = [];
+
+function render(){
+  renderList();
+  drawChart();
+}
+
+function drawChart(){
+  const sorted = sortedEvents();
+  const canvas = els.canvas;
+  const dpr = window.devicePixelRatio || 1;
+  const cssWidth = els.chartWrap.clientWidth;
+  const cssHeight = 340;
+
+  if(sorted.length===0){
+    els.chartEmpty.style.display = 'block';
+    canvas.style.display = 'none';
+    return;
+  }
+  els.chartEmpty.style.display = 'none';
+  canvas.style.display = 'block';
+
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  canvas.style.height = cssHeight+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cssWidth,cssHeight);
+
+  const padL = 40, padR = 26, padT = 24, padB = 46;
+  const plotW = cssWidth - padL - padR;
+  const plotH = cssHeight - padT - padB;
+
+  const ages = sorted.map(e=>e.x);
+  let minA = Math.min(...ages), maxA = Math.max(...ages);
+  if(minA === maxA){ minA -= 2; maxA += 2; }
+  const span = maxA - minA;
+
+  const x = (a)=> padL + ( (a-minA)/span ) * plotW;
+  const y = (mood)=> padT + plotH - ( (mood-MMIN)/(MMAX-MMIN) ) * plotH;
+
+  // grid: a line every 5 points, zero line highlighted, labels every 10
+  for(let m=MMIN;m<=MMAX;m+=5){
+    const yy = y(m);
+    ctx.strokeStyle = m===0 ? 'rgba(232,196,104,0.32)' : 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, yy);
+    ctx.lineTo(padL+plotW, yy);
+    ctx.stroke();
+    if(m%10===0){
+      ctx.fillStyle = m===0 ? '#e8c468' : '#5c6486';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.font = "10px 'Space Grotesk', sans-serif";
+      ctx.fillText(fmtMood(m), padL-10, yy);
+    }
+  }
+
+  chartPoints = sorted.map(ev=>({ ev, px: x(ev.x), py: y(ev.mood) }));
+
+  // gradient fill under curve
+  if(chartPoints.length>1){
+    ctx.beginPath();
+    ctx.moveTo(chartPoints[0].px, y(0));
+    chartPoints.forEach(p=> ctx.lineTo(p.px, p.py));
+    ctx.lineTo(chartPoints[chartPoints.length-1].px, y(0));
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0,padT,0,padT+plotH);
+    grad.addColorStop(0,'rgba(232,196,104,0.18)');
+    grad.addColorStop(1,'rgba(232,196,104,0.0)');
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  // curve line
+  ctx.beginPath();
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#e8c468';
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  if(chartPoints.length===1){
+    const p = chartPoints[0];
+    ctx.moveTo(p.px-1, p.py);
+    ctx.lineTo(p.px+1, p.py);
+  } else {
+    ctx.moveTo(chartPoints[0].px, chartPoints[0].py);
+    for(let i=0;i<chartPoints.length-1;i++){
+      const p0 = chartPoints[i], p1 = chartPoints[i+1];
+      const midX = (p0.px+p1.px)/2;
+      ctx.quadraticCurveTo(p0.px, p0.py, midX, (p0.py+p1.py)/2);
+    }
+    const last = chartPoints[chartPoints.length-1];
+    ctx.lineTo(last.px, last.py);
+  }
+  ctx.stroke();
+
+  // points
+  chartPoints.forEach(p=>{
+    const color = moodColor(p.ev.mood);
+    ctx.beginPath();
+    ctx.arc(p.px, p.py, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#0f1320';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  });
+
+  // x-axis ticks
+  ctx.fillStyle = '#5c6486';
+  ctx.font = "11px 'Space Grotesk', sans-serif";
+  ctx.textBaseline = 'alphabetic';
+  const n = Math.min(5, Math.max(2, Math.floor(plotW/110)));
+  for(let k=0;k<n;k++){
+    const v = minA + span*k/(n-1);
+    ctx.textAlign = k===0 ? 'left' : (k===n-1 ? 'right' : 'center');
+    ctx.fillText(fmtX(v), padL + plotW*k/(n-1), cssHeight-14);
+  }
+}
+
+/* hover tooltip */
+els.canvas.addEventListener('mousemove', (e)=>{
+  const rect = els.canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let closest = null, dist = 999999;
+  chartPoints.forEach(p=>{
+    const d = Math.hypot(p.px-mx, p.py-my);
+    if(d<dist){ dist=d; closest=p; }
+  });
+  if(closest && dist < 22){
+    const m = moodInfo(closest.ev.mood);
+    els.tooltip.innerHTML = `<div class="t-age">${fmtX(closest.ev.x)} · ${m.emoji} ${m.label} (${fmtMood(closest.ev.mood)})</div>
+      <div class="t-name">${escapeHtml(closest.ev.name)}</div>
+      ${closest.ev.note ? `<div class="t-note">${escapeHtml(closest.ev.note)}</div>` : ''}`;
+    els.tooltip.style.opacity = 1;
+    let left = closest.px + 14;
+    if(left + 220 > els.chartWrap.clientWidth) left = closest.px - 234;
+    els.tooltip.style.left = left+'px';
+    els.tooltip.style.top = Math.max(0, closest.py - 10)+'px';
+    els.canvas.style.cursor = 'pointer';
+  } else {
+    els.tooltip.style.opacity = 0;
+    els.canvas.style.cursor = 'crosshair';
+  }
+});
+els.canvas.addEventListener('mouseleave', ()=>{ els.tooltip.style.opacity = 0; });
+
+window.removeEvent = removeEvent;
+window.startEdit = startEdit;
+window.cancelEdit = cancelEdit;
+window.saveEdit = saveEdit;
+window.addEventListener('resize', ()=> drawChart());
+
+load();
+</script>
+</body>
+</html>
