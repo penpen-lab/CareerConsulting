@@ -83,6 +83,7 @@
     font-size:13px;color:var(--ink-dim);
     display:flex;align-items:center;
   }
+  .req{color:#e0666f;font-weight:700;margin-right:4px;}
   input[type=number], input[type=text], textarea, select{
     width:100%;
     background:var(--bg-2);
@@ -253,6 +254,9 @@
   .edit-grid input, .edit-grid select, .edit-grid textarea{font-size:13px;padding:8px 10px;}
   .edit-actions{display:flex;justify-content:flex-end;gap:8px;}
 
+  header p.keep-note{color:var(--gold);margin-top:10px;font-size:14px;}
+  .list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;}
+  .list-head .panel-title{margin:0;}
   .foot-note{
     text-align:center;color:var(--ink-faint);font-size:12px;margin-top:36px;line-height:1.8;
   }
@@ -267,15 +271,15 @@
   <header>
     <div class="eyebrow">Life Curve · 生命歷程圖</div>
     <h1>生命歷程圖</h1>
-    <p>從有記憶開始，延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的歷程曲線——回顧過去，看清現在，思考未來。</p>
-    <div class="eyebrow">資料只存在你的裝置上，重新整理不會消失，如要全部重新填寫須按重新載入</div>
+    <p>從有記憶開始，一直延伸到現在。用年齡或西元年標記你人生中重要的事件與當時的心情，串聯成一條屬於你的歷程曲線——回顧過去，看清現在，思考未來。</p>
+    <p class="keep-note">資料只存在目前裝置上，重新整理不會消失，如要全部重新填寫須按重新載入</p>
   </header>
 
   <!-- FORM -->
   <section class="panel">
-    <p class="panel-title">新增一個事件</p>
+    <p class="panel-title">新增一個事件<span style="text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px"><span class="req" style="margin:0">*</span> 為必填</span></p>
     <div class="form-grid">
-      <label for="ev-age">年齡 / 年份(二選一)</label>
+      <label for="ev-age"><span class="req">*</span>年齡 / 年份</label>
       <div class="age-field">
         <div class="seg" id="mode-seg">
           <button type="button" data-mode="age" class="on">年齡</button>
@@ -293,14 +297,14 @@
         <div class="err" id="birth-err"></div>
       </div>
 
-      <label for="ev-name">事件名稱</label>
+      <label for="ev-name"><span class="req">*</span>事件名稱</label>
       <div>
         <input type="text" id="ev-name" placeholder="點下方常見事件快速填入，或自己輸入" maxlength="40" list="preset-list">
         <div class="presets" id="presets"></div>
       </div>
       <datalist id="preset-list"></datalist>
 
-      <label>當時心情</label>
+      <label for="ev-mood"><span class="req">*</span>當時心情</label>
       <div>
         <div class="mood-field">
           <input type="number" id="ev-mood" min="-20" max="20" step="1" placeholder="-20 ~ 20">
@@ -321,7 +325,7 @@
 
   <!-- CHART -->
   <section class="panel chart-panel">
-    <p class="panel-title">你的歷程曲線</p>
+    <p class="panel-title">你的曲線</p>
     <div class="chart-wrap" id="chart-wrap">
       <canvas id="chart" height="340"></canvas>
       <div class="tooltip" id="tooltip"></div>
@@ -334,11 +338,14 @@
 
   <!-- LIST -->
   <section class="panel">
-    <p class="panel-title">事件清單</p>
+    <div class="list-head">
+      <p class="panel-title">事件清單</p>
+      <button class="btn-ghost btn-small" id="reset-all">重新載入</button>
+    </div>
     <div class="event-list" id="event-list"></div>
   </section>
 
-  <div class="foot-note"> 生命歷程圖 </div>
+  <div class="foot-note">生命歷程圖 | THE END</div>
 
 </div>
 
@@ -783,6 +790,26 @@ els.canvas.addEventListener('mousemove', (e)=>{
   }
 });
 els.canvas.addEventListener('mouseleave', ()=>{ els.tooltip.style.opacity = 0; });
+
+/* 重新載入：清除全部資料重新填寫（需按兩次確認） */
+let resetTimer = null;
+document.getElementById('reset-all').addEventListener('click', (e)=>{
+  const btn = e.currentTarget;
+  if(!btn.dataset.armed){
+    btn.dataset.armed = '1';
+    btn.textContent = '再按一次，清除全部資料';
+    btn.style.color = '#e0666f'; btn.style.borderColor = '#e0666f';
+    resetTimer = setTimeout(()=>disarm(btn), 4000);
+    return;
+  }
+  clearTimeout(resetTimer); disarm(btn);
+  events = []; birthYear = null; mode = 'age'; editingId = null;
+  clearForm(); closeBirthPrompt(); applyModeUI(); render(); save();
+});
+function disarm(btn){
+  delete btn.dataset.armed; btn.textContent = '重新載入';
+  btn.style.color = ''; btn.style.borderColor = '';
+}
 
 window.removeEvent = removeEvent;
 window.startEdit = startEdit;
