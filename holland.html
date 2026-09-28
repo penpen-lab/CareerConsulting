@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>職涯探索小測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAF1E2;
+    --bg-2: #F3E4CC;
+    --surface: #FFFBF3;
+    --surface-2: #FBF0DD;
+    --ink: #40301F;
+    --ink-soft: #6B5842;
+    --muted: #9C8368;
+    --line: #E7D6B8;
+    --amber: #D69A3E;
+    --amber-deep: #B67A2A;
+    --clay: #BD6B4F;
+    --olive: #7C8A54;
+    --shadow: 0 18px 40px -20px rgba(64, 48, 31, 0.35);
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --bg: #241C13;
+      --bg-2: #2E2418;
+      --surface: #2C2317;
+      --surface-2: #35291A;
+      --ink: #F3E7D3;
+      --ink-soft: #D8C4A5;
+      --muted: #B29C7C;
+      --line: #4A3B27;
+      --amber: #E3AC5C;
+      --amber-deep: #EDBE7C;
+      --clay: #D68467;
+      --olive: #A3AE79;
+      --shadow: 0 18px 40px -18px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #241C13;
+    --bg-2: #2E2418;
+    --surface: #2C2317;
+    --surface-2: #35291A;
+    --ink: #F3E7D3;
+    --ink-soft: #D8C4A5;
+    --muted: #B29C7C;
+    --line: #4A3B27;
+    --amber: #E3AC5C;
+    --amber-deep: #EDBE7C;
+    --clay: #D68467;
+    --olive: #A3AE79;
+    --shadow: 0 18px 40px -18px rgba(0,0,0,0.55);
+  }
+
+  *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background: radial-gradient(120% 140% at 50% -10%, var(--bg-2), var(--bg) 60%);
+    color: var(--ink);
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    min-height:100%;
+    padding: 28px 16px 40px;
+  }
+  .stage{
+    width:100%;
+    max-width: 480px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 0 4px;
+  }
+  .brand-mark{
+    width:34px; height:34px;
+    border-radius:10px;
+    background: linear-gradient(155deg, var(--amber), var(--clay));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    box-shadow: 0 6px 14px -6px rgba(182,122,42,0.55);
+  }
+  .brand-mark svg{ width:18px; height:18px; color:#fff; }
+  .brand-text h1{
+    font-family:"Noto Serif TC", serif;
+    font-size: 17px;
+    margin:0;
+    font-weight:700;
+    letter-spacing:.02em;
+  }
+  .brand-text p{
+    margin:2px 0 0;
+    font-size:12px;
+    color: var(--muted);
+  }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+
+  .intro{ padding: 30px 26px 28px; }
+  .intro h2{
+    font-family:"Noto Serif TC", serif;
+    font-size: 24px;
+    line-height:1.4;
+    margin: 0 0 12px;
+    font-weight:700;
+  }
+  .intro p{
+    color: var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.85;
+    margin: 0 0 22px;
+  }
+  .intro .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:26px;
+  }
+  .intro .tags span{
+    font-size:12.5px;
+    color: var(--amber-deep);
+    background: var(--surface-2);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:999px;
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{
+    width:100%;
+    background: linear-gradient(135deg, var(--amber), var(--amber-deep));
+    color:#3A2712;
+    font-weight:700;
+    font-size:15px;
+    padding:15px 18px;
+    border-radius:14px;
+    box-shadow: 0 12px 22px -10px rgba(182,122,42,0.55);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:active{ transform: translateY(1px) scale(.99); }
+
+  /* ---- quiz viewport ---- */
+  .quiz-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 18px 20px 14px;
+  }
+  .back-btn{
+    width:30px; height:30px;
+    border-radius:50%;
+    background: var(--surface-2);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink-soft);
+    flex-shrink:0;
+    transition: opacity .2s ease, transform .15s ease;
+  }
+  .back-btn:active{ transform: scale(.92); }
+  .back-btn.hidden{ visibility:hidden; }
+  .back-btn svg{ width:15px; height:15px; }
+
+  .progress-wrap{ flex:1; }
+  .progress-track{
+    height:6px;
+    background: var(--surface-2);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg, var(--amber), var(--clay));
+    border-radius:999px;
+    transition: width .38s cubic-bezier(.65,0,.35,1);
+  }
+  .progress-label{
+    font-size:11.5px;
+    color: var(--muted);
+    margin-top:6px;
+    text-align:right;
+  }
+
+  .slides-viewport{
+    overflow:hidden;
+  }
+  .slides-track{
+    display:flex;
+    transition: transform .38s cubic-bezier(.65,0,.35,1);
+    will-change: transform;
+  }
+  .slide{
+    flex-shrink:0;
+    padding: 6px 22px 28px;
+  }
+
+  .q-eyebrow{
+    font-size:12px;
+    color: var(--amber-deep);
+    font-weight:700;
+    margin: 0 0 8px;
+  }
+  .q-text{
+    font-family:"Noto Serif TC", serif;
+    font-size:19px;
+    line-height:1.6;
+    font-weight:600;
+    margin: 0 0 22px;
+    min-height: 3.2em;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left;
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1.5px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size:14.5px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition: border-color .15s ease, background .15s ease, transform .12s ease;
+  }
+  .opt .dot{
+    width:18px; height:18px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    flex-shrink:0;
+    position:relative;
+  }
+  .opt .dot::after{
+    content:"";
+    position:absolute; inset:3px;
+    border-radius:50%;
+    background: var(--amber-deep);
+    transform: scale(0);
+    transition: transform .15s ease;
+  }
+  .opt:active{ transform: scale(.985); }
+  .opt.selected{
+    border-color: var(--amber-deep);
+    background: linear-gradient(135deg, rgba(214,154,62,0.16), rgba(189,107,79,0.10));
+  }
+  .opt.selected .dot::after{ transform: scale(1); }
+
+  /* ---- result ---- */
+  .result{
+    padding: 0 0 30px;
+    overflow:hidden;
+  }
+  .result-hero{
+    position:relative;
+    padding: 28px 24px 24px;
+    background: var(--hero-bg);
+    overflow:hidden;
+  }
+  .result-hero::after{
+    content:"";
+    position:absolute;
+    right:-40px; top:-40px;
+    width:150px; height:150px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.16);
+  }
+  .result-hero::before{
+    content:"";
+    position:absolute;
+    left:-30px; bottom:-50px;
+    width:120px; height:120px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.12);
+  }
+  .hero-eyebrow{
+    position:relative;
+    font-size:12.5px;
+    font-weight:700;
+    color: rgba(255,255,255,0.85);
+    margin: 0 0 14px;
+    letter-spacing:.02em;
+  }
+  .hero-badges{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .hero-icon{
+    width:50px; height:50px;
+    border-radius:15px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 10px 18px -8px rgba(0,0,0,0.35);
+    flex-shrink:0;
+    border: 2px solid rgba(255,255,255,0.55);
+  }
+  .hero-icon svg{ width:24px; height:24px; color:#fff; }
+  .hero-plus{
+    position:relative;
+    font-size:18px;
+    font-weight:700;
+    color: rgba(255,255,255,0.85);
+    flex-shrink:0;
+  }
+  .hero-title{
+    position:relative;
+    font-family:"Noto Serif TC", serif;
+    font-size:23px;
+    line-height:1.4;
+    font-weight:700;
+    color:#fff;
+    margin:0 0 10px;
+  }
+  .hero-codes{
+    position:relative;
+    display:flex;
+    gap:6px;
+  }
+  .hero-codes span{
+    font-size:11.5px;
+    font-weight:700;
+    color:#fff;
+    background: rgba(255,255,255,0.22);
+    border:1px solid rgba(255,255,255,0.5);
+    padding:3px 10px;
+    border-radius:999px;
+  }
+
+  .result-body{ padding: 22px 22px 4px; }
+
+  .type-card-row{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .type-card{
+    border-radius:14px;
+    padding:14px 15px;
+    border: 1.5px solid var(--tc-border);
+    background: var(--tc-wash);
+    display:flex;
+    gap:11px;
+    align-items:flex-start;
+  }
+  .type-card .tc-icon{
+    width:34px; height:34px;
+    border-radius:10px;
+    background: var(--tc-a1);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .type-card .tc-icon svg{ width:17px; height:17px; color:#fff; }
+  .type-card .tc-text p.tc-name{
+    margin:0 0 3px;
+    font-size:13.5px;
+    font-weight:700;
+    color: var(--tc-a2);
+  }
+  .type-card .tc-text p.tc-desc{
+    margin:0;
+    font-size:13px;
+    line-height:1.7;
+    color: var(--ink-soft);
+  }
+
+  .result-careers{
+    background: var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:22px;
+  }
+  .result-careers p{
+    margin:0 0 6px;
+    font-size:12.5px;
+    color: var(--muted);
+    font-weight:700;
+  }
+  .result-careers span{
+    font-size:14px;
+    color: var(--ink);
+    line-height:1.8;
+  }
+
+  .insight-grid{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .insight-card{
+    border-radius:14px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    background: var(--surface);
+  }
+  .insight-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .insight-head svg{ width:15px; height:15px; flex-shrink:0; }
+  .insight-head span{
+    font-size:12.5px;
+    font-weight:700;
+    color: var(--ink);
+  }
+  .insight-card.strength .insight-head svg{ color:#5E8A2E; }
+  .insight-card.blindspot .insight-head svg{ color:#C1522E; }
+  .insight-card ul{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .insight-card li{
+    font-size:13.5px;
+    line-height:1.65;
+    color: var(--ink-soft);
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .li-dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    margin-top:6px;
+    flex-shrink:0;
+  }
+
+  .bars{ display:flex; flex-direction:column; gap:11px; margin-bottom:20px; }
+  .bar-row{ display:flex; align-items:center; gap:10px; }
+  .bar-row.top .bar-label{ color: var(--ink); font-weight:700; }
+  .bar-label{
+    width:64px;
+    flex-shrink:0;
+    font-size:12.5px;
+    color: var(--muted);
+    font-weight:600;
+  }
+  .bar-track{
+    flex:1;
+    height:10px;
+    background: var(--surface-2);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    transition: width .7s cubic-bezier(.22,.9,.32,1);
+  }
+  .bar-pct{
+    width:34px;
+    text-align:right;
+    font-size:12px;
+    color: var(--muted);
+    flex-shrink:0;
+  }
+
+  .result-note{
+    font-size:13px;
+    color: var(--muted);
+    line-height:1.8;
+    border-top:1px dashed var(--line);
+    padding-top:16px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .slides-track, .progress-fill, .bar-fill, .opt, .btn-primary{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="14.5,9.5 10,10 9.5,14.5 14,14 14.5,9.5"/></svg>
+    </div>
+    <div class="brand-text">
+      <h1>職涯探索小測驗</h1>
+      <p>依據 Holland RIASEC 六型人格理論</p>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <!-- 介紹頁 -->
+    <div id="intro" class="intro">
+      <h2>花三分鐘，<br/>聽聽心裡真正的偏好</h2>
+      <p>沒有標準答案，只要憑直覺回答。<p>探索「實作、研究、藝術、社會、企業、常規」六大職涯密碼，量身打造更貼近自己的職涯方向。</p>
+      <div class="tags">
+        <span>共 10 題</span>
+        <span>約 3 分鐘</span>
+        
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()">開始測驗</button>
+    </div>
+
+    <!-- 測驗頁（初始隱藏） -->
+    <div id="quiz" style="display:none;">
+      <div class="quiz-head">
+        <button class="back-btn hidden" id="backBtn" onclick="goBack()" aria-label="上一題">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-label" id="progressLabel">1 / 10</div>
+        </div>
+      </div>
+
+      <div class="slides-viewport">
+        <div class="slides-track" id="slidesTrack"></div>
+      </div>
+    </div>
+
+    <!-- 結果頁（初始隱藏） -->
+    <div id="resultView" class="result" style="display:none;"></div>
+
+  </div>
+</div>
+
+<script>
+  // ---------- 題目資料 ----------
+  const TYPES = {
+    R: { name:"實作型", short:"實作", en:"Realistic", desc:"你偏好動手做、講求實際成果，喜歡看得見、摸得著的具體工作。踏實、有耐性，是你最自然的節奏。",
+      careers:"工程技術、機械 / 電機操作、木工與空間設計、戶外探勘、運動與體能相關工作",
+      strengths:["動手解決問題的效率高，說到做到","抗壓性強，撐得住高強度的實務工作","講求實際成果，不流於空談"],
+      blindspots:["長時間開會或抽象討論容易失去耐性","不擅長主動表達感受或說服他人","面對變動大、方向不明的計畫容易不安"],
+      icon:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2-2z"/>' },
+    I: { name:"研究型", short:"研究", en:"Investigative", desc:"你喜歡追根究柢，享受把問題拆解、分析、找出邏輯與答案的過程。好奇心與理性思考是你的強項。",
+      careers:"科學研究、資料分析、醫療診斷、工程研發、程式開發",
+      strengths:["邏輯清晰，擅長拆解複雜問題","專注力強，能長時間鑽研細節","判斷立基於證據，不受情緒左右"],
+      blindspots:["容易想太多，行動前猶豫不決","不擅長處理人際互動或情緒性的場合","對「差不多就好」的事容易失去耐心"],
+      icon:'<circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.2" y1="15.2" x2="20" y2="20"/>' },
+    A: { name:"藝術型", short:"藝術", en:"Artistic", desc:"你重視獨特的表達與美感，喜歡自由發揮、不受既定框架限制。創意與感受力是你理解世界的方式。",
+      careers:"設計、寫作與內容創作、音樂 / 表演、視覺藝術、廣告創意",
+      strengths:["創意豐富，總能提出獨特觀點","對美感與細節有高度敏銳度","勇於打破框架，願意嘗試新做法"],
+      blindspots:["不喜歡一成不變的規則，容易顯得散漫","情緒起伏較大，會影響穩定度","對他人的批評較為敏感"],
+      icon:'<path d="M12 20a8 8 0 1 1 0-16 7 7 0 0 1 7 7c0 1.7-1.3 2.5-2.5 2.5H14a2 2 0 0 0 0 4c0 1.4-1 2.5-2 2.5z"/><circle cx="8.5" cy="10.5" r=".8" fill="currentColor" stroke="none"/><circle cx="12" cy="7.5" r=".8" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10" r=".8" fill="currentColor" stroke="none"/>' },
+    S: { name:"社會型", short:"社會", en:"Social", desc:"你重視人與人之間的連結，樂於傾聽、陪伴與幫助他人。溫暖、有同理心，讓你自然而然成為別人的依靠。",
+      careers:"教育與培訓、諮商與輔導、社工、人力資源、醫護與照護",
+      strengths:["同理心強，容易獲得他人信任","擅長溝通協調，能化解衝突","樂於分享，讓團隊更有凝聚力"],
+      blindspots:["容易把別人的情緒也背負在自己身上","不擅長拒絕別人，容易過度付出","面對直接的衝突或競爭會較退縮"],
+      icon:'<path d="M20.8 8.6c0 4.4-8.8 10.4-8.8 10.4S3.2 13 3.2 8.6a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9z"/>' },
+    E: { name:"企業型", short:"企業", en:"Enterprising", desc:"你有明確的目標感，喜歡帶領、說服與影響他人，享受在挑戰與競爭中推進事情的過程。",
+      careers:"業務與行銷、創業、專案 / 團隊管理、公關與談判",
+      strengths:["目標感強，能持續推動事情前進","擅長說服與談判，很會借力使力","面對壓力和競爭反而更有動力"],
+      blindspots:["容易過於強勢，忽略他人的感受","追求效率，有時會犧牲細節品質","耐心聽取不同意見這件事需要練習"],
+      icon:'<path d="M4 19V9l7-4 7 4v10"/><path d="M9 19v-6h4v6"/><path d="M4 19h16"/>' },
+    C: { name:"常規型", short:"常規", en:"Conventional", desc:"你重視秩序與精確，喜歡按部就班把事情安排妥當。細心與條理，讓你能穩穩地把複雜事務理清楚。",
+      careers:"會計與財務、行政管理、資料 / 品質管理、法務事務",
+      strengths:["細心嚴謹，執行上不容易出錯","擅長規劃與資源管理，井井有條","值得信賴，能把事情如期完成"],
+      blindspots:["面對突發狀況或模糊指示容易焦慮","不擅長跳脫框架思考、臨場應變","有時過度在意規則，顯得保守"],
+      icon:'<rect x="5" y="4" width="14" height="17" rx="2"/><line x1="8.5" y1="9" x2="15.5" y2="9"/><line x1="8.5" y1="13" x2="15.5" y2="13"/><line x1="8.5" y1="17" x2="12.5" y2="17"/>' },
+  };
+  const TYPE_ORDER = ["R","I","A","S","E","C"];
+
+  const COLORS = {
+    R: { a1:"#E2672B", a2:"#B23D12", wash:"#FCE3D2", border:"rgba(178,61,18,0.28)" },
+    I: { a1:"#7FA23A", a2:"#4F6626", wash:"#EBEED4", border:"rgba(79,102,38,0.28)" },
+    A: { a1:"#D6467B", a2:"#9C2C57", wash:"#FAE0E9", border:"rgba(156,44,87,0.28)" },
+    S: { a1:"#E8593F", a2:"#AD3620", wash:"#FCE0D6", border:"rgba(173,54,32,0.28)" },
+    E: { a1:"#EFA916", a2:"#B57909", wash:"#FBEBC5", border:"rgba(181,121,9,0.28)" },
+    C: { a1:"#A9752E", a2:"#77501F", wash:"#F1E3D0", border:"rgba(119,80,31,0.28)" },
+  };
+
+  const QUESTIONS = [
+    { type:"R", text:"我喜歡動手組裝或修理東西，像是家具、腳踏車或小家電。" },
+    { type:"I", text:"我喜歡追根究柢，把一個問題拆解到底、找出背後的原因。" },
+    { type:"A", text:"我常常有很多點子，喜歡用畫畫、寫作、音樂或設計來表達自己。" },
+    { type:"S", text:"我樂於傾聽別人的煩惱，也喜歡陪伴、教導或幫助身邊的人。" },
+    { type:"E", text:"我喜歡說服別人接受我的想法，也享受帶領團隊達成目標。" },
+    { type:"C", text:"我喜歡把事情安排得井井有條，照表操課讓我感到踏實。" },
+    { type:"R", text:"比起整天待在辦公室，我更喜歡在戶外或需要體力活動的環境工作。" },
+    { type:"I", text:"面對複雜的數據或資訊，我會想先深入分析，而不是急著下結論。" },
+    { type:"A", text:"比起照著固定流程走，我更享受自由發揮、打破常規的過程。" },
+    { type:"E", text:"面對挑戰與競爭，我感到興奮，而不是壓力。" },
+  ];
+
+  const SCALE = [
+    { v:5, t:"非常符合我" },
+    { v:4, t:"有點符合" },
+    { v:3, t:"普通、還好" },
+    { v:2, t:"不太符合" },
+    { v:1, t:"完全不符合" },
+  ];
+
+  const total = QUESTIONS.length;
+  const answers = new Array(total).fill(null);
+  let current = 0;
+  let advancing = false;
+
+  const track = document.getElementById('slidesTrack');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const backBtn = document.getElementById('backBtn');
+
+  // build slides
+  QUESTIONS.forEach((q, qi) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    slide.style.flex = `0 0 ${100/total}%`;
+    slide.style.width = `${100/total}%`;
+
+    const opts = SCALE.map(s => `
+      <button class="opt" data-v="${s.v}" onclick="choose(${qi}, ${s.v}, this)">
+        <span class="dot"></span>${s.t}
+      </button>`).join('');
+
+    slide.innerHTML = `
+      <p class="q-eyebrow">第 ${qi+1} 題</p>
+      <p class="q-text">${q.text}</p>
+      <div class="options">${opts}</div>
+    `;
+    track.appendChild(slide);
+  });
+  track.style.width = `${total*100}%`;
+
+  function startQuiz(){
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    render();
+  }
+
+  function render(){
+    track.style.transform = `translateX(-${(current/total)*100}%)`;
+    progressFill.style.width = `${(answersCount()/total)*100}%`;
+    progressLabel.textContent = `${current+1} / ${total}`;
+    backBtn.classList.toggle('hidden', current === 0);
+
+    // reflect stored answer as selected on current slide
+    const slide = track.children[current];
+    [...slide.querySelectorAll('.opt')].forEach(btn=>{
+      btn.classList.toggle('selected', Number(btn.dataset.v) === answers[current]);
+    });
+  }
+
+  function answersCount(){
+    return answers.filter(a => a !== null).length;
+  }
+
+  function choose(qi, value, el){
+    if (advancing) return;
+    answers[qi] = value;
+    const slide = track.children[qi];
+    [...slide.querySelectorAll('.opt')].forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    progressFill.style.width = `${(answersCount()/total)*100}%`;
+
+    advancing = true;
+    setTimeout(() => {
+      if (qi === total - 1){
+        showResult();
+      } else if (qi === current){
+        current += 1;
+        render();
+      }
+      advancing = false;
+    }, 260);
+  }
+
+  function goBack(){
+    if (current === 0 || advancing) return;
+    current -= 1;
+    render();
+  }
+
+  function showResult(){
+    // compute average score per type
+    const sums = {}, counts = {};
+    TYPE_ORDER.forEach(t => { sums[t]=0; counts[t]=0; });
+    QUESTIONS.forEach((q, i) => {
+      sums[q.type] += answers[i] || 0;
+      counts[q.type] += 1;
+    });
+    const avg = {};
+    TYPE_ORDER.forEach(t => { avg[t] = counts[t] ? sums[t]/counts[t] : 0; });
+
+    const ranked = [...TYPE_ORDER].sort((a,b) => avg[b]-avg[a]);
+    const primary = ranked[0];
+    const secondary = ranked[1];
+    const pT = TYPES[primary], sT = TYPES[secondary];
+    const pC = COLORS[primary], sC = COLORS[secondary];
+
+    // bars：每一列用自己的類型色，前二名加粗標示
+    const barsHTML = ranked.map(t => {
+      const pct = Math.round((avg[t]/5)*100);
+      const isTop = (t === primary || t === secondary);
+      const c = COLORS[t];
+      return `
+        <div class="bar-row ${isTop ? 'top' : ''}">
+          <div class="bar-label">${TYPES[t].short}</div>
+          <div class="bar-track"><div class="bar-fill" data-pct="${pct}" style="background:linear-gradient(90deg, ${c.a1}, ${c.a2});"></div></div>
+          <div class="bar-pct">${pct}%</div>
+        </div>`;
+    }).join('');
+
+    // 優勢 / 盲區：各取兩型前兩點組合，並用色點標示來源類型
+    function mixList(field){
+      const items = [
+        ...pT[field].slice(0,2).map(t => ({ t, type: primary })),
+        ...sT[field].slice(0,2).map(t => ({ t, type: secondary })),
+      ];
+      return items.map(it => `
+        <li><span class="li-dot" style="background:${COLORS[it.type].a1};"></span>${it.t}</li>
+      `).join('');
+    }
+    const strengthsHTML = mixList('strengths');
+    const blindspotsHTML = mixList('blindspots');
+
+    // 合併職涯建議（去重）
+    const careerSet = [...new Set([...pT.careers.split('、'), ...sT.careers.split('、')])];
+    const careersHTML = careerSet.slice(0,7).join('、');
+
+    const view = document.getElementById('resultView');
+    view.className = 'result';
+    view.innerHTML = `
+      <div class="result-hero" style="--hero-bg:linear-gradient(120deg, ${pC.a1} 0%, ${pC.a1} 45%, ${sC.a1} 100%);">
+        <p class="hero-eyebrow">你的職涯傾向組合</p>
+        <div class="hero-badges">
+          <div class="hero-icon" style="background:${pC.a2};">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${pT.icon}</svg>
+          </div>
+          <span class="hero-plus">+</span>
+          <div class="hero-icon" style="background:${sC.a2};">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${sT.icon}</svg>
+          </div>
+        </div>
+        <p class="hero-title">${pT.name} × ${sT.name}</p>
+        <div class="hero-codes">
+          <span>${primary}・${pT.en}</span>
+          <span>${secondary}・${sT.en}</span>
+        </div>
+      </div>
+
+      <div class="result-body">
+        <div class="type-card-row">
+          <div class="type-card" style="--tc-wash:${pC.wash}; --tc-border:${pC.border}; --tc-a1:${pC.a1}; --tc-a2:${pC.a2};">
+            <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${pT.icon}</svg></div>
+            <div class="tc-text">
+              <p class="tc-name">${pT.name}</p>
+              <p class="tc-desc">${pT.desc}</p>
+            </div>
+          </div>
+          <div class="type-card" style="--tc-wash:${sC.wash}; --tc-border:${sC.border}; --tc-a1:${sC.a1}; --tc-a2:${sC.a2};">
+            <div class="tc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${sT.icon}</svg></div>
+            <div class="tc-text">
+              <p class="tc-name">${sT.name}</p>
+              <p class="tc-desc">${sT.desc}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-careers">
+          <p>可以留意的方向</p>
+          <span>${careersHTML}</span>
+        </div>
+
+        <div class="insight-grid">
+          <div class="insight-card strength">
+            <div class="insight-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>職場優勢</span>
+            </div>
+            <ul>${strengthsHTML}</ul>
+          </div>
+          <div class="insight-card blindspot">
+            <div class="insight-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>
+              <span>需要留意的盲區</span>
+            </div>
+            <ul>${blindspotsHTML}</ul>
+          </div>
+        </div>
+
+        <div class="bars">${barsHTML}</div>
+        <p class="result-note">六個傾向每個人都有，只是比重不同。這份結果是一個起點，幫助你更了解自己在哪些情境裡會感到自在、投入——實際的選擇，還是取決於你想過的生活。</p>
+      </div>
+    `;
+
+    document.getElementById('quiz').style.display = 'none';
+    view.style.display = 'block';
+
+    requestAnimationFrame(()=>{
+      [...view.querySelectorAll('.bar-fill')].forEach(el=>{
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  }
+
+</script>
+</body>
+</html>
