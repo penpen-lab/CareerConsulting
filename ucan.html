@@ -23,17 +23,17 @@ button{background:linear-gradient(90deg,#2563eb,#0ea5e9);color:#fff;border:0;bor
 .bar .t i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;margin:14px 0;box-shadow:0 6px 18px rgba(37,99,235,.15)}
 .hero{background:linear-gradient(135deg,#1d4ed8,#38bdf8);color:#fff;border:0}.hero .big{font-size:2.2rem;font-weight:700;letter-spacing:.15em}
-.card h3{margin:0 0 4px;font-size:1.05rem}.rk{display:inline-block;background:var(--ac);color:#fff;border-radius:999px;padding:0 10px;font-size:.8rem;margin-right:6px}
+.card h3{margin:0 0 4px;font-size:1.05rem}.rk{display:inline-block;font-size:1.3rem;margin-right:6px;vertical-align:middle}
+.rk.tag{background:var(--ac);color:#fff;border-radius:999px;padding:0 10px;font-size:.8rem;font-size:.8rem}
 .chip{display:inline-block;background:rgba(37,99,235,.12);color:var(--ac);border-radius:999px;padding:2px 11px;margin:3px 4px 3px 0;font-size:.85rem}
 .lb{font-size:.8rem;color:var(--mu);margin-top:8px}
 #res{display:none}
 </style></head><body><main>
-<h1>UCAN 簡易測驗</h1>
+<div id="page1"><h1>UCAN 簡易測驗</h1>
 <p class="sub">依 UCAN 平台的兩大架構(職業興趣探索、共通職能診斷)自編的簡化版,題目為原創,僅供自我探索,非官方測驗。1 = 非常不符合,5 = 非常符合。</p>
 <div id="form"></div>
-<button onclick="calc()">查看結果</button>
+<button onclick="calc()">查看結果</button></div>
 <div id="res"></div>
-<p class="sub" style="margin-top:30px">想取得正式結果,請至教育部 UCAN 平台(ucan.moe.edu.tw)以學校帳號施測。</p>
 </main>
 <script>
 const H={R:"實作型",I:"研究型",A:"藝術型",S:"社會型",E:"企業型",C:"事務型"};
@@ -58,6 +58,7 @@ const f=document.getElementById("form");
 function sec(title,arr,pre){let h=`<h2>${title}</h2>`;arr.forEach((q,i)=>{h+=`<div class="q"><p>${i+1}. ${q[1]}</p><div class="opts">`+[1,2,3,4,5].map(n=>`<label><input type="radio" name="${pre}${i}" value="${n}">${n}</label>`).join("")+`</div></div>`});return h}
 f.innerHTML=sec("第一部分:職業興趣探索(Holland 六類型)",interest,"i")+sec("第二部分:共通職能自評",comp,"c");
 function val(n){const e=document.querySelector(`input[name="${n}"]:checked`);return e?+e.value:null}
+const ICON={R:"🔧",I:"🔬",A:"🎨",S:"🤝",E:"📈",C:"📋"};
 const JOB={R:["機械/電機工程師","技術員","廚師","園藝景觀師","設備維修員"],I:["資料科學家","研究員","軟體工程師","藥師","數據分析師"],A:["視覺設計師","編輯/作家","攝影師","影像創作者","建築師"],S:["教師","社工師","心理師","護理師","人資專員"],E:["業務經理","行銷企劃","創業家","律師","專案經理"],C:["會計師","行政管理","稽核人員","資料管理師","財務分析師"]};
 const ST={R:"動手能力強、務實可靠,擅長操作工具與排除故障。",I:"邏輯分析與獨立鑽研力強,能從資料中找出關鍵結論。",A:"創意與美感突出,善於用作品傳達想法、打造差異化。",S:"具同理心與傾聽力,擅長引導、陪伴並建立信任。",E:"具領導與說服力,行動導向,能推動資源達成目標。",C:"細心有條理,重視流程與精確,是團隊中穩定可靠的後盾。"};
 const CS={"溝通表達":"能清楚傳達想法,適合需要簡報、協調、對外溝通的角色。","持續學習":"適應變化快,能快速上手新領域,職涯轉換彈性大。","人際互動":"容易建立人脈與信任,適合客戶端或跨部門工作。","團隊合作":"善於分工與支援,是團隊凝聚力的來源。","問題解決":"能拆解問題、找出解法,適合專案與技術性挑戰。","創新":"點子多、敢嘗試,適合開發新產品與改善流程。","工作責任及紀律":"值得信賴、重承諾,容易獲得主管託付重任。","資訊科技應用":"善用數位工具提升效率,契合數位轉型的職場。"};
@@ -68,13 +69,16 @@ function calc(){
  const r=document.getElementById("res");r.style.display="block";
  if(miss){r.innerHTML=`<div class="card"><h3>還有 ${miss} 題未作答</h3></div>`;return}
  const ks=Object.keys(H).sort((a,b)=>I[b]-I[a]),code=ks.slice(0,3).join("");
- let h=`<h2>你的測驗結果</h2><div class="card hero"><div>Holland 興趣碼</div><div class="big">${code}</div><div>${ks.slice(0,3).map(k=>H[k]).join(" · ")}</div></div>`;
- ks.slice(0,3).forEach((k,n)=>h+=`<div class="card"><h3><span class="rk">No.${n+1}</span>${H[k]}(${I[k]}/10)</h3><div class="sub">${HD[k]}</div><div class="lb">適合職稱</div>${JOB[k].map(j=>`<span class="chip">${j}</span>`).join("")}<div class="lb">職涯優勢</div><div>${ST[k]}</div></div>`);
+ let h=`<h2>UCAN 簡易測驗結果</h2><div class="card hero"><div>Holland 興趣碼</div><div class="big">${code}</div><div>${ks.slice(0,3).map(k=>H[k]).join(" · ")}</div></div>`;
+ ks.slice(0,3).forEach((k,n)=>h+=`<div class="card"><h3><span class="rk">${ICON[k]}</span>${H[k]}(${I[k]}/10)</h3><div class="sub">${HD[k]}</div><div class="lb">適合職稱</div>${JOB[k].map(j=>`<span class="chip">${j}</span>`).join("")}<div class="lb">職涯優勢</div><div>${ST[k]}</div></div>`);
  const names=Object.keys(cc).map(k=>[k,C[k]/cc[k]]).sort((a,b)=>b[1]-a[1]);
  h+=`<div class="card"><h3>共通職能(滿分 5)</h3>`+names.map(([k,s])=>`<div class="bar"><span>${k}</span><span class="t"><i style="width:${s*20}%"></i></span><span>${s.toFixed(1)}</span></div>`).join("")+`</div>`;
- names.slice(0,2).forEach(([k,s])=>h+=`<div class="card"><h3><span class="rk">優勢</span>${k}(${s.toFixed(1)})</h3><div>${CS[k]}</div></div>`);
+ names.slice(0,2).forEach(([k,s])=>h+=`<div class="card"><h3><span class="rk tag">優勢</span>${k}(${s.toFixed(1)})</h3><div>${CS[k]}</div></div>`);
  const w=names[names.length-1];
- h+=`<div class="card"><h3><span class="rk">可加強</span>${w[0]}(${w[1].toFixed(1)})</h3><div>${CS[w[0]]}可透過社團、實習或專題刻意練習。</div></div><p class="sub">興趣分數僅代表相對偏好,不代表能力高低。</p>`;
- r.innerHTML=h;r.scrollIntoView({behavior:"smooth"});
+ h+=`<div class="card"><h3><span class="rk tag">可加強</span>${w[0]}(${w[1].toFixed(1)})</h3><div>${CS[w[0]]}可透過社團、實習或專題刻意練習。</div></div><p class="sub" style="margin:.3em 0 0">興趣分數僅代表相對偏好,不代表能力高低。<br>想取得正式結果,請至教育部 UCAN 平台(ucan.moe.edu.tw)以學校帳號施測。</p>`;
+ r.innerHTML=h;
+ document.getElementById("page1").style.display="none";
+ r.style.display="block";
+ window.scrollTo({top:0,behavior:"smooth"});
 }
 </script></body></html>
