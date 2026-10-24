@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>生涯樹小遊戲</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Chiron+GoRound+TC:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#EEF3F0;--surface:#fff;--ink:#14281F;--mute:#5A6B63;--line:#B9C7BF;--btn:#14281F;--btnink:#fff;
+--tree:#2E8B57;--kid:#2F6FD6;--pool:#0E94A5;--wind:#D9771A;--skate:#8E4FD1;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A15;--surface:#182620;--ink:#E6EFEA;--mute:#93A59B;--line:#3A4E44;--btn:#E6EFEA;--btnink:#0F1A15;--tree:#3FA86C;--kid:#5B92F0;--pool:#27B3C4;--wind:#EE9A44;--skate:#AB78E8}}
+:root[data-theme="dark"]{--bg:#0F1A15;--surface:#182620;--ink:#E6EFEA;--mute:#93A59B;--line:#3A4E44;--btn:#E6EFEA;--btnink:#0F1A15;--tree:#3FA86C;--kid:#5B92F0;--pool:#27B3C4;--wind:#EE9A44;--skate:#AB78E8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6}
+main{max-width:920px;margin:0 auto;padding:20px 16px 80px}
+h1{font-size:clamp(28px,6vw,42px);font-weight:900;margin:8px 0 4px;letter-spacing:.02em}
+h2{font-size:20px;margin:0 0 4px}
+p{margin:4px 0}.mute{color:var(--mute);font-size:14px}
+.steps{display:flex;gap:8px;margin:14px 0 22px;flex-wrap:wrap}
+.steps span{font-size:13px;padding:4px 12px;border-radius:99px;border:1.5px solid var(--line);color:var(--mute)}
+.steps span.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
+.steps span.done{border-color:var(--tree);color:var(--tree)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--btn);color:var(--btnink);border:0;border-radius:10px;padding:10px 22px;font-weight:700}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.ghost{background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 16px}
+button:focus-visible{outline:3px solid var(--kid);outline-offset:2px}
+.count{font-size:28px;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:10px 8px;min-height:56px;text-align:center;color:var(--ink);transition:transform .12s,border-color .12s,background .12s}
+.card:hover{transform:translateY(-2px)}
+.card.sel{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
+.group{background:var(--surface);border-left:6px solid var(--c);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.group h3{margin:0;color:var(--c);font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--c);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:500}
+.flip{animation:flip .55s both}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+.tray{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:18px;min-height:64px}
+.chip.pick{outline:3px solid var(--ink);outline-offset:2px;transform:scale(1.06)}
+.chip[draggable=true]{cursor:grab}
+.tree{display:flex;flex-direction:column;align-items:center}
+.zone{border:2px dashed var(--line);padding:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-content:center;transition:background .15s,border-color .15s;background:var(--surface)}
+.zone.over,.zone.ready{border-color:var(--ink);border-style:solid}
+.zone .lbl{width:100%;text-align:center;font-size:13px;color:var(--mute);line-height:1.3}
+.zone .lbl b{display:block;color:var(--ink);font-size:16px}
+.crown{width:min(560px,100%);min-height:150px;border-radius:50%/60% 60% 40% 40%;border-color:var(--pool)}
+.branch{width:min(380px,82%);min-height:96px;border-radius:16px;margin-top:-6px;border-color:var(--kid)}
+.trunk{width:min(220px,56%);min-height:120px;border-radius:6px;border-color:var(--tree)}
+.root{width:min(500px,100%);min-height:96px;border-radius:0 0 50% 50%/0 0 90% 90%;border-color:var(--wind)}
+.crown{border-radius:48% 48% 24px 24px/40% 40% 24px 24px;width:min(640px,100%)}.branch{width:min(560px,94%)}.trunk{width:min(460px,90%)}.root{border-radius:24px 24px 50% 50%/24px 24px 40% 40%;width:min(640px,100%)}.zone{padding:16px 18px}.zone .lbl p{margin:6px 0 0;color:var(--ink);font-size:13px}.chips{width:100%}
+.fld{display:block;width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin:4px 0 12px}
+.rng{display:grid;grid-template-columns:130px 1fr 30px;gap:10px;align-items:center;margin:6px 0}.rng input{width:100%}
+.rep h3{margin:18px 0 6px;font-size:18px}.rep .layer p{margin:4px 0;font-size:14px}
+.tree .zone{position:relative;border:0;background:none;padding:0;border-radius:0;display:block;min-height:0}
+.tree .zone svg.bg{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}
+.tint{fill:color-mix(in srgb,var(--t) 20%,var(--surface))}
+.tree .zone .in{position:relative;z-index:1;text-align:center}
+.tree .zone .lbl{margin-bottom:8px;font-size:12px;line-height:1.3}.tree .zone .lbl b{font-size:15px}
+.tree .zone .chip{font-size:13px;padding:5px 10px}
+.tree .crown{width:min(680px,100%);min-height:260px}.tree .crown .in{padding:64px 17% 56px}
+.tree .branch{width:min(460px,82%);min-height:150px;margin-top:-30px}.tree .branch .in{padding:34px 20% 26px}
+.tree .trunk{width:min(400px,80%);min-height:170px;margin-top:-4px}.tree .trunk .in{padding:14px 24% 44px}
+.tree .root{width:min(600px,100%);min-height:140px;margin-top:-6px}.tree .root .in{padding:38px 14% 44px}
+.tint{fill:color-mix(in srgb,var(--t) 30%,var(--surface))}
+.tree .zone,.tree .zone i{font-family:"Chiron GoRound TC","Noto Sans TC",sans-serif}
+.tree .zone i{position:absolute;display:block;font-style:normal;pointer-events:none}
+.tree .zone .chip{border-radius:99px;padding:6px 14px;box-shadow:0 2px 0 rgba(0,0,0,.18);font-family:"Chiron GoRound TC","Noto Sans TC",sans-serif}
+.face{position:absolute;left:50%;top:20px;width:0;height:0;z-index:1}
+.eye{width:9px;height:11px;background:var(--ink);border-radius:50%;top:0;z-index:1}.eye.l{left:-40px}.eye.r{left:31px}
+.cheek{width:17px;height:9px;border-radius:50%;background:rgba(255,110,150,.55);top:15px}.cheek.l{left:-64px}.cheek.r{left:47px}
+.mouth{left:-7px;top:12px;width:14px;height:8px;border:2.5px solid var(--ink);border-top:0;border-radius:0 0 14px 14px}
+.fruit{width:17px;height:17px;border-radius:50%;background:#F0566B;box-shadow:inset -3px -3px 0 rgba(0,0,0,.14),inset 3px 3px 0 rgba(255,255,255,.35);z-index:1}.fruit.y{background:#FFC83D}
+.leaf{width:28px;height:15px;background:#7BD389;border-radius:50% 0 50% 0;z-index:0}
+.peb{border-radius:50%;background:color-mix(in srgb,var(--wind) 35%,var(--surface))}
+.sw{position:absolute;width:20px;height:14px;transform:translate(-50%,-50%);z-index:0;pointer-events:none;fill:none;stroke:#6E8A3E;stroke-width:2;stroke-linecap:round}
+.tree .crown .in{color:#2B3A1E}.tree .trunk .in{color:#fff}.tree .root .in{color:#3B2A1A}
+.tree .zone .lbl b{color:inherit}.tree .zone .mute{color:inherit}
+.tree .branch{margin-top:-44px}
+.tree .zone .chip{box-shadow:0 0 0 2px #fff,0 3px 0 2px rgba(0,0,0,.18)}
+.tree{background:#fff;border-radius:16px;padding:22px 10px 26px;border:1.5px solid var(--line)}
+.tree .crown .in,.tree .trunk .in,.tree .root .in,.tree .branch .in{color:#222}
+.tree .zone .chip{box-shadow:0 0 0 2px #333}
+.tree .crown{width:min(560px,100%);min-height:340px}.tree .crown .in{padding:70px 17% 60px}
+.tree .branch{width:min(420px,86%);min-height:170px;margin-top:-44px}.tree .branch .in{padding:50px 25% 30px}
+.tree .trunk{width:min(420px,86%);min-height:190px;margin-top:-4px}.tree .trunk .in{padding:20px 24% 44px}
+.tree .root{width:min(560px,100%);min-height:150px;margin-top:-6px}.tree .root .in{padding:46px 13% 40px}
+.tree .crown .in,.tree .branch .in,.tree .trunk .in{color:#fff}.tree .root .in{color:#3B2A1A}
+.tree .zone .chip{box-shadow:0 0 0 2px #fff,0 3px 0 2px rgba(0,0,0,.22)}
+.tree .crown .in,.tree .branch .in,.tree .trunk .in,.tree .root .in{color:#222}
+.tree .zone .lbl{color:#6B6B6B}.tree .zone .lbl b{color:#222}
+.tree .zone .chip{border-radius:6px;box-shadow:none;padding:5px 12px}
+.tree .branch{width:min(560px,100%);min-height:170px;margin-top:-10px}.tree .branch .in{padding:50px 20% 30px}
+.tree .trunk{width:min(460px,92%);min-height:190px;margin-top:-4px;z-index:2}.tree .trunk .in{padding:22px 24% 50px}
+.tree .root{width:min(560px,100%);min-height:170px;margin-top:-40px}.tree .root .in{padding:60px 12% 36px}
+.tree .crown{width:min(598px,100%);min-height:283px}
+.tree .trunk{width:min(346px,92%)}.tree .trunk .in{padding:22px 20% 50px}.tree .trunk .chips{flex-direction:column;align-items:center}
+.tree .root{width:min(440px,100%);margin-top:-6px}.tree .root .in{padding:46px 12% 36px}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;max-width:92vw;font-size:14px;z-index:9;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.layer{background:var(--surface);border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:6px solid var(--c)}
+.layer b{color:var(--c)}
+.layer.empty{opacity:.75;border-left-style:dashed}
+ol{padding-left:22px}li{margin:6px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin:8px 0 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:5px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>生涯樹探索</h1>
+<p class="mute">從 66 張生涯卡挑出最重視的 10 張，再把它們種成一棵屬於你的生涯樹。</p>
+<div class="steps" id="steps"></div>
+<div id="app"></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const C={
+tree:{n:'大樹卡',d:'內在自我、價值觀與信念',zone:'trunk',w:'接受挑戰|做自己|精神層面的滿足|內在的平靜|發展能力與技巧|擁有內在空間|用心/盡力|有影響力|為夢想目標努力|專業-出類拔萃/獨當一面|有後代|擁有與神的聯繫|公平公正|行善|欣賞美|安全感|發揮創造力|擁有自由|獨立自主|自信|赤子之心|勤奮努力|工作有意義感|腳踏實地|誠實正直|生命的深度與厚度|有正義感|講義氣|冒險與刺激|勇於改變|持續的自我探索'},
+kid:{n:'小朋友卡',d:'人際關係與支持系統',zone:'branch',w:'和一群人一起打拚|有好朋友可以說心內話|美滿的婚姻|有意義的情愛關係|孝順父母|親密的家庭|有親近的好朋友|讚賞鼓勵別人|幫助別人|自在舒坦的人際關係'},
+pool:{n:'游泳池卡',d:'生活形態與休閒時間',zone:'crown',w:'規律的生活|安穩的工作|平凡單純的生活|不要做壞事|什麼事都不做|享受獨處|參與文化藝術活動|旅行看看這世界|持續的學習|豐富多彩的生活|做喜歡的事|趣味的人生|參與宗教政治社團活動'},
+wind:{n:'風車卡',d:'外在物質與工作條件',zone:'root',w:'時尚的穿著|錢夠用(沒有經濟負擔)|有房子/有車子|有社會地位擁有聲望|會賺錢/有財富'},
+skate:{n:'溜冰鞋卡',d:'身體健康與生活節奏',zone:'root',w:'享受美食|休息與放鬆|發揮體能|接近大自然|運動/健身|擁有健康|長壽'}
+};
+const Z={
+crown:{n:'樹冠與果實層',s:'生活形態與休閒時間',h:'游泳池卡',m:'你最終想呈現給世界的樣貌，或理想中每天展開想過的生活方式。'},
+branch:{n:'樹枝與綠葉層',s:'人際關係與支持系統',h:'小朋友卡',m:'由內在自我向外延伸，滋養自己與他人的互動網絡。'},
+trunk:{n:'樹幹核心層',s:'內在自我、價值觀與信念',h:'大樹卡',m:'一個人的中心思想與本質，是支撐整棵樹的靈魂。'},
+root:{n:'樹根與土壤層',s:'身體健康、物質與工作條件',h:'溜冰鞋卡、風車卡',m:'維持生活生存的基底。如果底層不穩，上方的樹冠就難以伸展。'}
+};
+const ZK=['crown','branch','trunk','root'];
+const ALL=[];for(const k in C)C[k].w.split('|').forEach(t=>ALL.push({t,k}));
+const KEY={};ALL.forEach(c=>KEY[c.t]=c.k);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let S;
+function init(){S={step:1,deck:shuffle(ALL),picked:[],placed:{},sel:null,miss:{},total:0,hint:false}}
+const $=id=>document.getElementById(id);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>t.classList.remove('show'),3200)}
+function steps(){const n=['① 挑 10 張','② 翻牌分組','③ 樹上的位置','④ 解析與規劃'];
+$('steps').innerHTML=n.map((x,i)=>`<span class="${i+1===S.step?'on':i+1<S.step?'done':''}">${x}</span>`).join('')}
+function render(){steps();[null,s1,s2,s3,s4][S.step]();window.scrollTo({top:0})}
+function s1(){
+const n=S.picked.length;
+$('app').innerHTML=`<div class="bar"><div><h2>挑出目前人生中最重視、不能沒有的 10 張</h2><p class="mute">點一下選取，再點一次取消。</p></div></div>
+<div class="grid" id="grid"></div>
+<div class="bar" style="margin-top:18px"><button class="ghost" id="rs">重新洗牌</button><span style="display:flex;align-items:center;gap:14px"><span class="count">${n} / 10</span><button class="btn" id="nx" ${n===10?'':'disabled'}>翻牌看分組</button></span></div>`;
+const g=$('grid');
+S.deck.forEach(c=>{const b=document.createElement('button');b.className='card'+(S.picked.includes(c.t)?' sel':'');b.textContent=c.t;b.setAttribute('aria-pressed',S.picked.includes(c.t));
+b.onclick=()=>{const i=S.picked.indexOf(c.t);if(i>-1)S.picked.splice(i,1);else if(n<10)S.picked.push(c.t);else{toast('已選滿 10 張，請先取消一張再換');return}s1()};g.appendChild(b)});
+$('rs').onclick=()=>{S.deck=shuffle(ALL);s1()};
+$('nx').onclick=()=>{S.step=2;render()}}
+function s2(){
+const by={};S.picked.forEach(t=>(by[KEY[t]]=by[KEY[t]]||[]).push(t));
+const ks=Object.keys(by).sort((a,b)=>by[b].length-by[a].length);
+$('app').innerHTML=`<h2>你的 10 張卡，依圖示與顏色分成 ${ks.length} 組</h2><p class="mute">每個顏色代表生涯樹的一個部位。張數最多的那組，是你最看重的面向。</p><div style="margin-top:14px" id="gs"></div>
+<div class="bar" style="margin-top:18px"><button class="ghost" id="bk">重新挑選</button><button class="btn" id="nx">開始種樹</button></div>`;
+$('gs').innerHTML=ks.map((k,i)=>`<div class="group flip" style="--c:var(--${k});animation-delay:${i*.15}s"><h3>${C[k].n}　${by[k].length} 張</h3><p class="mute">${C[k].d}</p><div class="chips">${by[k].map(t=>`<span class="chip" style="--c:var(--${k})">${t}</span>`).join('')}</div></div>`).join('');
+$('bk').onclick=()=>{S.step=1;render()};
+$('nx').onclick=()=>{S.placed={};S.miss={};S.total=0;S.sel=null;S.step=3;render()}}
+function place(t,z){
+const k=KEY[t];
+if(C[k].zone===z){S.placed[t]=z;S.sel=null;
+if(Object.keys(S.placed).length===10){toast('10 張都種好了！');setTimeout(()=>{S.step=4;render()},900)}else{s3();toast('種對了：「'+t+'」長在'+Z[z].n)}return}
+S.total++;S.miss[t]=(S.miss[t]||0)+1;
+const el=document.querySelector('.zone.'+z);if(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
+toast(S.miss[t]>=2?'答案：「'+t+'」是'+C[k].n+'，要種在'+Z[C[k].zone].n:'「'+t+'」是'+C[k].n+'（'+C[k].d+'），再想想它屬於哪一層？')}
+function s3(){
+const P={crown:['擺放最頂端：將「游泳池」放在樹的最上層，或包覆住整棵樹。','這是你最終想呈現給世界的樣貌，或是你理想中每天展開想過的生活方式。'],
+branch:['擺放向外延伸：將「小朋友」（人際關係）往左右或上方伸展。','代表由內在自我向外延伸，培養自己與他人的互動網絡。'],
+trunk:['擺放核心：將「大樹」（內在自我）放在中間偏核心的位置。','代表一個人的中心思想、本質與自我認同，是支撐整棵樹的靈魂。'],
+root:['擺放基礎：將「溜冰鞋」（身體）與「風車」（物質／金錢）放在最下方。','維持生活與生存的基底。如果底層不穩，上方的樹冠就難以伸展。']};
+const col={crown:'pool',branch:'kid',trunk:'tree',root:'wind'};
+const E=(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.8}" vector-effect="non-scaling-stroke"/>`;
+const cl=E(50,52,40)+E(18,58,19)+E(82,58,19)+E(30,30,22)+E(70,30,22)+E(50,22,24);
+const ST=(k,w)=>`fill="none" stroke="${k}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"`;
+const ce=a=>`<ellipse cx="${a[0]}" cy="${a[1]}" rx="${a[2]}" ry="${a[2]*1.5}" vector-effect="non-scaling-stroke"/>`;
+const cc=SH.CE.map(ce).join('');
+const BG={crown:`<g fill="#2A9BAB" stroke="#2A9BAB" stroke-width="5" stroke-linejoin="round">${cc}</g><g fill="#D2EBEF">${cc}</g>`,
+branch:SH.bl.map(d=>`<path d="${d}" ${ST('#2F6FD6',7)}/>`).join(''),
+trunk:`<path d="${SH.trunk}" fill="#D5E8D4"/><path d="${SH.trunk}" ${ST('#5BA66B',2.5)}/>`,
+root:`<path d="${SH.root}" fill="#F6E4CE"/>`+SH.rl.map(d=>`<path d="${d}" ${ST('#D97A1E',4)}/>`).join('')};
+const DEC={};
+const order={root:0,trunk:1,branch:2,crown:3};
+$('app').innerHTML=`<div class="bar"><div><h2>系統已依你的 10 張卡，自動帶出它們在樹上的位置</h2><p class="mute">由下而上、由內而外：先長樹根，再長樹幹、樹枝，最後是樹冠。</p></div><button class="ghost" id="rp">重新播放</button></div>
+<div class="tree" id="tree"></div>
+<h2 style="margin-top:26px">每一層的意義</h2><div id="ex" style="margin-top:8px"></div>
+<div class="bar" style="margin-top:20px"><button class="ghost" id="bk">回上一步</button><button class="btn" id="nx">看我的生涯樹分析</button></div>`;
+const tree=$('tree');
+ZK.forEach(z=>{const d=document.createElement('div');d.className='zone '+z;
+const cs=S.picked.filter(t=>C[KEY[t]].zone===z);
+d.innerHTML=`<svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${BG[z]}</svg>${DEC[z]||''}<div class="in"><div class="lbl"><b>${Z[z].n}</b>${Z[z].h}</div></div>`;
+const w=document.createElement('div');w.className='chips';w.style.justifyContent='center';
+if(!cs.length){w.innerHTML='<span class="mute">這一層目前是空的</span>'}
+cs.forEach((t,i)=>{const sp=document.createElement('span');sp.className='chip flip';sp.style.setProperty('--c',`var(--${KEY[t]})`);sp.style.animationDelay=(order[z]*.7+i*.12)+'s';sp.textContent=t;w.appendChild(sp)});
+d.querySelector('.in').appendChild(w);tree.appendChild(d)});
+$('ex').innerHTML=ZK.map(z=>`<div class="layer" style="--c:var(--${col[z]})"><b>${Z[z].n}</b>　${Z[z].s}（${Z[z].h}）<p style="margin:4px 0;font-size:14px">${P[z][0]}</p><p style="margin:4px 0;font-size:14px">排序含意：${P[z][1]}</p></div>`).join('');
+$('rp').onclick=s3;
+$('bk').onclick=()=>{S.step=2;render()};
+$('nx').onclick=()=>{S.step=4;render()}}
+function s4(){
+const cnt={crown:0,branch:0,trunk:0,root:0};S.picked.forEach(t=>cnt[C[KEY[t]].zone]++);
+const col={crown:'pool',branch:'kid',trunk:'tree',root:'wind'};
+const msg={
+crown:[ '樹冠空缺：你還沒把「理想的生活樣貌」放進最重要的 10 張，不妨想想自己希望怎麼過日子。','樹冠有 N 張：你已經描繪出想過的生活方式，這是你想呈現給世界的樣子。'],
+branch:['樹枝空缺：人際與支持系統沒有入選，想想誰會是你的後盾。','樹枝有 N 張：你重視與他人的連結，這些關係滋養著你。'],
+trunk:['樹幹空缺：核心價值沒有入選，也許可以多花時間探索自己真正相信什麼。','樹幹有 N 張：你有清楚的中心思想，這是整棵樹的靈魂。'],
+root:['樹根空缺：健康、物質與工作條件沒有入選。樹根不穩，上方的樹冠就難以伸展，值得留意。','樹根有 N 張：你為生活打下基底，讓上方得以安心生長。']};
+const mx=Math.max(...Object.values(cnt));
+$('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種樹過程中調整了 '+S.total+' 次，':'一次就種對，'}每一層的張數反映你目前的重心。</p>
+<div style="margin-top:12px">${ZK.map(z=>{const n=cnt[z];return `<div class="layer ${n?'':'empty'}" style="--c:var(--${col[z]})"><b>${Z[z].n}・${n} 張</b>${n===mx&&n?'　（目前重心）':''}<p>${msg[z][n?1:0].replace('N',n)}</p>${n?`<div class="chips">${S.picked.filter(t=>C[KEY[t]].zone===z).map(t=>`<span class="chip" style="--c:var(--${KEY[t]})">${t}</span>`).join('')}</div>`:''}</div>`}).join('')}</div>
+<h2 style="margin-top:22px">想一想</h2><ol><li>哪一層最茂盛？它和你現在的生活相符嗎？</li><li>哪一層最空？是不重要，還是被忽略了？</li><li>如果只能留 5 張，你會留下哪些？為什麼？</li></ol>
+<h2 style="margin-top:26px">帶入你現在的生活與工作</h2><p class="mute">填寫現況後，系統會依你重視的卡片，產生解析與未來規劃。</p>
+<label for="job" class="mute" style="display:block;margin-top:10px">目前的工作或身分</label><input class="fld" id="job" maxlength="60" placeholder="例如：行政人員、學生、全職照顧者">
+<label for="goal" class="mute">未來 1–3 年最想改變或達成的事</label><input class="fld" id="goal" maxlength="80" placeholder="例如：轉職、進修、增加收入、更多自己的時間">
+<button class="btn" id="gen" style="margin-top:12px">產生解析與規劃</button>
+<div class="rep" id="rep" aria-live="polite"></div>
+<div id="cpimg"></div>
+<div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>`;
+setupAn(cnt);
+$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
+
+const esc=x=>String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const FIX={crown:'重新安排時間：每週保留固定的休閒或學習時段，評估彈性工時或休假的可能。',branch:'每月主動安排與重要的人相處，並在職場找一位導師或同伴。',trunk:'寫下你的核心價值，檢視目前的工作哪些符合、哪些牴觸。',root:'先補穩基底：檢視作息、運動與收支，確認工作負荷與收入能長期支撐。'};
+const TH=[
+{n:'自主與自由',k:['獨立自主','擁有自由','做自己','享受獨處','擁有內在空間'],j:'自由工作者、顧問、可遠端或專案型職務，或創業、內部創業',a:'盤點可自行決定的工作範圍，試著爭取彈性或獨立負責的專案。'},
+{n:'專業成長',k:['專業-出類拔萃/獨當一面','發展能力與技巧','持續的學習','用心/盡力','勤奮努力','持續的自我探索'],j:'專家型、技術或研究型職務，以及有明確進修與晉升路徑的組織',a:'設定 1–2 項要深耕的技能，每季安排一次進修或作品產出。'},
+{n:'意義與影響',k:['工作有意義感','幫助別人','有影響力','行善','讚賞鼓勵別人','有正義感','公平公正','為夢想目標努力'],j:'教育、輔導、醫療、社福、公益、永續，或能看見成果幫到人的職務',a:'找出現職中最能幫助他人的部分，或加入組織內有使命感的專案。'},
+{n:'穩定與安全',k:['安穩的工作','規律的生活','平凡單純的生活','安全感','腳踏實地','錢夠用(沒有經濟負擔)'],j:'制度完整、薪資福利穩定的組織，例如公部門、大型企業或長期合約',a:'建立緊急預備金，盤點收入來源，評估目前工作的長期穩定度。'},
+{n:'挑戰與變動',k:['接受挑戰','冒險與刺激','勇於改變','發揮創造力','旅行看看這世界','豐富多彩的生活'],j:'新創、新事業開發、跨領域或常有新任務的職務，或國際合作',a:'主動承接一件有點陌生的任務，當作小型實驗。'},
+{n:'團隊與關係',k:['和一群人一起打拚','自在舒坦的人際關係','有好朋友可以說心內話','有親近的好朋友','親密的家庭','美滿的婚姻','有意義的情愛關係','孝順父母','講義氣'],j:'團隊合作密集、文化溫暖的組織，或客戶服務、專案協作、社群經營',a:'留意團隊文化與家庭時間的平衡，主動建立一兩位職場支持者。'},
+{n:'財富與地位',k:['會賺錢/有財富','有社會地位擁有聲望','時尚的穿著','有房子/有車子'],j:'有績效獎金或明確升遷階梯的職務，例如業務、金融、管理職或自營事業',a:'訂出具體收入目標與時程，盤點哪些技能最能提高自己的價值。'},
+{n:'身心與生活品質',k:['擁有健康','長壽','運動/健身','休息與放鬆','接近大自然','享受美食','發揮體能','趣味的人生','做喜歡的事','內在的平靜'],j:'工作量可預期、時間可彈性安排的職務，或健康、戶外、生活相關領域',a:'設定每週固定的運動與休息時段，評估目前工作量能否長期維持。'}];
+function setupAn(cnt){
+const L={crown:['樹冠・生活形態','pool'],branch:['樹枝・人際關係','kid'],trunk:['樹幹・內在價值','tree'],root:['樹根・健康與物質','wind']};
+$('gen').onclick=()=>{
+const job=$('job').value.trim(),goal=$('goal').value.trim();
+if(!job||!goal){toast('請先填寫「目前的工作或身分」與「未來 1–3 年最想改變或達成的事」');return}
+const th=TH.map(t=>({t,n:S.picked.filter(x=>t.k.includes(x)).length})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,3);
+const rk=ZK.slice().sort((a,b)=>cnt[b]-cnt[a]);
+const mx=cnt[rk[0]];
+const st=z=>{const n=cnt[z];
+if(n===0)return['尚未列入','這一層沒有進入你最重視的 10 張，想想是真的不在乎，還是平常比較少注意。'];
+if(n===mx)return['目前重心','這是你最重視的一層，工作與生活的選擇，要優先照顧到它。'];
+if(n>=2)return['重要面向','你相當重視這一層，是選擇工作時的重要參考。'];
+return['有所關注','你有注意到這一層，可以再想想它對你有多重要。']};
+let h=`<h3>現況解析</h3><div class="layer" style="--c:var(--ink)"><p>${job?'目前身分：<b style="color:var(--ink)">'+esc(job)+'</b>。':''}${th.length?'你的卡片最集中在「'+th.map(x=>esc(x.t.n)).join('」、「')+'」。這代表你理想中的工作與生活，要能滿足這些需求。':'你的卡片分佈很分散，建議回頭看看哪幾張最有感覺。'}</p>${job?'<p>請對照現在的「'+esc(job)+'」：上面這些需求，哪些已經被滿足，哪些還缺少？</p>':''}</div>`;
+h+=ZK.map(z=>{const r=st(z);return `<div class="layer" style="--c:var(--${L[z][1]})"><b>${L[z][0]}</b>　重視 ${cnt[z]} 張　<b>${r[0]}</b><p>${r[1]}</p></div>`}).join('');
+h+=`<h3>現況解析 適合的工作型態</h3>`+(th.length?th.map(x=>`<div class="layer" style="--c:var(--tree)"><b>${esc(x.t.n)}</b><p>可以優先看：${x.t.j}。</p></div>`).join(''):'<p class="mute">尚無足夠資料，建議重新挑選卡片。</p>');
+const g1=rk[0],g2=rk[1],empty=ZK.filter(z=>cnt[z]===0);
+h+=`<h3>未來工作規劃建議</h3>
+<div class="layer" style="--c:var(--pool)"><b>短期（1–3 個月）：先落實最重視的一層</b><p>重點在「${L[g1][0]}」。${FIX[g1]}</p>${th[0]?'<p>同時試試：'+th[0].t.a+'</p>':''}</div>
+<div class="layer" style="--c:var(--kid)"><b>中期（6–12 個月）：把重視的事放進工作</b><p>第二個重點是「${L[g2][0]}」。${FIX[g2]}</p>${th[1]?'<p>另外：'+th[1].t.a+'</p>':''}${goal?'<p>針對你想要的「'+esc(goal)+'」，請寫下 3 個可在半年內完成的小步驟，並每月檢查一次。</p>':''}</div>
+<div class="layer" style="--c:var(--tree)"><b>長期（2–3 年）：朝理想的樹冠前進</b><p>${th[0]?'以「'+esc(th[0].t.n)+'」為主軸，評估是否轉往：'+th[0].t.j+'。':'先釐清核心價值，再決定方向。'}</p>${empty.length?'<p>留意：'+empty.map(z=>L[z][0]).join('、')+'目前是空的，規劃時別完全忽略它。'+(empty.includes('root')?'樹根不穩，上方的樹冠就難以伸展。':'')+'</p>':''}<p>每半年重新檢視一次你的生涯樹，調整方向。</p></div>
+<p class="mute" style="margin-top:12px">以上為依你選的卡片產生的參考建議，不是心理測驗。重大決定仍建議與信任的人或生涯諮詢師討論。</p>`;
+$('rep').innerHTML=h;$('cpbar').style.display='flex';$('rep').scrollIntoView({behavior:'smooth'})}}
+
+const SH={CE:[[50,30,20],[24,42,16],[76,42,16],[15,62,14],[85,62,14],[32,80,12],[68,80,12],[50,50,30]],
+bl:['M10 0 C25 30 45 55 50 100','M50 0 C44 33 56 66 50 100','M90 0 C75 30 55 55 50 100'],
+trunk:'M26 0 L74 0 L74 28 C74 58 84 80 97 100 L3 100 C16 80 26 58 26 28Z',
+root:'M0 0 L100 0 L100 40 C100 75 78 100 50 100 C22 100 0 75 0 40Z',
+rl:['M50 0 C48 22 30 36 10 55','M50 0 C52 22 70 36 90 55','M50 0 C46 40 36 62 32 86','M50 0 C54 40 64 62 68 86']};
+const HEX={tree:'#2E8B57',kid:'#2F6FD6',pool:'#0E94A5',wind:'#D9771A',skate:'#8E4FD1'};
+const tint=(h,f)=>{const n=parseInt(h.slice(1),16);return 'rgb('+[n>>16&255,n>>8&255,n&255].map(v=>Math.round(v*f+255*(1-f))).join(',')+')'};
+function treeCanvas(plan){
+const W=720,F='"Chiron GoRound TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',m=document.createElement('canvas').getContext('2d');
+m.font='500 14px '+F;
+const cfg={crown:{w:598,f:.62,min:283,top:70,bot:60,c:'pool',ov:0},branch:{w:560,f:.5,min:170,top:50,bot:30,c:'kid',ov:10},trunk:{w:346,f:.6,min:190,top:22,bot:50,c:'tree',ov:4},root:{w:440,f:.76,min:170,top:46,bot:36,c:'wind',ov:6}};
+let y=60;const L=[];
+ZK.forEach(z=>{const g=cfg[z],cs=S.picked.filter(t=>C[KEY[t]].zone===z),iw=g.w*g.f;
+const rows=[];let row=[],rw=0;
+cs.forEach(t=>{const cw=m.measureText(t).width+24;if(row.length&&(z==='trunk'||rw+cw+6>iw)){rows.push(row);row=[];rw=0}row.push({t,cw});rw+=cw+6});
+if(row.length)rows.push(row);
+const h=Math.max(g.min,g.top+40+Math.max(rows.length,1)*34+g.bot);
+y-=g.ov;L.push({z,g,rows,x:(W-g.w)/2,y,h,empty:!cs.length});y+=h});
+const PW=620,wrap=(tx,font)=>{m.font=font;const out=[];let line='';for(const ch of tx){if(m.measureText(line+ch).width>PW){out.push(line);line=ch}else line+=ch}if(line)out.push(line);return out};
+const PL=[];let ph=0;
+if(plan&&plan.length){ph=64;plan.forEach(it=>{const ls=it.body.map(b=>wrap(b,'14px '+F));const n=ls.reduce((a,b)=>a+b.length,0);const hh=34+n*22+(ls.length-1)*6+18;PL.push({t:it.t,ls,col:it.c,h:hh});ph+=hh})}
+const H=y+20+ph,cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;
+const c=cv.getContext('2d');c.scale(2,2);c.lineJoin='round';c.fillStyle='#fff';c.fillRect(0,0,W,H);
+c.textAlign='center';c.textBaseline='middle';c.fillStyle='#14281F';c.font='900 26px '+F;c.fillText('我的生涯樹',W/2,30);
+[...L].sort((a,b)=>(b.z==='root')-(a.z==='root')).forEach(o=>{const{z,g,x,y:zy,h,w=g.w}=o,w2=g.w,col=HEX[g.c],P=(px,py)=>[x+px*w2/100,zy+py*h/100];
+const PP=d=>{const q=new Path2D();q.addPath(new Path2D(d),new DOMMatrix([w2/100,0,0,h/100,x,zy]));return q};
+c.lineJoin='round';c.lineCap='round';
+if(z==='crown'){[[2.5,'#2A9BAB'],[0,'#D2EBEF']].forEach(([e,fc])=>{c.fillStyle=fc;SH.CE.forEach(([cx,cy,r])=>{const[ex,ey]=P(cx,cy);c.beginPath();c.ellipse(ex,ey,r*w2/100+e,r*1.5*h/100+e,0,0,7);c.fill()})})}
+if(z==='branch'){c.strokeStyle='#2F6FD6';c.lineWidth=7;SH.bl.forEach(d=>c.stroke(PP(d)))}
+if(z==='trunk'){const q=PP(SH.trunk);c.fillStyle='#D5E8D4';c.fill(q);c.strokeStyle='#5BA66B';c.lineWidth=2.5;c.stroke(q)}
+if(z==='root'){c.fillStyle='#F6E4CE';c.fill(PP(SH.root));c.strokeStyle='#D97A1E';c.lineWidth=4;SH.rl.forEach(d=>c.stroke(PP(d)))}
+let ty=zy+g.top;const lc='#222';c.fillStyle=lc;c.font='700 15px '+F;c.fillText(Z[z].n,W/2,ty+8);c.fillStyle='#6B6B6B';c.font='12px '+F;c.fillText(Z[z].h,W/2,ty+26);ty+=40;
+if(o.empty){c.fillStyle=lc;c.font='13px '+F;c.fillText('這一層目前是空的',W/2,ty+14)}
+o.rows.forEach(r=>{const tw=r.reduce((a,b)=>a+b.cw+6,-6);let cx=(W-tw)/2;
+r.forEach(k=>{c.beginPath();c.roundRect(cx,ty,k.cw,28,6);c.fillStyle=HEX[KEY[k.t]];c.fill();c.fillStyle='#fff';c.font='500 14px '+F;c.fillText(k.t,cx+k.cw/2,ty+15);cx+=k.cw+6});ty+=34})});
+if(PL.length){const x0=(W-PW)/2;let py=y+20;c.textAlign='left';c.fillStyle='#14281F';c.font='900 22px '+F;c.fillText('未來工作規劃建議',x0,py+16);py+=46;
+PL.forEach(it=>{c.fillStyle=HEX[it.col];c.fillRect(x0-14,py,4,it.h-12);c.font='700 15px '+F;c.fillText(it.t,x0,py+10);
+let ly=py+36;c.fillStyle='#14281F';c.font='14px '+F;it.ls.forEach(ps=>{ps.forEach(l=>{c.fillText(l,x0,ly);ly+=22});ly+=6});py+=it.h})}
+return cv}
+const loadF=async t=>{try{await Promise.all(['700 15px','500 14px','12px'].map(f=>document.fonts.load(f+' "Chiron GoRound TC"',t+'我的生涯樹')))}catch(e){}};
+const treeTxt=()=>'我的生涯樹\n'+ZK.map(z=>Z[z].n+'：'+(S.picked.filter(x=>C[KEY[x]].zone===z).join('、')||'（空）')).join('\n');
+function planOf(){const h3=[...$('rep').querySelectorAll('h3')],st=h3[h3.length-1],plan=[];
+if(st)for(let e=st.nextElementSibling;e;e=e.nextElementSibling){if(!e.classList.contains('layer'))continue;
+plan.push({t:e.querySelector('b').textContent,body:[...e.querySelectorAll('p')].map(q=>q.innerText.replace(/\n+/g,' ').trim()).filter(Boolean)})}
+return{title:st?st.textContent:'未來工作規劃建議',plan}}
+async function copyTree(){
+const txt=treeTxt();await loadF(txt);
+const cv=treeCanvas(),url=cv.toDataURL('image/png');
+const html=`<p><img src="${url}" width="560" alt="我的生涯樹"></p>`;
+const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若無法直接貼上，可長按或按右鍵複製／另存這張圖。</p>';
+const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);
+try{const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]);
+toast('已複製生涯樹圖')}
+catch(e){try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('已複製生涯樹圖')}
+catch(e2){toast('無法自動複製，請從下方圖片另存或長按複製')}}}
+async function copyPlan(){
+const {title,plan}=planOf();
+const html='<h3>'+esc(title)+'</h3>'+plan.map(o=>'<p><b>'+esc(o.t)+'</b><br>'+o.body.map(esc).join('<br>')+'</p>').join('');
+const txt=title+'\n\n'+plan.map(o=>o.t+'\n'+o.body.join('\n')).join('\n\n');
+try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('已複製規劃建議')}
+catch(e){try{await navigator.clipboard.writeText(txt);toast('已複製規劃建議')}catch(e2){toast('無法自動複製，請手動選取上方文字複製')}}}
+init();render();
+</script>
+</body>
+</html>
