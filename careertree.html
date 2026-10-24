@@ -221,9 +221,9 @@ $('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種
 <label for="goal" class="mute">未來 1–3 年最想改變或達成的事</label><input class="fld" id="goal" maxlength="80" placeholder="例如：轉職、進修、增加收入、更多自己的時間">
 <button class="btn" id="gen" style="margin-top:12px">產生解析與規劃</button>
 <div class="rep" id="rep" aria-live="polite"></div>
-<div id="cpimg"></div>
-<div id="cptxt"></div>
-<div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>`;
+
+<div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>
+<div id="cpmsg" class="mute" role="status" style="margin-top:10px"></div><div id="cpimg"></div><div id="cptxt"></div>`;
 setupAn(cnt);
 loadF(treeTxt());$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
 
@@ -306,32 +306,33 @@ const loadF=async t=>{try{await Promise.all(['700 15px','500 14px','12px'].map(f
 const treeTxt=()=>'我的生涯樹\n'+ZK.map(z=>Z[z].n+'：'+(S.picked.filter(x=>C[KEY[x]].zone===z).join('、')||'（空）')).join('\n');
 function planOf(){const h3=[...$('rep').querySelectorAll('h3')],st=h3[h3.length-1],plan=[];
 if(st)for(let e=st.nextElementSibling;e;e=e.nextElementSibling){if(!e.classList.contains('layer'))continue;
-plan.push({t:e.querySelector('b').textContent,body:[...e.querySelectorAll('p')].map(q=>q.innerText.replace(/\n+/g,' ').trim()).filter(Boolean)})}
+plan.push({t:e.querySelector('b').textContent,body:[...e.querySelectorAll('p')].map(q=>(q.innerText||q.textContent).replace(/\n+/g,' ').trim()).filter(Boolean)})}
 return{title:st?st.textContent:'未來工作規劃建議',plan}}
+const say=t=>{try{toast(t)}catch(e){}const m=$('cpmsg');if(m)m.textContent=t};
 const mob=()=>matchMedia('(pointer:coarse)').matches;
 const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:'image/png'})};
 const legacy=t=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
-function copyTree(){try{toast('處理中…');copyTreeX()}catch(e){toast('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
+function copyTree(){try{say('處理中…');copyTreeX()}catch(e){say('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
 function copyTreeX(){
 const txt=treeTxt(),cv=treeCanvas(),url=cv.toDataURL('image/png'),blob=d2b(url);
 const html=`<p><img src="${url}" width="560" alt="我的生涯樹"></p>`;
 const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若無法自動複製，請長按圖片，選「拷貝」或「儲存圖片」。</p>';
-const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);
+const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);img.scrollIntoView({behavior:'smooth',block:'nearest'});
 const file=new File([blob],'my-career-tree.png',{type:'image/png'});
-const ok=()=>toast('已複製生涯樹圖'),fail=()=>{toast('無法自動複製，請長按下方圖片，選「拷貝」或「儲存圖片」');img.scrollIntoView({behavior:'smooth'})};
-const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,fail)}catch(e){fail()}})}catch(e){fail()}};
-if(mob()&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'我的生涯樹'}).catch(e=>{if(!e||e.name!=='AbortError')clip()});return}
+const ok=()=>say('已複製生涯樹圖'),fail=()=>{say('無法自動複製，請長按下方圖片，選「拷貝」或「儲存圖片」');img.scrollIntoView({behavior:'smooth'})};
+const share=()=>{try{if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')fail()});else fail()}catch(e){fail()}};
+const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,share)}catch(e){share()}})}catch(e){share()}};
+say('圖片已產生在下方；若沒有複製成功，請長按圖片選「拷貝」或「儲存圖片」');
 clip()}
-function copyPlan(){try{copyPlanX()}catch(e){toast('發生錯誤：'+(e&&e.message||e))}}
+function copyPlan(){try{copyPlanX()}catch(e){say('發生錯誤：'+(e&&e.message||e))}}
 function copyPlanX(){
 const {title,plan}=planOf();
 const html='<h3>'+esc(title)+'</h3>'+plan.map(o=>'<p><b>'+esc(o.t)+'</b><br>'+o.body.map(esc).join('<br>')+'</p>').join('');
 const txt=title+'\n\n'+plan.map(o=>o.t+'\n'+o.body.join('\n')).join('\n\n');
-const done=()=>toast('已複製規劃建議');
+const done=()=>say('已複製規劃建議');
 const panel=()=>{const b=$('cptxt');b.innerHTML='<p class="mute" style="margin-top:16px">無法自動複製，請在下方文字框長按，選「全選」後拷貝：</p>';const ta=document.createElement('textarea');ta.readOnly=true;ta.value=txt;ta.rows=10;ta.className='fld';ta.onfocus=()=>ta.select();b.appendChild(ta)};
-const fb=()=>{legacy(txt)?done():panel()};
+const fb=()=>{if(legacy(txt))return done();try{if(navigator.share)navigator.share({title,text:txt}).catch(e=>{if(!e||e.name!=='AbortError')panel()});else panel()}catch(e){panel()}};
 const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]).then(done,fb)}catch(e){fb()}};
-if(mob()&&navigator.share){navigator.share({title,text:txt}).catch(e=>{if(!e||e.name!=='AbortError')clip()});return}
 clip()}
 init();render();
 </script>
