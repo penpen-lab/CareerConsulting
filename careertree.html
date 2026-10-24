@@ -99,6 +99,7 @@ button:focus-visible{outline:3px solid var(--kid);outline-offset:2px}
 .tree .crown{width:min(598px,100%);min-height:283px}
 .tree .trunk{width:min(346px,92%)}.tree .trunk .in{padding:22px 20% 50px}.tree .trunk .chips{flex-direction:column;align-items:center}
 .tree .root{width:min(440px,100%);margin-top:-6px}.tree .root .in{padding:46px 12% 36px}
+#cpbar button{min-height:46px;padding:10px 20px;touch-action:manipulation}
 .shake{animation:shake .35s}
 @keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;max-width:92vw;font-size:14px;z-index:9;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -221,9 +222,10 @@ $('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種
 <button class="btn" id="gen" style="margin-top:12px">產生解析與規劃</button>
 <div class="rep" id="rep" aria-live="polite"></div>
 <div id="cpimg"></div>
+<div id="cptxt"></div>
 <div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>`;
 setupAn(cnt);
-$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
+loadF(treeTxt());$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
 
 const esc=x=>String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const FIX={crown:'重新安排時間：每週保留固定的休閒或學習時段，評估彈性工時或休假的可能。',branch:'每月主動安排與重要的人相處，並在職場找一位導師或同伴。',trunk:'寫下你的核心價值，檢視目前的工作哪些符合、哪些牴觸。',root:'先補穩基底：檢視作息、運動與收支，確認工作負荷與收入能長期支撐。'};
@@ -267,6 +269,7 @@ root:'M0 0 L100 0 L100 40 C100 75 78 100 50 100 C22 100 0 75 0 40Z',
 rl:['M50 0 C48 22 30 36 10 55','M50 0 C52 22 70 36 90 55','M50 0 C46 40 36 62 32 86','M50 0 C54 40 64 62 68 86']};
 const HEX={tree:'#2E8B57',kid:'#2F6FD6',pool:'#0E94A5',wind:'#D9771A',skate:'#8E4FD1'};
 const tint=(h,f)=>{const n=parseInt(h.slice(1),16);return 'rgb('+[n>>16&255,n>>8&255,n&255].map(v=>Math.round(v*f+255*(1-f))).join(',')+')'};
+function rr(c,x,y,w,h,r){c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function treeCanvas(plan){
 const W=720,F='"Chiron GoRound TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',m=document.createElement('canvas').getContext('2d');
 m.font='500 14px '+F;
@@ -285,7 +288,7 @@ const H=y+20+ph,cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;
 const c=cv.getContext('2d');c.scale(2,2);c.lineJoin='round';c.fillStyle='#fff';c.fillRect(0,0,W,H);
 c.textAlign='center';c.textBaseline='middle';c.fillStyle='#14281F';c.font='900 26px '+F;c.fillText('我的生涯樹',W/2,30);
 [...L].sort((a,b)=>(b.z==='root')-(a.z==='root')).forEach(o=>{const{z,g,x,y:zy,h,w=g.w}=o,w2=g.w,col=HEX[g.c],P=(px,py)=>[x+px*w2/100,zy+py*h/100];
-const PP=d=>{const q=new Path2D();q.addPath(new Path2D(d),new DOMMatrix([w2/100,0,0,h/100,x,zy]));return q};
+const PP=d=>{let i=0;return new Path2D(d.replace(/-?\d*\.?\d+/g,m=>{const v=parseFloat(m),r=i%2?v*h/100+zy:v*w2/100+x;i++;return r.toFixed(2)}))};
 c.lineJoin='round';c.lineCap='round';
 if(z==='crown'){[[2.5,'#2A9BAB'],[0,'#D2EBEF']].forEach(([e,fc])=>{c.fillStyle=fc;SH.CE.forEach(([cx,cy,r])=>{const[ex,ey]=P(cx,cy);c.beginPath();c.ellipse(ex,ey,r*w2/100+e,r*1.5*h/100+e,0,0,7);c.fill()})})}
 if(z==='branch'){c.strokeStyle='#2F6FD6';c.lineWidth=7;SH.bl.forEach(d=>c.stroke(PP(d)))}
@@ -294,7 +297,7 @@ if(z==='root'){c.fillStyle='#F6E4CE';c.fill(PP(SH.root));c.strokeStyle='#D97A1E'
 let ty=zy+g.top;const lc='#222';c.fillStyle=lc;c.font='700 15px '+F;c.fillText(Z[z].n,W/2,ty+8);c.fillStyle='#6B6B6B';c.font='12px '+F;c.fillText(Z[z].h,W/2,ty+26);ty+=40;
 if(o.empty){c.fillStyle=lc;c.font='13px '+F;c.fillText('這一層目前是空的',W/2,ty+14)}
 o.rows.forEach(r=>{const tw=r.reduce((a,b)=>a+b.cw+6,-6);let cx=(W-tw)/2;
-r.forEach(k=>{c.beginPath();c.roundRect(cx,ty,k.cw,28,6);c.fillStyle=HEX[KEY[k.t]];c.fill();c.fillStyle='#fff';c.font='500 14px '+F;c.fillText(k.t,cx+k.cw/2,ty+15);cx+=k.cw+6});ty+=34})});
+r.forEach(k=>{c.beginPath();rr(c,cx,ty,k.cw,28,6);c.fillStyle=HEX[KEY[k.t]];c.fill();c.fillStyle='#fff';c.font='500 14px '+F;c.fillText(k.t,cx+k.cw/2,ty+15);cx+=k.cw+6});ty+=34})});
 if(PL.length){const x0=(W-PW)/2;let py=y+20;c.textAlign='left';c.fillStyle='#14281F';c.font='900 22px '+F;c.fillText('未來工作規劃建議',x0,py+16);py+=46;
 PL.forEach(it=>{c.fillStyle=HEX[it.col];c.fillRect(x0-14,py,4,it.h-12);c.font='700 15px '+F;c.fillText(it.t,x0,py+10);
 let ly=py+36;c.fillStyle='#14281F';c.font='14px '+F;it.ls.forEach(ps=>{ps.forEach(l=>{c.fillText(l,x0,ly);ly+=22});ly+=6});py+=it.h})}
@@ -305,23 +308,31 @@ function planOf(){const h3=[...$('rep').querySelectorAll('h3')],st=h3[h3.length-
 if(st)for(let e=st.nextElementSibling;e;e=e.nextElementSibling){if(!e.classList.contains('layer'))continue;
 plan.push({t:e.querySelector('b').textContent,body:[...e.querySelectorAll('p')].map(q=>q.innerText.replace(/\n+/g,' ').trim()).filter(Boolean)})}
 return{title:st?st.textContent:'未來工作規劃建議',plan}}
-async function copyTree(){
-const txt=treeTxt();await loadF(txt);
-const cv=treeCanvas(),url=cv.toDataURL('image/png');
+const mob=()=>matchMedia('(pointer:coarse)').matches;
+const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:'image/png'})};
+const legacy=t=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
+function copyTree(){try{toast('處理中…');copyTreeX()}catch(e){toast('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
+function copyTreeX(){
+const txt=treeTxt(),cv=treeCanvas(),url=cv.toDataURL('image/png'),blob=d2b(url);
 const html=`<p><img src="${url}" width="560" alt="我的生涯樹"></p>`;
-const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若無法直接貼上，可長按或按右鍵複製／另存這張圖。</p>';
+const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若無法自動複製，請長按圖片，選「拷貝」或「儲存圖片」。</p>';
 const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);
-try{const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
-await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]);
-toast('已複製生涯樹圖')}
-catch(e){try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('已複製生涯樹圖')}
-catch(e2){toast('無法自動複製，請從下方圖片另存或長按複製')}}}
-async function copyPlan(){
+const file=new File([blob],'my-career-tree.png',{type:'image/png'});
+const ok=()=>toast('已複製生涯樹圖'),fail=()=>{toast('無法自動複製，請長按下方圖片，選「拷貝」或「儲存圖片」');img.scrollIntoView({behavior:'smooth'})};
+const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,fail)}catch(e){fail()}})}catch(e){fail()}};
+if(mob()&&navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'我的生涯樹'}).catch(e=>{if(!e||e.name!=='AbortError')clip()});return}
+clip()}
+function copyPlan(){try{copyPlanX()}catch(e){toast('發生錯誤：'+(e&&e.message||e))}}
+function copyPlanX(){
 const {title,plan}=planOf();
 const html='<h3>'+esc(title)+'</h3>'+plan.map(o=>'<p><b>'+esc(o.t)+'</b><br>'+o.body.map(esc).join('<br>')+'</p>').join('');
 const txt=title+'\n\n'+plan.map(o=>o.t+'\n'+o.body.join('\n')).join('\n\n');
-try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('已複製規劃建議')}
-catch(e){try{await navigator.clipboard.writeText(txt);toast('已複製規劃建議')}catch(e2){toast('無法自動複製，請手動選取上方文字複製')}}}
+const done=()=>toast('已複製規劃建議');
+const panel=()=>{const b=$('cptxt');b.innerHTML='<p class="mute" style="margin-top:16px">無法自動複製，請在下方文字框長按，選「全選」後拷貝：</p>';const ta=document.createElement('textarea');ta.readOnly=true;ta.value=txt;ta.rows=10;ta.className='fld';ta.onfocus=()=>ta.select();b.appendChild(ta)};
+const fb=()=>{legacy(txt)?done():panel()};
+const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]).then(done,fb)}catch(e){fb()}};
+if(mob()&&navigator.share){navigator.share({title,text:txt}).catch(e=>{if(!e||e.name!=='AbortError')clip()});return}
+clip()}
 init();render();
 </script>
 </body>
