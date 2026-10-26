@@ -310,19 +310,20 @@ plan.push({t:e.querySelector('b').textContent,body:[...e.querySelectorAll('p')].
 return{title:st?st.textContent:'未來工作規劃建議',plan}}
 const say=t=>{try{toast(t)}catch(e){}const m=$('cpmsg');if(m)m.textContent=t};
 const mob=()=>matchMedia('(pointer:coarse)').matches;
-const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:'image/png'})};
+const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:u.split(';')[0].slice(5)})};
 const legacy=t=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
 function copyTree(){try{say('處理中…');copyTreeX()}catch(e){say('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
 function copyTreeX(){
-const txt=treeTxt(),cv=treeCanvas(),url=cv.toDataURL('image/png'),blob=d2b(url);
+const txt=treeTxt(),cv=treeCanvas(),url=cv.toDataURL('image/jpeg',.92),blob=d2b(url),pblob=d2b(cv.toDataURL('image/png'));
 const html=`<p><img src="${url}" width="560" alt="我的生涯樹"></p>`;
-const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若無法自動複製，請長按圖片，選「拷貝」或「儲存圖片」。</p>';
+const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">請長按圖片，選「拷貝」或「儲存圖片」，再到 LINE 貼上。</p>';
 const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);img.scrollIntoView({behavior:'smooth',block:'nearest'});
-const file=new File([blob],'my-career-tree.png',{type:'image/png'});
+const file=new File([blob],'my-career-tree.jpg',{type:'image/jpeg'});
 const ok=()=>say('已複製生涯樹圖'),fail=()=>{say('無法自動複製，請長按下方圖片，選「拷貝」或「儲存圖片」');img.scrollIntoView({behavior:'smooth'})};
 const share=()=>{try{if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')fail()});else fail()}catch(e){fail()}};
-const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':blob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,share)}catch(e){share()}})}catch(e){share()}};
-say('圖片已產生在下方；若沒有複製成功，請長按圖片選「拷貝」或「儲存圖片」');
+const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':pblob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':pblob})]).then(ok,share)}catch(e){share()}})}catch(e){share()}};
+say('JPG 圖片已產生：可在分享選單選「LINE」或「拷貝」，也可長按下方圖片選「拷貝」，再到 LINE 貼上');
+if(mob()&&navigator.canShare&&navigator.canShare({files:[file]})){try{navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')clip()})}catch(e){clip()}return}
 clip()}
 function copyPlan(){try{copyPlanX()}catch(e){say('發生錯誤：'+(e&&e.message||e))}}
 function copyPlanX(){
