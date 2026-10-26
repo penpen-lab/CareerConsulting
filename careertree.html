@@ -217,8 +217,8 @@ $('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種
 <div style="margin-top:12px">${ZK.map(z=>{const n=cnt[z];return `<div class="layer ${n?'':'empty'}" style="--c:var(--${col[z]})"><b>${Z[z].n}・${n} 張</b>${n===mx&&n?'　（目前重心）':''}<p>${msg[z][n?1:0].replace('N',n)}</p>${n?`<div class="chips">${S.picked.filter(t=>C[KEY[t]].zone===z).map(t=>`<span class="chip" style="--c:var(--${KEY[t]})">${t}</span>`).join('')}</div>`:''}</div>`}).join('')}</div>
 <h2 style="margin-top:22px">想一想</h2><ol><li>哪一層最茂盛？它和你現在的生活相符嗎？</li><li>哪一層最空？是不重要，還是被忽略了？</li><li>如果只能留 5 張，你會留下哪些？為什麼？</li></ol>
 <h2 style="margin-top:26px">帶入你現在的生活與工作</h2><p class="mute">填寫現況後，系統會依你重視的卡片，產生解析與未來規劃。</p>
-<label for="job" class="mute" style="display:block;margin-top:10px">目前的工作或身分</label><input class="fld" id="job" maxlength="60" placeholder="例如：行政人員、學生、全職照顧者">
-<label for="goal" class="mute">未來 1–3 年最想改變或達成的事</label><input class="fld" id="goal" maxlength="80" placeholder="例如：轉職、進修、增加收入、更多自己的時間">
+<label for="job" class="mute" style="display:block;margin-top:10px">目前的工作或身分（選擇最接近類別）</label><select class="fld" id="job"></select>
+<label for="goal" class="mute">未來 1–3 年最想改變或達成的事（選擇最接近的項目）</label><select class="fld" id="goal"></select>
 <button class="btn" id="gen" style="margin-top:12px">產生解析與規劃</button>
 <div class="rep" id="rep" aria-live="polite"></div>
 
@@ -238,11 +238,38 @@ const TH=[
 {n:'團隊與關係',k:['和一群人一起打拚','自在舒坦的人際關係','有好朋友可以說心內話','有親近的好朋友','親密的家庭','美滿的婚姻','有意義的情愛關係','孝順父母','講義氣'],j:'團隊合作密集、文化溫暖的組織，或客戶服務、專案協作、社群經營',a:'留意團隊文化與家庭時間的平衡，主動建立一兩位職場支持者。'},
 {n:'財富與地位',k:['會賺錢/有財富','有社會地位擁有聲望','時尚的穿著','有房子/有車子'],j:'有績效獎金或明確升遷階梯的職務，例如業務、金融、管理職或自營事業',a:'訂出具體收入目標與時程，盤點哪些技能最能提高自己的價值。'},
 {n:'身心與生活品質',k:['擁有健康','長壽','運動/健身','休息與放鬆','接近大自然','享受美食','發揮體能','趣味的人生','做喜歡的事','內在的平靜'],j:'工作量可預期、時間可彈性安排的職務，或健康、戶外、生活相關領域',a:'設定每週固定的運動與休息時段，評估目前工作量能否長期維持。'}];
+const JOBS={
+管理財經:{k:'數字判斷、規劃與跨部門協調',n:'財務分析、專案管理、營運管理或顧問'},
+產銷業務:{k:'溝通談判、客戶經營與目標達成',n:'業務管理、品牌行銷、通路開發或自行接案'},
+客服支援:{k:'傾聽、問題解決與情緒穩定',n:'客戶成功、教育訓練、人資或服務設計'},
+技術品管:{k:'流程標準化、細節檢核與問題追蹤',n:'製程改善、稽核、供應鏈管理或技術顧問'},
+研發科技:{k:'分析思考、技術實作與持續學習',n:'產品規劃、技術主管、技術顧問或新創'},
+醫療保健:{k:'專業判斷、照護溝通與抗壓力',n:'衛教、健康管理、長照規劃或醫療行政'},
+營建製圖:{k:'空間概念、圖面規劃與現場協調',n:'專案管理、工務主管、設計顧問或自營工作室'},
+餐旅美容:{k:'服務熱忱、美感與顧客經營',n:'店務管理、品牌經營、教學或自創品牌'},
+藝術傳媒:{k:'創意發想、內容製作與表達',n:'內容策展、品牌行銷、自媒體或教學'},
+教研輔導:{k:'表達教學、陪伴引導與研究整理',n:'教材開發、培訓講師、諮詢輔導或公益組織'},
+其他:{k:'你目前累積的專業與工作經驗',n:'與你興趣和價值觀相近的相關領域'}};
+const GOALS=[
+{n:'轉職到新領域',s:'列出你在「{j}」累積、可以帶走的能力（例如{k}），再找 3 份有興趣的職缺描述，標出需要補的差距。',m:'找 2–3 位已在目標領域的人聊聊，利用週末做一個小作品或專案，驗證自己是否真的適合。',l:'逐步轉進新領域，可先從相鄰方向切入，例如{n}，並在 1–2 年內累積可展示的成果。'},
+{n:'升遷或擔任管理職',s:'向主管確認晉升所需條件，盤點你在{k}上的強項與缺口。',m:'主動承接帶人或跨部門任務，開始練習授權、回饋與目標管理。',l:'規劃 2–3 年的職涯階梯，往{n}等管理或專家路線發展，並找一位資深導師。'},
+{n:'增加收入',s:'整理目前收入來源與支出，找出哪些能力（如{k}）最能換成更高報酬。',m:'爭取加薪談判、績效獎金或承接外部案件，先小規模測試第二收入。',l:'設定 3 年收入目標，評估轉往薪資較高的方向，例如{n}。'},
+{n:'進修或取得證照',s:'查詢「{j}」領域有價值的證照或課程，比較費用、時間與回報，選定一項。',m:'訂定每週固定的讀書時數，並爭取公司補助或進修假。',l:'把學習成果轉成職務或薪資的提升，並規劃下一階段進修，如{n}相關專業。'},
+{n:'學習新技能',s:'選一項最想學的技能，找適合的入門課程，先投入 2 週試學。',m:'把新技能用在現有工作上做一個小專案，累積成果作品。',l:'讓新技能和{k}結合，形成獨特的組合優勢，並進入{n}等方向。'},
+{n:'創業或接案',s:'用{k}想 3 個可以賣出去的服務或產品，先找 3 位潛在客戶訪談。',m:'利用下班或週末試做小規模接案，驗證價格與需求，同時保留本業收入。',l:'副業穩定後再評估轉為全職，可朝{n}發展，並準備 6–12 個月的生活預備金。'},
+{n:'提高工作穩定度',s:'盤點目前工作的風險（產業、公司、技能是否過時），並建立緊急預備金。',m:'補強難被取代的能力，如{k}，並累積可證明的成果與人脈。',l:'建立多重保障：核心專業加上相鄰技能，必要時可轉往{n}。'},
+{n:'改善工作與生活平衡',s:'記錄一週的時間分配，找出最耗損精力的工作，以及可以拒絕的事。',m:'和主管討論彈性工時、遠端或工作量調整，並固定保留休息與家人時間。',l:'選擇長期可持續的工作型態，評估轉往工作量較可預期的方向，例如{n}。'},
+{n:'增加工作意義與成就感',s:'寫下現職中最讓你有成就感的 3 件事，想想它們幫助了誰。',m:'主動參與有意義的專案，或加入公益、導師、分享等活動。',l:'逐步把工作重心移向能發揮價值觀的方向，例如{n}。'},
+{n:'改善健康與體力',s:'先安排固定的睡眠與運動時間，並預約一次健康檢查。',m:'調整工作安排，避免長期過勞，建立每週 3 次的運動習慣。',l:'選擇不會犧牲健康的職涯路線，必要時評估轉往較能掌握節奏的方向，如{n}。'},
+{n:'經營人際與人脈',s:'列出 5 位想保持聯繫的人，這個月主動聯絡其中 2 位。',m:'參加產業或興趣社群，每季認識新朋友，並在職場找一位導師。',l:'建立互相支持的人脈圈，讓你在{n}等方向都能得到資訊與機會。'},
+{n:'其他',s:'把你最想改變的事寫成一句具體的話，並寫下它為什麼重要。',m:'把它拆成 3 個半年內能完成的小步驟，找一位可以提醒你的人。',l:'每半年檢視進度，必要時調整目標，並讓它和你的生涯樹重心一致。'}];
 function setupAn(cnt){
+const fill=(id,a)=>{$(id).innerHTML='<option value="">請選擇</option>'+a.map(x=>'<option>'+x+'</option>').join('')};fill('job',Object.keys(JOBS));fill('goal',GOALS.map(g=>g.n));
 const L={crown:['樹冠・生活形態','pool'],branch:['樹枝・人際關係','kid'],trunk:['樹幹・內在價值','tree'],root:['樹根・健康與物質','wind']};
 $('gen').onclick=()=>{
-const job=$('job').value.trim(),goal=$('goal').value.trim();
-if(!job||!goal){toast('請先填寫「目前的工作或身分」與「未來 1–3 年最想改變或達成的事」');return}
+const job=$('job').value,goal=$('goal').value;
+if(!job||!goal){toast('請先選擇「目前的工作或身分」與「未來 1–3 年最想改變或達成的事」');return}
+const J=JOBS[job],G=GOALS.find(g=>g.n===goal),f=t=>t.replace(/\{j\}/g,job).replace(/\{k\}/g,J.k).replace(/\{n\}/g,J.n);
 const th=TH.map(t=>({t,n:S.picked.filter(x=>t.k.includes(x)).length})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,3);
 const rk=ZK.slice().sort((a,b)=>cnt[b]-cnt[a]);
 const mx=cnt[rk[0]];
@@ -251,14 +278,14 @@ if(n===0)return['尚未列入','這一層沒有進入你最重視的 10 張，�
 if(n===mx)return['目前重心','這是你最重視的一層，工作與生活的選擇，要優先照顧到它。'];
 if(n>=2)return['重要面向','你相當重視這一層，是選擇工作時的重要參考。'];
 return['有所關注','你有注意到這一層，可以再想想它對你有多重要。']};
-let tu='',te='';try{tu=(TP||prepTree()).url}catch(e){te=String(e&&e.message||e)}let h=`<h3>生涯樹圖片</h3>`+(tu?`<p><img src="${tu}" alt="我的生涯樹" style="max-width:100%;border-radius:12px;border:1.5px solid var(--line)"></p>`:`<p class="mute">樹圖產生失敗：${esc(te)}</p>`)+`<h3>現況解析</h3><div class="layer" style="--c:var(--ink)"><p>${job?'目前身分：<b style="color:var(--ink)">'+esc(job)+'</b>。':''}${th.length?'你的卡片最集中在「'+th.map(x=>esc(x.t.n)).join('」、「')+'」。這代表你理想中的工作與生活，要能滿足這些需求。':'你的卡片分佈很分散，建議回頭看看哪幾張最有感覺。'}</p>${job?'<p>請對照現在的「'+esc(job)+'」：上面這些需求，哪些已經被滿足，哪些還缺少？</p>':''}</div>`;
+let tu='',te='';try{tu=(TP||prepTree()).url}catch(e){te=String(e&&e.message||e)}let h=`<h3>生涯樹圖片</h3>`+(tu?`<p><img src="${tu}" alt="我的生涯樹" style="max-width:100%;border-radius:12px;border:1.5px solid var(--line)"></p>`:`<p class="mute">樹圖產生失敗：${esc(te)}</p>`)+`<h3>現況解析</h3><div class="layer" style="--c:var(--ink)"><p>目前類別：<b style="color:var(--ink)">${job}</b>；未來 1–3 年想：<b style="color:var(--ink)">${goal}</b>。${th.length?'你的卡片最集中在「'+th.map(x=>esc(x.t.n)).join('」、「')+'」。這代表你理想中的工作與生活，要能滿足這些需求。':'你的卡片分佈很分散，建議回頭看看哪幾張最有感覺。'}</p><p>在「${job}」可帶走的能力：${J.k}。請對照目前的工作，上面這些需求哪些已被滿足、哪些還缺少？</p></div>`;
 h+=ZK.map(z=>{const r=st(z);return `<div class="layer" style="--c:var(--${L[z][1]})"><b>${L[z][0]}</b>　重視 ${cnt[z]} 張　<b>${r[0]}</b><p>${r[1]}</p></div>`}).join('');
 h+=`<h3>適合的工作型態</h3>`+(th.length?th.map(x=>`<div class="layer" style="--c:var(--tree)"><b>${esc(x.t.n)}</b><p>可以優先看：${x.t.j}。</p></div>`).join(''):'<p class="mute">尚無足夠資料，建議重新挑選卡片。</p>');
 const g1=rk[0],g2=rk[1],empty=ZK.filter(z=>cnt[z]===0);
 h+=`<h3>未來工作規劃建議</h3>
-<div class="layer" style="--c:var(--pool)"><b>短期（1–3 個月）：先落實最重視的一層</b><p>重點在「${L[g1][0]}」。${FIX[g1]}</p>${th[0]?'<p>同時試試：'+th[0].t.a+'</p>':''}</div>
-<div class="layer" style="--c:var(--kid)"><b>中期（6–12 個月）：把重視的事放進工作</b><p>第二個重點是「${L[g2][0]}」。${FIX[g2]}</p>${th[1]?'<p>另外：'+th[1].t.a+'</p>':''}${goal?'<p>針對你想要的「'+esc(goal)+'」，請寫下 3 個可在半年內完成的小步驟，並每月檢查一次。</p>':''}</div>
-<div class="layer" style="--c:var(--tree)"><b>長期（2–3 年）：朝理想的樹冠前進</b><p>${th[0]?'以「'+esc(th[0].t.n)+'」為主軸，評估是否轉往：'+th[0].t.j+'。':'先釐清核心價值，再決定方向。'}</p>${empty.length?'<p>留意：'+empty.map(z=>L[z][0]).join('、')+'目前是空的，規劃時別完全忽略它。'+(empty.includes('root')?'樹根不穩，上方的樹冠就難以伸展。':'')+'</p>':''}<p>每半年重新檢視一次你的生涯樹，調整方向。</p></div>
+<div class="layer" style="--c:var(--pool)"><b>短期（1–3 個月）：「${goal}」的第一步</b><p>${f(G.s)}</p><p>同時先落實最重視的「${L[g1][0]}」：${FIX[g1]}</p>${th[0]?'<p>可以試試：'+th[0].t.a+'</p>':''}</div>
+<div class="layer" style="--c:var(--kid)"><b>中期（6–12 個月）：讓「${goal}」成形</b><p>${f(G.m)}</p><p>同時顧到「${L[g2][0]}」：${FIX[g2]}</p>${th[1]?'<p>另外：'+th[1].t.a+'</p>':''}</div>
+<div class="layer" style="--c:var(--tree)"><b>長期（2–3 年）：朝理想的樹冠前進</b><p>${f(G.l)}</p><p>${th[0]?'以「'+esc(th[0].t.n)+'」為主軸，可優先看：'+th[0].t.j+'。':'先釐清核心價值，再決定方向。'}</p>${empty.length?'<p>留意：'+empty.map(z=>L[z][0]).join('、')+'目前是空的，規劃時別完全忽略它。'+(empty.includes('root')?'樹根不穩，上方的樹冠就難以伸展。':'')+'</p>':''}<p>每半年重新檢視一次你的生涯樹，調整方向。</p></div>
 <p class="mute" style="margin-top:12px">以上為依你選的卡片產生的參考建議，不是心理測驗。重大決定仍建議與信任的人或生涯諮詢師討論。</p>`;
 $('rep').innerHTML=h;$('cpbar').style.display='flex';$('rep').scrollIntoView({behavior:'smooth'})}}
 
