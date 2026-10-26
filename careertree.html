@@ -222,10 +222,10 @@ $('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種
 <button class="btn" id="gen" style="margin-top:12px">產生解析與規劃</button>
 <div class="rep" id="rep" aria-live="polite"></div>
 
-<div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>
+<div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp2">複製規劃建議</button></span></div>
 <div id="cpmsg" class="mute" role="status" style="margin-top:10px"></div><div id="cpimg"></div><div id="cptxt"></div>`;
 setupAn(cnt);
-TP=null;loadF(treeTxt()).then(()=>{try{prepTree()}catch(e){}});$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
+TP=null;loadF(treeTxt()).then(()=>{try{prepTree()}catch(e){}});$('cp2').onclick=copyPlan}
 
 const esc=x=>String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const FIX={crown:'重新安排時間：每週保留固定的休閒或學習時段，評估彈性工時或休假的可能。',branch:'每月主動安排與重要的人相處，並在職場找一位導師或同伴。',trunk:'寫下你的核心價值，檢視目前的工作哪些符合、哪些牴觸。',root:'先補穩基底：檢視作息、運動與收支，確認工作負荷與收入能長期支撐。'};
@@ -251,9 +251,9 @@ if(n===0)return['尚未列入','這一層沒有進入你最重視的 10 張，�
 if(n===mx)return['目前重心','這是你最重視的一層，工作與生活的選擇，要優先照顧到它。'];
 if(n>=2)return['重要面向','你相當重視這一層，是選擇工作時的重要參考。'];
 return['有所關注','你有注意到這一層，可以再想想它對你有多重要。']};
-let h=`<h3>現況解析</h3><div class="layer" style="--c:var(--ink)"><p>${job?'目前身分：<b style="color:var(--ink)">'+esc(job)+'</b>。':''}${th.length?'你的卡片最集中在「'+th.map(x=>esc(x.t.n)).join('」、「')+'」。這代表你理想中的工作與生活，要能滿足這些需求。':'你的卡片分佈很分散，建議回頭看看哪幾張最有感覺。'}</p>${job?'<p>請對照現在的「'+esc(job)+'」：上面這些需求，哪些已經被滿足，哪些還缺少？</p>':''}</div>`;
+const T=TP||prepTree();let h=`<h3>生涯樹圖片</h3><p><img src="${T.url}" alt="我的生涯樹" style="max-width:100%;border-radius:12px;border:1.5px solid var(--line)"></p><h3>現況解析</h3><div class="layer" style="--c:var(--ink)"><p>${job?'目前身分：<b style="color:var(--ink)">'+esc(job)+'</b>。':''}${th.length?'你的卡片最集中在「'+th.map(x=>esc(x.t.n)).join('」、「')+'」。這代表你理想中的工作與生活，要能滿足這些需求。':'你的卡片分佈很分散，建議回頭看看哪幾張最有感覺。'}</p>${job?'<p>請對照現在的「'+esc(job)+'」：上面這些需求，哪些已經被滿足，哪些還缺少？</p>':''}</div>`;
 h+=ZK.map(z=>{const r=st(z);return `<div class="layer" style="--c:var(--${L[z][1]})"><b>${L[z][0]}</b>　重視 ${cnt[z]} 張　<b>${r[0]}</b><p>${r[1]}</p></div>`}).join('');
-h+=`<h3>現況解析 適合的工作型態</h3>`+(th.length?th.map(x=>`<div class="layer" style="--c:var(--tree)"><b>${esc(x.t.n)}</b><p>可以優先看：${x.t.j}。</p></div>`).join(''):'<p class="mute">尚無足夠資料，建議重新挑選卡片。</p>');
+h+=`<h3>適合的工作型態</h3>`+(th.length?th.map(x=>`<div class="layer" style="--c:var(--tree)"><b>${esc(x.t.n)}</b><p>可以優先看：${x.t.j}。</p></div>`).join(''):'<p class="mute">尚無足夠資料，建議重新挑選卡片。</p>');
 const g1=rk[0],g2=rk[1],empty=ZK.filter(z=>cnt[z]===0);
 h+=`<h3>未來工作規劃建議</h3>
 <div class="layer" style="--c:var(--pool)"><b>短期（1–3 個月）：先落實最重視的一層</b><p>重點在「${L[g1][0]}」。${FIX[g1]}</p>${th[0]?'<p>同時試試：'+th[0].t.a+'</p>':''}</div>
@@ -312,22 +312,8 @@ const say=t=>{try{toast(t)}catch(e){}const m=$('cpmsg');if(m)m.textContent=t};
 const mob=()=>matchMedia('(pointer:coarse)').matches;
 const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:u.split(';')[0].slice(5)})};
 const legacy=t=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
-function copyTree(){try{say('處理中…');copyTreeX()}catch(e){say('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
 let TP=null;
 function prepTree(){const cv=treeCanvas(),url=cv.toDataURL('image/png'),im=new Image();im.src=url;im.alt='我的生涯樹';TP={url,blob:d2b(url),im};return TP}
-function copyTreeX(){
-const T=TP||prepTree(),url=T.url,blob=T.blob;
-const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若自動複製失敗，請長按圖片，選「拷貝」或「儲存圖片」，再到 LINE 貼上。</p>';
-const pv=new Image();pv.src=url;pv.alt='我的生涯樹';pv.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(pv);
-img.scrollIntoView({behavior:'smooth',block:'nearest'});
-const file=new File([blob],'my-career-tree.png',{type:'image/png'});
-const ok=()=>say('已複製生涯樹圖（PNG），可到 LINE 長按輸入框選「貼上」');
-const fail=e=>say('無法自動複製'+(e&&e.name?'（'+e.name+'）':'')+'，請長按下方圖片，選「拷貝」或「儲存圖片」');
-const share=e0=>{try{if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')fail(e)});else fail(e0)}catch(e){fail(e)}};
-const legacyImg=()=>{try{const d=document.createElement('div');d.contentEditable='true';d.style.cssText='position:fixed;top:0;left:0;opacity:.01;z-index:-1';d.appendChild(T.im.cloneNode());document.body.appendChild(d);const r=document.createRange();r.selectNodeContents(d);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);const c=document.execCommand('copy');sl.removeAllRanges();d.remove();return c}catch(e){return false}};
-const alt=e=>{if(legacyImg())say('已嘗試複製；若 LINE 貼不上，請長按下方圖片選「拷貝」或「儲存圖片」');else share(e)};
-say('正在複製…');
-try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,alt)}catch(e){alt(e)}}
 function copyPlan(){try{copyPlanX()}catch(e){say('發生錯誤：'+(e&&e.message||e))}}
 function copyPlanX(){
 const {title,plan}=planOf();
