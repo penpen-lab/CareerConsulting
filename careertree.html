@@ -225,7 +225,7 @@ $('app').innerHTML=`<h2>這是你的生涯樹</h2><p class="mute">${S.total?'種
 <div class="bar" id="cpbar" style="margin-top:26px;display:none"><span style="display:flex;gap:10px;flex-wrap:wrap"><button class="ghost" id="cp1">複製生涯樹圖</button><button class="ghost" id="cp2">複製規劃建議</button></span></div>
 <div id="cpmsg" class="mute" role="status" style="margin-top:10px"></div><div id="cpimg"></div><div id="cptxt"></div>`;
 setupAn(cnt);
-loadF(treeTxt());$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
+TP=null;loadF(treeTxt()).then(()=>{try{prepTree()}catch(e){}});$('cp1').onclick=copyTree;$('cp2').onclick=copyPlan}
 
 const esc=x=>String(x).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const FIX={crown:'重新安排時間：每週保留固定的休閒或學習時段，評估彈性工時或休假的可能。',branch:'每月主動安排與重要的人相處，並在職場找一位導師或同伴。',trunk:'寫下你的核心價值，檢視目前的工作哪些符合、哪些牴觸。',root:'先補穩基底：檢視作息、運動與收支，確認工作負荷與收入能長期支撐。'};
@@ -313,18 +313,21 @@ const mob=()=>matchMedia('(pointer:coarse)').matches;
 const d2b=u=>{const b=atob(u.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:u.split(';')[0].slice(5)})};
 const legacy=t=>{try{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}};
 function copyTree(){try{say('處理中…');copyTreeX()}catch(e){say('發生錯誤：'+(e&&e.message||e));const i=$('cpimg');if(i)i.scrollIntoView({behavior:'smooth'})}}
+let TP=null;
+function prepTree(){const cv=treeCanvas(),url=cv.toDataURL('image/png'),im=new Image();im.src=url;im.alt='我的生涯樹';TP={url,blob:d2b(url),im};return TP}
 function copyTreeX(){
-const txt=treeTxt(),cv=treeCanvas(),url=cv.toDataURL('image/jpeg',.92),blob=d2b(url),pblob=d2b(cv.toDataURL('image/png'));
-const html=`<p><img src="${url}" width="560" alt="我的生涯樹"></p>`;
-const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">請長按圖片，選「拷貝」或「儲存圖片」，再到 LINE 貼上。</p>';
-const im=new Image();im.src=url;im.alt='我的生涯樹';im.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(im);img.scrollIntoView({behavior:'smooth',block:'nearest'});
-const file=new File([blob],'my-career-tree.jpg',{type:'image/jpeg'});
-const ok=()=>say('已複製生涯樹圖'),fail=()=>{say('無法自動複製，請長按下方圖片，選「拷貝」或「儲存圖片」');img.scrollIntoView({behavior:'smooth'})};
-const share=()=>{try{if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')fail()});else fail()}catch(e){fail()}};
-const clip=()=>{try{navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'}),'image/png':pblob})]).then(ok,()=>{try{navigator.clipboard.write([new ClipboardItem({'image/png':pblob})]).then(ok,share)}catch(e){share()}})}catch(e){share()}};
-say('JPG 圖片已產生：可在分享選單選「LINE」或「拷貝」，也可長按下方圖片選「拷貝」，再到 LINE 貼上');
-if(mob()&&navigator.canShare&&navigator.canShare({files:[file]})){try{navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')clip()})}catch(e){clip()}return}
-clip()}
+const T=TP||prepTree(),url=T.url,blob=T.blob;
+const img=$('cpimg');img.innerHTML='<h3 style="margin:18px 0 6px">生涯樹圖片</h3><p class="mute">若自動複製失敗，請長按圖片，選「拷貝」或「儲存圖片」，再到 LINE 貼上。</p>';
+const pv=new Image();pv.src=url;pv.alt='我的生涯樹';pv.style.cssText='max-width:100%;border-radius:10px;border:1.5px solid var(--line)';img.appendChild(pv);
+img.scrollIntoView({behavior:'smooth',block:'nearest'});
+const file=new File([blob],'my-career-tree.png',{type:'image/png'});
+const ok=()=>say('已複製生涯樹圖（PNG），可到 LINE 長按輸入框選「貼上」');
+const fail=e=>say('無法自動複製'+(e&&e.name?'（'+e.name+'）':'')+'，請長按下方圖片，選「拷貝」或「儲存圖片」');
+const share=e0=>{try{if(navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:'我的生涯樹'}).then(()=>{},e=>{if(!e||e.name!=='AbortError')fail(e)});else fail(e0)}catch(e){fail(e)}};
+const legacyImg=()=>{try{const d=document.createElement('div');d.contentEditable='true';d.style.cssText='position:fixed;top:0;left:0;opacity:.01;z-index:-1';d.appendChild(T.im.cloneNode());document.body.appendChild(d);const r=document.createRange();r.selectNodeContents(d);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);const c=document.execCommand('copy');sl.removeAllRanges();d.remove();return c}catch(e){return false}};
+const alt=e=>{if(legacyImg())say('已嘗試複製；若 LINE 貼不上，請長按下方圖片選「拷貝」或「儲存圖片」');else share(e)};
+say('正在複製…');
+try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(ok,alt)}catch(e){alt(e)}}
 function copyPlan(){try{copyPlanX()}catch(e){say('發生錯誤：'+(e&&e.message||e))}}
 function copyPlanX(){
 const {title,plan}=planOf();
