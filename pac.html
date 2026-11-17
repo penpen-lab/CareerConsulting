@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PAC 職場情境判斷挑戰</title>
+<style>
+:root{color-scheme:dark;--bg:#111;--card:#1c1c1c;--y:#FFD400;--t:#f5f5f5;--m:#aaa;--ok:#2ecc71;--no:#ff5a4d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.7}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+.top{background:var(--y);color:#111;padding:6px 14px;font-weight:800;letter-spacing:2px;display:inline-block;border-radius:4px;font-size:13px}
+h1{font-size:28px;margin:14px 0 6px;color:var(--y)}
+.stripe{height:10px;background:repeating-linear-gradient(-45deg,var(--y) 0 14px,#111 14px 28px);border-radius:3px;margin:14px 0}
+.card{background:var(--card);border:2px solid var(--y);border-radius:12px;padding:20px}
+.bar{height:8px;background:#333;border-radius:4px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--y);width:0;transition:width .3s}
+.q small{color:var(--y);font-weight:700}
+.q p{font-size:19px;margin:6px 0 16px;font-weight:600}
+.opt{display:block;width:100%;text-align:left;background:#111;color:var(--t);border:2px solid #444;border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:16px;cursor:pointer;font-family:inherit}
+.opt b{color:var(--y);margin-right:8px}
+.opt:hover:not(:disabled){border-color:var(--y)}
+.opt.ok{border-color:var(--ok);background:#12301f}
+.opt.no{border-color:var(--no);background:#3a1815}
+.fb{margin-top:12px;padding:12px 14px;border-left:5px solid var(--y);background:#262200;border-radius:6px;font-size:15px}
+.btn{background:var(--y);color:#111;border:0;border-radius:10px;padding:12px 22px;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;margin-top:14px}
+.btn:hover{filter:brightness(1.1)}
+.score{text-align:center}
+.score .n{font-size:80px;font-weight:900;color:var(--y);line-height:1}
+.score .n span{font-size:24px;color:var(--m)}
+.res h3{color:var(--y);margin:20px 0 6px;font-size:20px}
+.res ol{padding-left:22px;margin:8px 0}
+.res li{margin-bottom:6px}
+.hl{background:var(--y);color:#111;padding:14px 16px;border-radius:10px;font-weight:700;margin-top:16px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="top">PAC GAME</span>
+  <h1>PAC 職場情境判斷挑戰</h1>
+  <div class="stripe"></div>
+
+  <div id="start" class="card">
+    <p>共 10 題職場情境。請判斷每一句話，屬於哪一種自我狀態？</p>
+    <p style="color:var(--m);font-size:14px">CP 批判型父母・NP 照顧型父母・A 成人・FC 自由型兒童・AC 適應型兒童</p>
+    <button class="btn" onclick="begin()">開始挑戰</button>
+  </div>
+
+  <div id="quiz" class="card q hide">
+    <div class="bar"><i id="pb"></i></div>
+    <small id="no"></small>
+    <p id="qt"></p>
+    <div id="opts"></div>
+    <div id="fb" class="fb hide"></div>
+    <button id="nx" class="btn hide" onclick="next()">下一題</button>
+  </div>
+
+  <div id="result" class="hide">
+    <div class="card score">
+      <div>你的得分</div>
+      <div class="n"><span id="sc"></span></div>
+      <p id="cm" style="font-weight:700"></p>
+    </div>
+    <div class="card res" style="margin-top:16px">
+      <div class="hl">從 P、C 回到 A</div>
+      <p>不是不能關心、不能表達情緒，也不是不能堅持原則。<br>而是當職場發生衝突時，練習啟動成人自我。</p>
+      <ol>
+        <li>先確認事實，不急著責備。</li>
+        <li>理解情緒，不讓情緒主導對話。</li>
+        <li>表達需求，不一味順從或反抗。</li>
+        <li>尋找方案，讓溝通回到解決問題。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<script>
+const N={CP:"批判型父母",NP:"照顧型父母",A:"成人",FC:"自由型兒童",AC:"適應型兒童"};
+const Q=[
+{t:"主管說：「這件事情已經提醒你三次了，為什麼還是做不好？」",o:["CP","NP","A","FC"],a:"CP",e:"帶有指責、質問的語氣，是批判型父母（CP）。"},
+{t:"同事說：「你最近看起來很累，需要我幫忙分擔嗎？」",o:["CP","NP","AC","FC"],a:"NP",e:"關心、主動提供協助，是照顧型父母（NP）。"},
+{t:"主管說：「這次客訴有兩個原因，我們先整理紀錄再決定改善方案。」",o:["CP","A","FC","AC"],a:"A",e:"重事實、重分析、導向解決問題，是成人（A）。"},
+{t:"員工說：「太好了！我想到一個更有趣的企劃方式！」",o:["NP","CP","FC","AC"],a:"FC",e:"興奮、好玩、充滿創意，是自由型兒童（FC）。"},
+{t:"員工說：「好吧！反正主管說什麼，我就照做。」",o:["FC","AC","A"],a:"AC",e:"壓抑想法、順從放棄，是適應型兒童（AC）。"},
+{t:"主管說：「你們怎麼老是這樣，一點責任感都沒有！」",o:["NP","CP","AC","A"],a:"CP",e:"以「老是」「都沒有」全面否定對方，是批判型父母（CP）。"},
+{t:"前輩說：「別緊張，慢慢來，不懂的地方我教你。」",o:["CP","FC","NP","A"],a:"NP",e:"安撫、鼓勵並給予支持，是照顧型父母（NP）。"},
+{t:"同事說：「我們先確認交期和人力，再看能不能調整分工。」",o:["A","AC","CP","FC"],a:"A",e:"先釐清條件、理性討論方案，是成人（A）。"},
+{t:"員工說：「耶！專案順利結束，今天下班大家一起去吃火鍋慶祝！」",o:["AC","NP","FC","CP"],a:"FC",e:"直接表達開心、想玩樂的衝動，是自由型兒童（FC）。"},
+{t:"員工說：「對不起對不起，都是我的錯，我以後不敢再提意見了。」",o:["FC","A","NP","AC"],a:"AC",e:"過度道歉、自我壓抑、退縮，是適應型兒童（AC）。"}
+];
+let i=0,s=0,done=false;
+const $=id=>document.getElementById(id);
+function show(id){["start","quiz","result"].forEach(x=>$(x).classList.toggle("hide",x!==id))}
+function begin(){i=0;s=0;show("quiz");render()}
+function render(){
+  const q=Q[i];done=false;
+  $("no").textContent="第 "+(i+1)+" 題 / "+Q.length;
+  $("pb").style.width=(i/Q.length*100)+"%";
+  $("qt").textContent=q.t;
+  $("fb").classList.add("hide");$("nx").classList.add("hide");
+  $("opts").innerHTML="";
+  q.o.forEach(k=>{
+    const b=document.createElement("button");
+    b.className="opt";b.innerHTML="<b>"+k+"</b>"+N[k];
+    b.onclick=()=>pick(k,b);
+    $("opts").appendChild(b);
+  });
+}
+function pick(k,btn){
+  if(done)return;done=true;
+  const q=Q[i],ok=k===q.a;
+  if(ok)s+=10;
+  [...$("opts").children].forEach(b=>{
+    b.disabled=true;
+    const key=b.querySelector("b").textContent;
+    if(key===q.a)b.classList.add("ok");
+  });
+  if(!ok)btn.classList.add("no");
+  $("fb").innerHTML=(ok?"✅ 答對了！":"❌ 再想想。正確答案是 "+q.a+"。")+"<br>"+q.e;
+  $("fb").classList.remove("hide");
+  $("nx").textContent=i===Q.length-1?"查看結果":"下一題";
+  $("nx").classList.remove("hide");
+}
+function next(){
+  i++;
+  if(i>=Q.length){
+    $("sc").textContent=s;
+    $("cm").textContent=s===100?"太棒了！你能清楚辨識每一種自我狀態。":s>=60?"不錯！再多留意語氣與用字，辨識會更精準。":"別擔心，從今天開始練習覺察自己的說話狀態吧！";
+    show("result");
+  }else render();
+}
+</script>
+</body>
+</html>
